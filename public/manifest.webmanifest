@@ -1,0 +1,12 @@
+{
+  "id": "/",
+  "name": "Sơn Tự — chùa online",
+  "short_name": "Sơn Tự",
+  "description": "Ngôi chùa online 3D để cùng nhau ngồi tĩnh lặng.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#20251f",
+  "theme_color": "#24251f",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
