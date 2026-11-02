@@ -572,22 +572,23 @@ export class Shuttle {
     for (const trip of [...this.trips]) {
       const t = now - trip.t0;
       const g = trip.g;
+      // drop the passenger as soon as the cart has arrived — even if frames were skipped
+      // (slow device, background tab) and we jumped straight past the stop window
+      if (!trip.dropped && t >= Shuttle.IN_MS) {
+        trip.dropped = true;
+        if (trip.rider) {
+          this.w.scene.add(trip.rider);
+          trip.rider.position.set(SHUTTLE_STOP.x - 1.7, 0, SHUTTLE_STOP.z);
+          trip.rider.rotation.set(0, Math.PI, 0);
+        }
+        trip.onDrop?.();
+      }
       if (t < Shuttle.IN_MS) {
         const k = ease(t / Shuttle.IN_MS);
         g.position.set(SHUTTLE_STOP.x, 0, farZ + (SHUTTLE_STOP.z - farZ) * k);
         g.rotation.y = Math.PI; // driving toward the gate (-z)
       } else if (t < Shuttle.IN_MS + Shuttle.STOP_MS) {
         g.position.set(SHUTTLE_STOP.x, 0, SHUTTLE_STOP.z);
-        if (!trip.dropped) {
-          trip.dropped = true;
-          if (trip.rider) {
-            // step off on the gate side of the cart
-            this.w.scene.add(trip.rider);
-            trip.rider.position.set(SHUTTLE_STOP.x - 1.7, 0, SHUTTLE_STOP.z);
-            trip.rider.rotation.set(0, Math.PI, 0);
-          }
-          trip.onDrop?.();
-        }
       } else if (t < Shuttle.IN_MS + Shuttle.STOP_MS + Shuttle.OUT_MS) {
         const k = (t - Shuttle.IN_MS - Shuttle.STOP_MS) / Shuttle.OUT_MS;
         // U-turn then drive away
