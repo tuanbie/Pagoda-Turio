@@ -219,6 +219,7 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
 .seg { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
 .seg button { min-height: 40px; border-radius: 12px; border: 1px solid var(--line); background: transparent; font-size: 13px; }
 .seg button.active { border-color: var(--gold); background: var(--gold-soft); color: var(--gold); }
+.auto-tier { display: block; font-size: 10.5px; color: var(--muted); }
 .link-btn { display: block; width: 100%; background: transparent; font-size: 14px; text-align: center; padding: 10px; border-radius: 12px; border: 1px solid var(--line); color: var(--gold); text-decoration: none; margin: 8px 0; }
 
 .server-list, .visitor-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }

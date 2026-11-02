@@ -60,6 +60,8 @@ export interface AppState {
   arriving: boolean;
   /** inside the discussion hall: speak only to the room */
   chatRoom: boolean;
+  /** tier picked by "auto" graphics on this device */
+  autoTier: 'high' | 'medium' | 'low' | null;
 }
 
 export interface ChatLine {
@@ -158,6 +160,7 @@ export const store = new Store({
   gameTable: null,
   arriving: false,
   chatRoom: true,
+  autoTier: null,
   lost: false,
 });
 

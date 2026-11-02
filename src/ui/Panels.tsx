@@ -112,6 +112,9 @@ export function SettingsPanel() {
             }}
           >
             {t(q === 'auto' ? 'settings.qAuto' : q === 'high' ? 'settings.qHigh' : q === 'medium' ? 'settings.qMedium' : 'settings.qLow')}
+            {q === 'auto' && s.autoTier && (
+              <small className="auto-tier">{t(s.autoTier === 'high' ? 'settings.qHigh' : s.autoTier === 'medium' ? 'settings.qMedium' : 'settings.qLow')}</small>
+            )}
           </button>
         ))}
       </div>

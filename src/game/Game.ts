@@ -74,6 +74,8 @@ export class Game {
   private seated = false;
   private keys = new Set<string>();
   private lastAskedName = '';
+  /** auto mode: tier chosen after measuring this device (null = use the device profile) */
+  private autoTier: 'high' | 'medium' | 'low' | null = null;
   private stickCache = new Map<number, number>();
   private fishLog: [number, number][] = [];
   private teaPose: Pose = Pose.PourTea;
@@ -158,7 +160,10 @@ export class Game {
     const dpr = window.devicePixelRatio || 1;
     const { mobile, weak } = deviceProfile();
     // four tiers; "auto" picks one from the device profile
-    const tier: Exclude<typeof q, 'auto'> = q !== 'auto' ? q : weak ? 'low' : mobile ? 'medium' : 'high';
+    // "auto" (the default for every new visitor) picks a tier from the device profile,
+    // and may later step down if this device can't keep up
+    const tier: Exclude<typeof q, 'auto'> = q !== 'auto' ? q : this.autoTier ?? (weak ? 'low' : mobile ? 'medium' : 'high');
+    if (q === 'auto') store.set({ autoTier: tier });
     const low = tier === 'low';
     const shadows = tier === 'high';
     this.low = low;
@@ -1109,6 +1114,17 @@ export class Game {
     else if (this.frameAvg < (this.low ? 34 : 15)) this.slowTimer = Math.min(0, this.slowTimer - 1);
     else this.slowTimer = 0;
     let next = this.pixelRatio;
+    // already at the lowest resolution and still slow → step the whole tier down
+    if (this.slowTimer >= 4 && this.pixelRatio <= 0.61) {
+      const cur = store.get().autoTier;
+      const lower = cur === 'high' ? 'medium' : cur === 'medium' ? 'low' : null;
+      if (lower) {
+        this.autoTier = lower;
+        this.slowTimer = 0;
+        this.setQuality();
+        return;
+      }
+    }
     if (this.slowTimer >= 2) next = Math.max(0.6, this.pixelRatio - 0.15);
     else if (this.slowTimer <= -4) next = Math.min(this.maxPixelRatio, this.pixelRatio + 0.1);
     if (next !== this.pixelRatio) {
