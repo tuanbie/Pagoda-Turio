@@ -155,6 +155,8 @@ export class Avatar {
   private bubbleUntil = 0;
   poseAge = 0;
   private lastPose: Pose = Pose.Idle;
+  private teapot: THREE.Group | null = null;
+  private cup: THREE.Mesh | null = null;
 
   constructor(tint: number, isSelf: boolean) {
     const robe = isSelf ? shared.selfRobe : shared.robes[tint % shared.robes.length];
@@ -197,6 +199,25 @@ export class Avatar {
       o.userData.kind = 'avatar';
       if ((o as THREE.Mesh).isMesh && o.parent !== this.root) o.castShadow = true;
     });
+  }
+
+  /** lazily created tea props (most avatars never need them) */
+  private teaProps() {
+    if (this.teapot) return;
+    const porcelain = new THREE.MeshStandardMaterial({ color: '#f3efe6', roughness: 0.35 });
+    this.teapot = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 8).scale(1, 0.8, 1), porcelain);
+    const spout = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.11, 6), porcelain);
+    spout.position.set(0, 0.01, 0.1);
+    spout.rotation.x = 1.1;
+    const lid = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), porcelain);
+    lid.position.y = 0.075;
+    this.teapot.add(body, spout, lid);
+    this.teapot.position.set(0, -0.52, 0.05);
+    this.armR.add(this.teapot);
+    this.cup = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.03, 0.06, 10), porcelain);
+    this.cup.position.set(0, -0.5, 0.04);
+    this.armL.add(this.cup);
   }
 
   setHeadphones() {
@@ -278,7 +299,8 @@ export class Avatar {
     const tgt = { bodyY: 0, bend: 0.02, lx: -0.1, lz: -0.1, rx: -0.1, rz: 0.1, sway: 0, squash: 1, nod: 0, walk: Math.min(1, speed / 3) };
     const kneeling = kneel || pose === Pose.Sit || pose === Pose.Bow;
     if (kneeling) {
-      tgt.bodyY = -0.36;
+      // fold the legs (shorter robe) but keep the base ON the seat — never sink into it
+      tgt.bodyY = 0;
       tgt.squash = 0.55;
     }
 
@@ -312,6 +334,21 @@ export class Avatar {
       case Pose.Moktak: {
         const hit = Math.max(0, Math.sin(t * Math.PI * 2 * 1.1)) ** 4;
         Object.assign(tgt, { lx: -0.8, lz: -0.3, rx: -1.15 + hit * 0.45, rz: 0.25, bend: 0.1, nod: 0.15 });
+        break;
+      }
+      case Pose.PourTea: {
+        // right hand lifts the pot and tips it over the cup held by the left hand
+        this.teaProps();
+        const tip = Math.min(1, this.poseAge / 0.8) * (this.poseAge < 2.6 ? 1 : Math.max(0, 1 - (this.poseAge - 2.6) / 0.6));
+        Object.assign(tgt, { rx: -1.25, rz: 0.55, lx: -1.05, lz: -0.35, bend: 0.18, nod: 0.3 });
+        if (this.teapot) this.teapot.rotation.z = -0.9 * tip;
+        break;
+      }
+      case Pose.DrinkTea: {
+        // left hand brings the cup to the lips, two small sips
+        this.teaProps();
+        const up = Math.min(1, this.poseAge / 0.6) * (this.poseAge < 2.2 ? 1 : Math.max(0, 1 - (this.poseAge - 2.2) / 0.5));
+        Object.assign(tgt, { lx: -0.9 - 1.25 * up, lz: -0.2 - 0.55 * up, rx: -0.7, rz: 0.4, nod: -0.12 * up + Math.sin(this.poseAge * 5) * 0.03 * up, bend: 0.05 });
         break;
       }
       case Pose.Offer: {
@@ -353,6 +390,8 @@ export class Avatar {
     this.footL.position.set(0.11, 0.04 + Math.max(0, Math.cos(this.phase)) * 0.04 * s.walk, 0.08 + step);
     this.footR.position.set(-0.11, 0.04 + Math.max(0, -Math.cos(this.phase)) * 0.04 * s.walk, 0.08 - step);
     this.footL.visible = this.footR.visible = s.squash > 0.75;
+    if (this.teapot) this.teapot.visible = pose === Pose.PourTea;
+    if (this.cup) this.cup.visible = pose === Pose.PourTea || pose === Pose.DrinkTea;
   }
 
   dispose() {
@@ -368,6 +407,8 @@ export class RemotePlayer {
   private samples: { t: number; x: number; z: number; r: number }[] = [];
   pose: Pose = Pose.Idle;
   speed = 0;
+  /** sitting in the shuttle cart (the cart moves the avatar) */
+  riding = false;
   x = 0;
   z = 0;
   r = 0;

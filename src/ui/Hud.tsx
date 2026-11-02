@@ -68,6 +68,9 @@ export function ActionBar() {
       {btn('g', 'greet', t('act.greet'), '3', () => g()?.greet(), pose === Pose.Greet)}
       {btn('m', 'moktak', t('act.moktak'), '5', () => store.set({ panel: panel === 'moktak' ? null : 'moktak' }), panel === 'moktak')}
       {btn('i', 'incense', t('act.incense'), '6', () => g()?.offerIncense())}
+      {zone === 'pond' && btn('f', 'fish', t('act.fish'), '', () => g()?.releaseFish())}
+      {seated && zone === 'tea' && btn('tp', 'teapot', t('act.pour'), '', () => g()?.tea('pour'), pose === Pose.PourTea)}
+      {seated && zone === 'tea' && btn('td', 'cup', t('act.drink'), '', () => g()?.tea('drink'), pose === Pose.DrinkTea)}
       {seated && btn('s', 'stand', t('act.stand'), '', () => g()?.standUp())}
     </nav>
   );
@@ -84,8 +87,18 @@ export function StatusLine() {
       <span>
         {seated
           ? t('seat.sitting')
-          : zone === 'main' || zone === 'west' || zone === 'east'
+          : zone === 'main' || zone === 'west' || zone === 'east' || zone === 'jizo' || zone === 'maitreya'
             ? t('hint.cushion')
+            : zone === 'tea'
+              ? t('hint.tea')
+              : zone === 'talk'
+                ? t('hint.talk')
+                : zone === 'games'
+                  ? t('hint.games')
+                  : zone === 'pond'
+                    ? t('hint.pond')
+                    : zone === 'stupa'
+                      ? t('hint.stupa')
             : zone === 'bell' || zone === 'drum'
               ? t('hint.bell')
               : zone === 'bodhi'

@@ -1,18 +1,22 @@
 import { WORLD } from '@sontu/shared';
+import { STEP_MAX, terrainHeight } from './terrain.ts';
 import type { Box, Circle } from './World.ts';
 
 const CELL = 0.5;
-const EXT = 68;
+const EXT = 136;
 const N = Math.ceil((EXT * 2) / CELL);
 const SQRT2 = Math.SQRT2;
 
 /**
- * Grid navigation: obstacles are rasterised once (inflated by the body radius),
- * A* (8-neighbour, octile heuristic, binary heap) finds the shortest route,
- * then line-of-sight smoothing turns the staircase into a few straight legs.
+ * Grid navigation: obstacles are rasterised once (inflated by the body radius) and every
+ * cell stores its walkable height. A* (8-neighbour, octile heuristic, binary heap) only
+ * steps between cells whose heights differ by ≤ STEP_MAX — so stairs, the bridge and the
+ * stupa spiral are routes, while platform edges and water are walls.
+ * Line-of-sight smoothing then turns the staircase path into a few straight legs.
  */
 export class NavGrid {
   private blocked = new Uint8Array(N * N);
+  private height = new Float32Array(N * N);
   private g = new Float32Array(N * N);
   private parent = new Int32Array(N * N);
   private stamp = new Uint32Array(N * N);
@@ -24,7 +28,9 @@ export class NavGrid {
     for (let j = 0; j < N; j++)
       for (let i = 0; i < N; i++) {
         const [x, z] = this.pos(i, j);
-        if (Math.hypot(x, z) > WORLD.radius - 0.3) b[j * N + i] = 1;
+        const h = terrainHeight(x, z);
+        this.height[j * N + i] = h;
+        if (Math.hypot(x, z) > WORLD.radius - 0.3 || Number.isNaN(h)) b[j * N + i] = 1;
       }
     for (const c of circles) {
       const r = c.r + radius;
@@ -53,6 +59,11 @@ export class NavGrid {
     return i >= 0 && j >= 0 && i < N && j < N && !this.blocked[j * N + i];
   }
 
+  /** can you walk directly between two neighbouring cells? */
+  private step(a: number, b: number) {
+    return Math.abs(this.height[a] - this.height[b]) <= STEP_MAX;
+  }
+
   walkable(x: number, z: number) {
     const [i, j] = this.cell(x, z);
     return this.free(i, j);
@@ -74,9 +85,14 @@ export class NavGrid {
   lineOfSight(x0: number, z0: number, x1: number, z1: number) {
     const d = Math.hypot(x1 - x0, z1 - z0);
     const steps = Math.ceil(d / (CELL * 0.5));
-    for (let k = 1; k <= steps; k++) {
+    let prev = -1;
+    for (let k = 0; k <= steps; k++) {
       const t = k / steps;
-      if (!this.walkable(x0 + (x1 - x0) * t, z0 + (z1 - z0) * t)) return false;
+      const [i, j] = this.cell(x0 + (x1 - x0) * t, z0 + (z1 - z0) * t);
+      if (k > 0 && !this.free(i, j)) return false;
+      const c = j * N + i;
+      if (prev >= 0 && c !== prev && !this.step(prev, c)) return false;
+      prev = c;
     }
     return true;
   }
@@ -110,7 +126,7 @@ export class NavGrid {
         found = true;
         break;
       }
-      if (++expanded > 60_000) break;
+      if (++expanded > 200_000) break;
       const i = k % N;
       const j = (k - i) / N;
       for (let dj = -1; dj <= 1; dj++)
@@ -122,6 +138,7 @@ export class NavGrid {
           // no corner cutting through blocked diagonals
           if (di && dj && (!this.free(i + di, j) || !this.free(i, j + dj))) continue;
           const nk = nj * N + ni;
+          if (!this.step(k, nk)) continue;
           if (this.closed[nk] === run) continue;
           const cost = this.g[k] + (di && dj ? SQRT2 : 1) * CELL;
           if (this.stamp[nk] !== run || cost < this.g[nk]) {

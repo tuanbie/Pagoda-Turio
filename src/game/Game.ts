@@ -2,20 +2,27 @@ import * as THREE from 'three';
 import {
   HALLS,
   Instrument,
+  PAVILIONS,
   Pose,
   SEATS,
+  STUPA,
+  TABLES,
   WORLD,
   djBeat,
   inMoonYard,
+  tableSeat,
   type IncenseState,
   type PlayerTuple,
   type ServerMsg,
+  type Side,
 } from '@sontu/shared';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { World } from './World.ts';
 import { Avatar, RemotePlayer } from './Avatar.ts';
 import { NavGrid } from './nav.ts';
 import { gardenRect, hallRect } from './layout.ts';
+import { STEP_MAX, terrainHeight } from './terrain.ts';
+import { CUSHION_TOP, STONE_TOP, STOOL_TOP } from './places.ts';
 import { store, serverNow, toast, type Zone, type Visitor, type ChatLine } from '../store.ts';
 import { audio } from '../audio/AudioEngine.ts';
 import { t, visitorName } from '../i18n/index.ts';
@@ -24,7 +31,7 @@ import type { Net } from '../net/Net.ts';
 const SPEED = 3.3;
 const ACCEL = 9;
 type Activity = null | typeof Pose.Bow | typeof Pose.Dance | typeof Pose.Beads | typeof Pose.Moktak;
-type Then = 'sit' | 'censer';
+type Then = 'sit' | 'censer' | 'table' | 'fish';
 
 const damp = (a: number, b: number, k: number, dt: number) => a + (b - a) * (1 - Math.exp(-k * dt));
 let chatKey = 0;
@@ -39,16 +46,16 @@ export interface MapDot {
 export class Game {
   private renderer: THREE.WebGLRenderer;
   private camera = new THREE.PerspectiveCamera(55, 1, 0.1, 1200);
-  private world: World;
-  private nav: NavGrid;
-  private self: Avatar;
+  private world!: World;
+  private nav!: NavGrid;
+  private self!: Avatar;
   private remotes = new Map<number, RemotePlayer>();
   private seatOwner = new Map<number, number>(); // seat -> player
   private ray = new THREE.Raycaster();
   private clock = new THREE.Clock();
   private ro: ResizeObserver;
   private abort = new AbortController();
-  private marker: THREE.Mesh;
+  private marker!: THREE.Mesh;
 
   // local player
   private id = 0;
@@ -67,6 +74,17 @@ export class Game {
   private seated = false;
   private keys = new Set<string>();
   private lastAskedName = '';
+  private stickCache = new Map<number, number>();
+  private fishLog: [number, number][] = [];
+  private teaPose: Pose = Pose.PourTea;
+  private teaUntil = 0;
+  /** game table I'm sitting at (or walking to) */
+  private table = -1;
+  private tableSide: Side = 0;
+  private atTable = false;
+  /** the shuttle cinematic is playing for me */
+  private arriving = false;
+  private firstHi = true;
   private ident = { a: 0, n: 0, c: 0 };
   /** cushion to reclaim after a reconnect (server instance may have changed) */
   private reclaimSeat = -1;
@@ -87,8 +105,8 @@ export class Game {
   private pinch = 0;
 
   // perf
-  private pixelRatio: number;
-  private maxPixelRatio: number;
+  private pixelRatio = 1;
+  private maxPixelRatio = 1;
   private frameAvg = 16;
   private perfClock = 0;
   private slowTimer = 0;
@@ -99,6 +117,7 @@ export class Game {
   private frameNo = 0;
   private low = false;
   private lastRender = 0;
+  private portrait: boolean | null = null;
 
   constructor(
     private host: HTMLElement,
@@ -106,42 +125,18 @@ export class Game {
   ) {
     const q = store.get().quality;
     const dpr = window.devicePixelRatio || 1;
-    const { mobile, weak } = deviceProfile();
-    const low = q === 'low' || (q === 'auto' && weak);
-    const shadows = !low && (q === 'high' || !mobile);
-    this.low = low;
-    this.renderer = new THREE.WebGLRenderer({ antialias: !low && dpr < 2, powerPreference: low ? 'low-power' : 'high-performance' });
-    if (low) this.camera.far = 320;
+    const lowStart = q === 'low' || (q === 'auto' && deviceProfile().weak);
+    // antialiasing can only be chosen when the WebGL context is created
+    this.renderer = new THREE.WebGLRenderer({ antialias: !lowStart && dpr < 2, powerPreference: lowStart ? 'low-power' : 'high-performance' });
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.05;
-    this.renderer.shadowMap.enabled = shadows;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.maxPixelRatio = low ? 1 : q === 'high' ? Math.min(dpr, 2) : Math.min(dpr, 1.5);
-    this.pixelRatio = this.maxPixelRatio;
-    this.renderer.setPixelRatio(this.pixelRatio);
     this.renderer.domElement.className = 'game-canvas';
     host.appendChild(this.renderer.domElement);
-
-    this.world = new World({ low, shadows, shadowSize: q === 'high' ? 2048 : 1024 });
-    // image-based lighting makes gold / bronze read as metal (one-off, tiny 64px env map)
-    if (!low) {
-      const pmrem = new THREE.PMREMGenerator(this.renderer);
-      this.world.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-      this.world.scene.environmentIntensity = 0.35;
-      pmrem.dispose();
-    }
-    this.nav = new NavGrid(this.world.circles, this.world.boxes);
     this.self = new Avatar(0, true);
-    this.world.scene.add(this.self.root);
     this.marker = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 24).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#fff3c9', transparent: true, opacity: 0.85 }));
     this.marker.visible = false;
-    this.world.scene.add(this.marker);
-    // invisible click target for the DJ booth
-    const djHit = new THREE.Mesh(new THREE.BoxGeometry(3, 2.4, 6), new THREE.MeshBasicMaterial({ visible: false }));
-    djHit.position.set(WORLD.djBooth.x + 0.5, 1.2, WORLD.djBooth.z);
-    djHit.userData.kind = 'dj';
-    this.world.scene.add(djHit);
-    this.world.clickables.push(djHit);
+    this.world = this.buildWorld();
+    this.nav = new NavGrid(this.world.circles, this.world.boxes);
 
     const h = new URLSearchParams(location.search).get('hour');
     this.hourOverride = h !== null && !Number.isNaN(+h) ? +h : null;
@@ -151,6 +146,71 @@ export class Game {
     this.resize();
     this.bindInput();
     this.renderer.setAnimationLoop(() => this.frame());
+  }
+
+  /**
+   * Build the 3D world for the current graphics setting and put every live thing into it
+   * (me, other visitors, seats taken, burning incense, game boards, released fish).
+   * Called at start and again when the quality changes — you stay exactly where you are.
+   */
+  private buildWorld(): World {
+    const q = store.get().quality;
+    const dpr = window.devicePixelRatio || 1;
+    const { mobile, weak } = deviceProfile();
+    // four tiers; "auto" picks one from the device profile
+    const tier: Exclude<typeof q, 'auto'> = q !== 'auto' ? q : weak ? 'low' : mobile ? 'medium' : 'high';
+    const low = tier === 'low';
+    const shadows = tier === 'high';
+    this.low = low;
+    this.camera.far = low ? 420 : 1200;
+    this.camera.updateProjectionMatrix();
+    // cheaper materials reflect less light: lift the exposure so low still looks bright
+    this.renderer.toneMappingExposure = low ? 1.25 : tier === 'medium' ? 1.1 : 1.05;
+    this.renderer.shadowMap.enabled = shadows;
+    this.renderer.shadowMap.needsUpdate = true;
+    this.maxPixelRatio = low ? 1 : tier === 'high' ? Math.min(dpr, q === 'high' ? 2 : 1.6) : Math.min(dpr, 1.25);
+    this.pixelRatio = this.maxPixelRatio;
+    this.renderer.setPixelRatio(this.pixelRatio);
+
+    const world = new World({ low, shadows, shadowSize: q === 'high' ? 2048 : 1024, density: low ? 0.45 : tier === 'medium' ? 0.7 : 1 });
+    // image-based lighting makes gold / bronze read as metal (one-off, tiny env map)
+    if (!low) {
+      const pmrem = new THREE.PMREMGenerator(this.renderer);
+      world.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      world.scene.environmentIntensity = 0.35;
+      pmrem.dispose();
+    }
+    world.scene.add(this.self.root, this.marker);
+    // invisible click target for the DJ booth
+    const djHit = new THREE.Mesh(new THREE.BoxGeometry(3, 2.4, 6), new THREE.MeshBasicMaterial({ visible: false }));
+    djHit.position.set(WORLD.djBooth.x + 0.5, 1.2, WORLD.djBooth.z);
+    djHit.userData.kind = 'dj';
+    world.scene.add(djHit);
+    world.clickables.push(djHit);
+    // restore live state
+    for (const rp of this.remotes.values()) {
+      rp.riding = false;
+      world.scene.add(rp.avatar.root);
+    }
+    for (const [i, id] of this.seatOwner) world.setSeatTaken(i, id !== this.id);
+    for (const [slot, at] of this.stickCache) world.setStick(slot, at);
+    for (const snap of store.get().tables) world.gameTables.set(snap);
+    for (const f of this.fishLog) world.pond.add(f, null, true);
+    this.hourClock = 99;
+    return world;
+  }
+
+  /** Graphics quality changed: swap the scene, keep the visitor in place. */
+  setQuality() {
+    const old = this.world;
+    if (this.arriving) {
+      this.arriving = false;
+      store.set({ arriving: false });
+    }
+    this.self.root.removeFromParent();
+    this.world = this.buildWorld();
+    old.dispose();
+    this.resize();
   }
 
   // ---------------- naming helpers ----------------
@@ -187,7 +247,10 @@ export class Game {
         }
         this.camTarget.set(this.x, 1.3, this.z);
         for (const [i, id] of msg.seats) this.setSeat(i, id);
-        for (const [slot, at] of msg.sticks) this.world.setStick(slot, at - store.get().clockOffset);
+        for (const [slot, at] of msg.sticks) {
+          this.stickCache.set(slot, at - store.get().clockOffset);
+          this.world.setStick(slot, at - store.get().clockOffset);
+        }
         this.seat = -1;
         this.seated = false;
         this.stop();
@@ -197,11 +260,20 @@ export class Game {
           inc: msg.inc,
           seated: false,
           dj: msg.dj,
-          chat: msg.chat.map(([id, name, adj, noun, text, at]) => ({ key: ++chatKey, id, name, adj, noun, text, at })),
+          chat: msg.chat.map(([id, name, adj, noun, text, at, ch]) => ({ key: ++chatKey, id, name, adj, noun, text, at, ch: ch ?? 0 })),
+          tables: msg.tables,
           seatAsk: null,
           seatIncoming: null,
         });
         audio.setDj(msg.dj);
+        for (const snap of msg.tables) this.world.gameTables.set(snap);
+        if (this.firstHi)
+          for (const f of msg.fish) {
+            this.fishLog.push(f);
+            this.world.pond.add(f, null, true);
+          }
+        this.table = -1;
+        this.atTable = false;
         this.onIncense(msg.inc);
         this.visitorsDirty = true;
         this.sendMove(true);
@@ -211,10 +283,22 @@ export class Game {
           this.silentSeat = true;
           this.net.send({ t: 'seat', i: reclaim });
         }
+        // first arrival: the shuttle drives me to the gate, then I walk in
+        if (this.firstHi && Math.hypot(this.x - WORLD.spawn.x, this.z - WORLD.spawn.z) < 5) this.playArrival();
+        this.firstHi = false;
         break;
       }
       case 's':
-        if (msg.j) for (const p of msg.j) if (p[0] !== this.id && !this.remotes.has(p[0])) this.addRemote(p);
+        if (msg.j)
+          for (const p of msg.j)
+            if (p[0] !== this.id && !this.remotes.has(p[0])) {
+              const rp = this.addRemote(p);
+              // newcomers arrive by shuttle too: show them once the cart has stopped
+              if (Math.hypot(p[3] - WORLD.spawn.x, p[4] - WORLD.spawn.z) < 5) {
+                rp.riding = true;
+                this.world.shuttle.arrive(() => (rp.riding = false), rp.avatar.root);
+              }
+            }
         if (msg.u)
           for (const [id, x, z, r, p] of msg.u) {
             if (id === this.id) continue;
@@ -250,6 +334,7 @@ export class Game {
         this.onIncense(msg.s);
         break;
       case 'stk':
+        this.stickCache.set(msg.s[0], msg.s[1] - store.get().clockOffset);
         this.world.setStick(msg.s[0], msg.s[1] - store.get().clockOffset);
         break;
       case 'nm': {
@@ -262,8 +347,8 @@ export class Game {
         break;
       }
       case 'chat': {
-        const [id, name, adj, noun, text, at] = msg.c;
-        const line: ChatLine = { key: ++chatKey, id, name, adj, noun, text, at };
+        const [id, name, adj, noun, text, at, ch] = msg.c;
+        const line: ChatLine = { key: ++chatKey, id, name, adj, noun, text, at, ch: ch ?? 0 };
         const s = store.get();
         store.set({ chat: [...s.chat.slice(-99), line], unread: s.chatOpen || id === this.id ? s.unread : s.unread + 1 });
         const av = id === this.id ? this.self : this.remotes.get(id)?.avatar;
@@ -285,10 +370,51 @@ export class Game {
         store.set({ dj: msg.d });
         audio.setDj(msg.d);
         break;
+      case 'tb': {
+        const tables = [...store.get().tables];
+        tables[msg.s.i] = msg.s;
+        store.set({ tables });
+        this.world.gameTables.set(msg.s);
+        const side = msg.s.p.indexOf(this.id);
+        if (side >= 0 && this.table !== msg.s.i) {
+          // the server gave me this seat: walk over and sit on the stool
+          this.table = msg.s.i;
+          this.tableSide = side as Side;
+          this.leaveSeat();
+          const st = tableSeat(TABLES[msg.s.i], this.tableSide);
+          this.goTo(st.x, st.z, 'table');
+        } else if (side < 0 && this.table === msg.s.i) {
+          this.table = -1;
+          this.atTable = false;
+        }
+        break;
+      }
+      case 'fish': {
+        const r = this.remotes.get(msg.id);
+        const from = msg.id === this.id ? this.world.pond.shore(this.x, this.z) : r ? this.world.pond.shore(r.x, r.z) : null;
+        this.world.pond.add(msg.f, from);
+        this.fishLog.push(msg.f);
+        if (this.fishLog.length > 150) this.fishLog.shift();
+        if (msg.id === this.id) toast(t('fish.released'));
+        if (store.get().soundOn && from && Math.hypot(this.x - from[0], this.z - from[1]) < 30) audio.splash();
+        break;
+      }
     }
   }
 
-  private addRemote(p: PlayerTuple) {
+  /** Shuttle cinematic for my own first arrival. */
+  private playArrival() {
+    this.arriving = true;
+    store.set({ arriving: true });
+    toast(t('arrive.riding'));
+    this.world.shuttle.arrive(() => {
+      this.arriving = false;
+      store.set({ arriving: false });
+      toast(t('arrive.welcome'));
+    }, this.self.root);
+  }
+
+  private addRemote(p: PlayerTuple): RemotePlayer {
     const [id, adj, noun, x, z, r, pose, tint, name] = p;
     const rp = new RemotePlayer(id, adj, noun, tint, name ?? '', x, z, r, pose);
     this.remotes.set(id, rp);
@@ -296,6 +422,7 @@ export class Game {
     rp.avatar.setName(this.nameOf(id));
     this.world.scene.add(rp.avatar.root);
     this.visitorsDirty = true;
+    return rp;
   }
 
   private setSeat(i: number, id: number | null) {
@@ -397,6 +524,41 @@ export class Game {
     store.set({ seatIncoming: null });
   }
 
+  // ---------------- game tables ----------------
+  /** Ask the server for a seat at a table (side 0 / 1). */
+  joinTable(i: number, side: Side) {
+    this.net.send({ t: 'tb', a: 'join', i, side });
+  }
+
+  leaveTable() {
+    if (this.table < 0) return;
+    this.net.send({ t: 'tb', a: 'leave', i: this.table });
+    this.table = -1;
+    this.atTable = false;
+  }
+
+  tableAction(a: 'move' | 'resign' | 'reset', i: number, m?: number[]) {
+    this.net.send({ t: 'tb', a, i, m });
+  }
+
+  get myId() {
+    return this.id;
+  }
+
+  // ---------------- pond ----------------
+  /** Walk to the nearest shore, then release a fish. */
+  releaseFish() {
+    const [sx, sz] = this.world.pond.shore(this.x, this.z);
+    const { pond } = WORLD;
+    const a = Math.atan2(sz - pond.z, sx - pond.x);
+    const bx = pond.x + Math.cos(a) * (pond.r + 1.6);
+    const bz = pond.z + Math.sin(a) * (pond.r + 1.6);
+    if (Math.hypot(this.x - bx, this.z - bz) < 2.5) return this.net.send({ t: 'fish' });
+    this.leaveSeat();
+    this.leaveTable();
+    this.goTo(bx, bz, 'fish');
+  }
+
   standUp() {
     this.leaveSeat();
     this.sendMove();
@@ -416,13 +578,27 @@ export class Game {
     }
   }
 
+  /** Tea house only: pour from the pot, or sip from the cup (short one-shot gestures). */
+  tea(kind: 'pour' | 'drink') {
+    if (!this.seated || SEATS[this.seat]?.area !== 'tea') return;
+    this.teaPose = kind === 'pour' ? Pose.PourTea : Pose.DrinkTea;
+    this.teaUntil = performance.now() + (kind === 'pour' ? 3400 : 2800);
+    if (store.get().soundOn) (kind === 'pour' ? audio.pour() : audio.sip());
+    this.sendMove();
+  }
+
+  get atTea() {
+    return this.seated && SEATS[this.seat]?.area === 'tea';
+  }
+
   get pose(): Pose {
+    if (performance.now() < this.teaUntil && this.seated) return this.teaPose;
     const inc = store.get().inc;
     if (inc.cur === this.id && inc.ph === 1) return Pose.Offer;
     if (this.speed > 0.3) return Pose.Idle;
     if (performance.now() < this.greetUntil) return Pose.Greet;
     if (this.activity !== null) return this.activity;
-    return this.seated ? Pose.Sit : Pose.Idle;
+    return this.seated || this.atTable ? Pose.Sit : Pose.Idle;
   }
 
   private sendMove(force = false) {
@@ -456,8 +632,10 @@ export class Game {
   }
 
   private moveTo(x: number, z: number) {
+    if (this.arriving) return;
     if (store.get().inc.cur === this.id) this.cancelIncense();
     this.leaveSeat();
+    this.leaveTable();
     if (this.activity === Pose.Bow || this.activity === Pose.Dance) this.activity = null;
     this.goTo(x, z);
   }
@@ -558,10 +736,11 @@ export class Game {
   }
 
   private zoom(f: number) {
-    this.tDist = Math.min(22, Math.max(2.6, this.tDist * f));
+    this.tDist = Math.min(30, Math.max(2.6, this.tDist * f));
   }
 
   private click(cx: number, cy: number) {
+    if (this.arriving) return;
     const rect = this.renderer.domElement.getBoundingClientRect();
     const ndc = new THREE.Vector2(((cx - rect.left) / rect.width) * 2 - 1, -((cy - rect.top) / rect.height) * 2 + 1);
     this.ray.setFromCamera(ndc, this.camera);
@@ -573,9 +752,11 @@ export class Game {
       if (kind === 'censer') return this.offerIncense();
       if (kind === 'donation') return store.set({ panel: 'donate' });
       if (kind === 'dj') return store.set({ panel: 'dj' });
+      if (kind === 'table') return store.set({ panel: 'game', gameTable: hit.object.userData.table as number });
+      if (kind === 'pond') return this.releaseFish();
       if (kind === 'bell' || kind === 'drum') return this.net.send({ t: 'ring', k: kind === 'bell' ? Instrument.Bell : Instrument.Drum });
-      const off = hit.object.userData.seatOffset as number | undefined;
-      if (off !== undefined && hit.instanceId !== undefined) return this.requestSeat(off + hit.instanceId);
+      const idx = hit.object.userData.seatIdx as number[] | undefined;
+      if (idx && hit.instanceId !== undefined) return this.requestSeat(idx[hit.instanceId]);
     }
     if (!ground) return;
     const [x, z] = this.world.resolve(ground.x, ground.z);
@@ -588,8 +769,16 @@ export class Game {
     const h = this.host.clientHeight;
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / Math.max(1, h);
-    this.camera.fov = w < h ? 62 : 55;
+    const portrait = w < h;
+    // phones in portrait: wider lens, camera further back and a bit higher so you
+    // still see the halls around you instead of just your own back
+    this.camera.fov = portrait ? 68 : 55;
     this.camera.updateProjectionMatrix();
+    if (portrait !== this.portrait) {
+      this.portrait = portrait;
+      this.tDist = portrait ? 12 : 9;
+      this.tPitch = portrait ? 0.5 : 0.42;
+    }
   }
 
   private frame() {
@@ -598,28 +787,39 @@ export class Game {
     if (this.low && t0 - this.lastRender < 30) return;
     this.lastRender = t0;
     const dt = Math.min(0.06, this.clock.getDelta());
-    if (store.get().resting) return;
     this.frameNo++;
     const now = performance.now();
     const sNow = serverNow();
     const dj = store.get().dj;
     const beat = dj ? djBeat(dj, sNow) : 0;
     this.updateSelf(dt);
-    this.self.root.position.set(this.x, damp(this.self.root.position.y, this.world.groundHeight(this.x, this.z), 12, dt), this.z);
-    this.self.root.rotation.y = this.r;
-    this.self.animate(dt, this.pose, this.speed, this.seated, beat);
+    const selfLift = this.seated && this.seat >= 0 ? seatTop(this.seat) : this.atTable ? STOOL_TOP : 0;
+    if (!this.arriving) {
+      // (while riding, the cart carries the avatar)
+      this.self.root.position.set(this.x, damp(this.self.root.position.y, this.world.groundHeight(this.x, this.z) + selfLift, 12, dt), this.z);
+      this.self.root.rotation.y = this.r;
+    }
+    this.self.animate(dt, this.arriving ? Pose.Sit : this.pose, this.arriving ? 0 : this.speed, this.arriving || this.seated || this.atTable, beat);
     this.self.updateOverlay(now, 0);
 
-    const seatedIds = new Set(this.seatOwner.values());
+    // where each remote visitor sits: cushion / stone / stool height
+    const seatOf = new Map<number, number>();
+    for (const [i, id] of this.seatOwner) seatOf.set(id, seatTop(i));
+    for (const tb of store.get().tables) for (const id of tb.p) if (id !== null) seatOf.set(id, STOOL_TOP);
     const cam = this.camera.position;
     for (const rp of this.remotes.values()) {
       const { x, z, r } = rp.update(now, dt);
       const root = rp.avatar.root;
-      root.position.set(x, damp(root.position.y, this.world.groundHeight(x, z), 12, dt), z);
+      if (rp.riding) {
+        rp.avatar.animate(dt, Pose.Sit, 0, true, beat);
+        continue;
+      }
+      const lift = rp.speed < 0.2 ? seatOf.get(rp.id) ?? 0 : 0;
+      root.position.set(x, damp(root.position.y, this.world.groundHeight(x, z) + lift, 12, dt), z);
       root.rotation.y = r;
       const d = Math.hypot(cam.x - x, cam.z - z);
       // far-away visitors are tiny on screen: animate them every other frame
-      if (d < 45 || (this.frameNo + rp.id) % 2 === 0) rp.avatar.animate(d < 45 ? dt : dt * 2, rp.pose, rp.speed, rp.pose === Pose.Sit || seatedIds.has(rp.id), beat);
+      if (d < 45 || (this.frameNo + rp.id) % 2 === 0) rp.avatar.animate(d < 45 ? dt : dt * 2, rp.pose, rp.speed, rp.pose === Pose.Sit || (lift > 0 && rp.speed < 0.2), beat);
       rp.avatar.updateOverlay(now, d);
     }
     this.world.dj.animate(dt, Pose.Dance, 0, false, beat);
@@ -631,9 +831,13 @@ export class Game {
     this.pitch = damp(this.pitch, this.tPitch, 14, dt);
     this.dist = damp(this.dist, this.tDist, 10, dt);
     const gy = this.self.root.position.y;
-    this.camTarget.x = damp(this.camTarget.x, this.x, 7, dt);
-    this.camTarget.y = damp(this.camTarget.y, gy + 1.3, 7, dt);
-    this.camTarget.z = damp(this.camTarget.z, this.z, 7, dt);
+    // during my shuttle ride the camera follows the cart
+    const cart = this.arriving ? this.world.shuttle.latest() : null;
+    const fx = cart ? cart.x : this.x;
+    const fz = cart ? cart.z : this.z;
+    this.camTarget.x = damp(this.camTarget.x, fx, cart ? 4 : 7, dt);
+    this.camTarget.y = damp(this.camTarget.y, (cart ? 0 : gy) + 1.3, 7, dt);
+    this.camTarget.z = damp(this.camTarget.z, fz, cart ? 4 : 7, dt);
     const cp = Math.cos(this.pitch);
     this.camera.position.set(
       this.camTarget.x + Math.sin(this.yaw) * cp * this.dist,
@@ -652,14 +856,15 @@ export class Game {
     let wx = 0;
     let wz = 0;
     let maxSpeed = SPEED;
-    const k = this.keys;
+    const k = this.arriving ? new Set<string>() : this.keys;
     const fwd = (k.has('KeyW') || k.has('ArrowUp') ? 1 : 0) - (k.has('KeyS') || k.has('ArrowDown') ? 1 : 0);
     const side = (k.has('KeyD') || k.has('ArrowRight') ? 1 : 0) - (k.has('KeyA') || k.has('ArrowLeft') ? 1 : 0);
     if (fwd || side) {
-      if (this.path.length || this.seated || this.activity === Pose.Bow || this.activity === Pose.Dance) {
+      if (this.path.length || this.seated || this.atTable || this.activity === Pose.Bow || this.activity === Pose.Dance) {
         if (this.then === 'censer') this.cancelIncense();
         this.stop();
         this.leaveSeat();
+        this.leaveTable();
         if (this.activity === Pose.Bow || this.activity === Pose.Dance) this.activity = null;
       }
       const fx = -Math.sin(this.yaw);
@@ -690,11 +895,12 @@ export class Game {
     if (!wx && !wz && Math.hypot(this.vx, this.vz) < 0.05) this.vx = this.vz = 0;
     const step = Math.hypot(this.vx, this.vz) * dt;
     if (step > 0) {
-      const nx0 = this.x + this.vx * dt;
-      const nz0 = this.z + this.vz * dt;
       const direct = this.then !== null && this.path.length === 1;
-      const [nx, nz] = direct ? [nx0, nz0] : this.world.resolve(nx0, nz0);
+      const [nx, nz] = this.steer(this.vx * dt, this.vz * dt, direct);
       const moved = Math.hypot(nx - this.x, nz - this.z);
+      if (moved < 1e-4 && !this.path.length) {
+        this.vx = this.vz = 0;
+      }
       this.stuck = this.path.length && moved < step * 0.2 ? this.stuck + dt : 0;
       if (this.stuck > 0.6) {
         // something in the way — re-plan to the same goal
@@ -703,18 +909,104 @@ export class Game {
         if (goal) this.goTo(goal.x, goal.z, this.then);
       }
       this.speed = moved / dt;
-      this.x = nx;
-      this.z = nz;
-      if (wx || wz) {
-        let dr = Math.atan2(wx, wz) - this.r;
+      if ((wx || wz) && moved > 1e-3) {
+        // face where we actually go (looks natural while side-stepping)
+        let dr = Math.atan2(nx - this.x, nz - this.z) - this.r;
         dr = Math.atan2(Math.sin(dr), Math.cos(dr));
         this.r += dr * (1 - Math.exp(-10 * dt));
       }
+      this.x = nx;
+      this.z = nz;
     } else this.speed = damp(this.speed, 0, 12, dt);
+    // standing still on top of someone (e.g. both arrived at once)? drift apart gently
+    if (this.speed < 0.05 && !this.seated && !this.atTable && !this.path.length && !this.arriving) {
+      const [ax, az] = this.avoidPeople(this.x, this.z, 0.6 * dt * 4);
+      if (ax !== this.x || az !== this.z) {
+        const [rx, rz] = this.world.resolve(ax, az);
+        const h0 = terrainHeight(this.x, this.z);
+        const h1 = terrainHeight(rx, rz);
+        if (!Number.isNaN(h1) && Math.abs(h1 - h0) <= STEP_MAX) {
+          this.x = rx;
+          this.z = rz;
+        }
+      }
+    }
     if (this.speed > 0.05 || this.pose !== store.get().pose) {
       store.set({ pose: this.pose });
       this.sendMove();
     }
+  }
+
+  /**
+   * Local obstacle avoidance. Try the wanted step; if a wall, tree, person, cart, water or a
+   * too-high ledge blocks most of it, fan out to the sides and take the first direction that
+   * still makes progress — so you walk AROUND things instead of grinding against them.
+   */
+  private steer(sx: number, sz: number, direct: boolean): [number, number] {
+    const len = Math.hypot(sx, sz);
+    if (len < 1e-6) return [this.x, this.z];
+    const h0 = terrainHeight(this.x, this.z);
+    const okH = (x: number, z: number) => {
+      const h = terrainHeight(x, z);
+      return !Number.isNaN(h) && (Number.isNaN(h0) || Math.abs(h - h0) <= STEP_MAX);
+    };
+    let best: [number, number] | null = null;
+    let bestAlong = 0;
+    for (const a of [0, 0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) {
+      const c = Math.cos(a);
+      const sn = Math.sin(a);
+      const ax = sx * c - sz * sn;
+      const az = sx * sn + sz * c;
+      let [nx, nz] = direct ? [this.x + ax, this.z + az] : this.world.resolve(this.x + ax, this.z + az);
+      if (!direct) [nx, nz] = this.avoidPeople(nx, nz);
+      if (!okH(nx, nz)) continue;
+      const along = ((nx - this.x) * sx + (nz - this.z) * sz) / len;
+      if (along >= len * (a === 0 ? 0.6 : 0.3)) return [nx, nz];
+      if (along > bestAlong) {
+        bestAlong = along;
+        best = [nx, nz];
+      }
+    }
+    return best ?? [this.x, this.z];
+  }
+
+  /**
+   * People never overlap: push the point out of other visitors' personal space (0.7 m)
+   * and add a small sideways bias so we walk around them instead of stopping dead.
+   */
+  private avoidPeople(x: number, z: number, maxPush = Infinity): [number, number] {
+    const R = 0.7;
+    let px = 0;
+    let pz = 0;
+    for (const rp of this.remotes.values()) {
+      if (rp.riding) continue;
+      const dx = x - rp.x;
+      const dz = z - rp.z;
+      const d2 = dx * dx + dz * dz;
+      if (d2 >= R * R) continue;
+      const d = Math.sqrt(d2) || 0.001;
+      const push = R - d;
+      // normal push + tangential slide (always to the right of my heading) to get past
+      const nx = dx / d;
+      const nz = dz / d;
+      px += nx * push + -nz * push * 0.6;
+      pz += nz * push + nx * push * 0.6;
+    }
+    for (const c of this.world.shuttle.carts()) {
+      const dx = x - c.x;
+      const dz = z - c.z;
+      const d = Math.hypot(dx, dz);
+      if (d < 2.4 && d > 1e-3) {
+        px += (dx / d) * (2.4 - d);
+        pz += (dz / d) * (2.4 - d);
+      }
+    }
+    const len = Math.hypot(px, pz);
+    if (len > maxPush) {
+      px *= maxPush / len;
+      pz *= maxPush / len;
+    }
+    return [x + px, z + pz];
   }
 
   private arrive() {
@@ -732,6 +1024,17 @@ export class Game {
       this.x = WORLD.censerStand.x;
       this.z = WORLD.censerStand.z;
       this.r = Math.PI;
+    } else if (then === 'table' && this.table >= 0) {
+      const st = tableSeat(TABLES[this.table], this.tableSide);
+      this.x = st.x;
+      this.z = st.z;
+      this.r = st.r;
+      this.atTable = true;
+      this.activity = null;
+    } else if (then === 'fish') {
+      const { pond } = WORLD;
+      this.r = Math.atan2(pond.x - this.x, pond.z - this.z);
+      this.net.send({ t: 'fish' });
     }
     this.vx = this.vz = 0;
     this.sendMove();
@@ -775,7 +1078,7 @@ export class Game {
 
   private zone(): Zone {
     const { x, z } = this;
-    for (const h of HALLS) {
+    for (const h of [...HALLS, ...PAVILIONS]) {
       const r = hallRect(h);
       if (x > r.x0 && x < r.x1 && z > r.z0 && z < r.z1) return h.id;
     }
@@ -784,13 +1087,13 @@ export class Game {
     if (near(WORLD.bellTower, 5)) return 'bell';
     if (near(WORLD.drumTower, 5)) return 'drum';
     if (near(WORLD.pond, WORLD.pond.r + 5)) return 'pond';
-    if (near(WORLD.stupa, 9)) return 'stupa';
+    if (near(STUPA, STUPA.lowerR + 3) || (Math.abs(x - STUPA.x) < 3 && z < STUPA.z && z > STUPA.z - STUPA.lowerR - STUPA.stairLen)) return 'stupa';
     if (near(WORLD.bodhi, 10)) return 'bodhi';
     if (near(WORLD.gate, 8)) return 'gate';
     const g = gardenRect();
     if (x > g.x0 && x < g.x1 && z > g.z0 && z < g.z1) return 'garden';
     if (near(WORLD.courtyard, WORLD.courtyard.r + 1)) return 'courtyard';
-    if (Math.abs(x) < 4 && z > 14 && z < 62) return 'path';
+    if (Math.abs(x) < 5 && z > -4 && z < WORLD.gate.z) return 'path';
     return 'forest';
   }
 
@@ -854,3 +1157,8 @@ export function webglAvailable() {
 }
 
 export type JoinHint = { x: number; z: number; a: number; n: number; c: number };
+
+/** Height of the top of seat i (cushion or Bodhi stone) so avatars sit on it, not in it. */
+function seatTop(i: number) {
+  return SEATS[i]?.area === 'bodhi' ? STONE_TOP : CUSHION_TOP;
+}

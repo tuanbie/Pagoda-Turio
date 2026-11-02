@@ -102,7 +102,7 @@ export function SettingsPanel() {
 
       <h3>{t('settings.quality')}</h3>
       <div className="seg">
-        {(['auto', 'high', 'low'] as Quality[]).map((q) => (
+        {(['auto', 'high', 'medium', 'low'] as Quality[]).map((q) => (
           <button
             key={q}
             className={s.quality === q ? 'active' : ''}
@@ -111,11 +111,14 @@ export function SettingsPanel() {
               runtime.rebuildGame?.();
             }}
           >
-            {t(q === 'auto' ? 'settings.qAuto' : q === 'high' ? 'settings.qHigh' : 'settings.qLow')}
+            {t(q === 'auto' ? 'settings.qAuto' : q === 'high' ? 'settings.qHigh' : q === 'medium' ? 'settings.qMedium' : 'settings.qLow')}
           </button>
         ))}
       </div>
 
+      <button className="link-btn" onClick={() => store.set({ panel: 'feedback' })}>
+        💬 {t('feedback.open')}
+      </button>
       <details>
         <summary>{t('settings.controls')}</summary>
         <p className="pre">{t('settings.controlsText')}</p>
@@ -211,34 +214,45 @@ export function DonatePanel() {
   return (
     <Modal title={t('donate.title')} onClose={closePanel} closeLabel={t('donate.close')}>
       <p>{t('donate.text')}</p>
-      <div className="row-card">
-        <div>
-          <strong>{d.accountNumber}</strong>
-          <small>
-            {d.bank} · {d.accountName}
-          </small>
+      {d.qr && (
+        <figure className="donate-qr">
+          <img src={d.qr} alt={t('donate.qrAlt')} width={337} height={371} loading="lazy" />
+          <figcaption>{t('donate.scan')}</figcaption>
+        </figure>
+      )}
+      <p className="donate-note">🙏 {t('donate.note')}</p>
+      <button className="link-btn" onClick={() => store.set({ panel: 'feedback' })}>
+        💬 {t('feedback.open')}
+      </button>
+      {d.accountNumber && (
+        <div className="row-card">
+          <div>
+            <strong>{d.accountNumber}</strong>
+            <small>
+              {d.bank} · {d.accountName}
+            </small>
+          </div>
+          <button
+            className="toggle"
+            onClick={() =>
+              navigator.clipboard
+                .writeText(d.accountNumber.replace(/\s/g, ''))
+                .then(() => {
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 1800);
+                })
+                .catch(() => {})
+            }
+          >
+            {copied ? t('donate.copied') : t('donate.copy')}
+          </button>
         </div>
-        <button
-          className="toggle"
-          onClick={() =>
-            navigator.clipboard
-              .writeText(d.accountNumber.replace(/\s/g, ''))
-              .then(() => {
-                setCopied(true);
-                setTimeout(() => setCopied(false), 1800);
-              })
-              .catch(() => {})
-          }
-        >
-          {copied ? t('donate.copied') : t('donate.copy')}
-        </button>
-      </div>
+      )}
       {d.links.map((l) => (
         <a key={l.url} className="link-btn" href={l.url} target="_blank" rel="noreferrer">
           {l.label}
         </a>
       ))}
-      {d.demo && <p className="muted small">{t('donate.demo')}</p>}
     </Modal>
   );
 }

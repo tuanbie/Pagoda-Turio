@@ -235,6 +235,68 @@ export class AudioEngine {
     this.noiseBurst('effects', t + 0.045, 2600, 8, 0.03, 0.35);
   }
 
+  /** gentle "plop" when a fish slips into the water — soft, low and short */
+  splash() {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime;
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 1400;
+    const g = ctx.createGain();
+    g.gain.value = 0.35;
+    lp.connect(g).connect(this.buses.effects);
+    const src = ctx.createBufferSource();
+    src.buffer = this.noise;
+    const env = ctx.createGain();
+    env.gain.setValueAtTime(0.0001, t);
+    env.gain.linearRampToValueAtTime(0.08, t + 0.03);
+    env.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    src.connect(env).connect(lp);
+    src.start(t, Math.random(), 0.5);
+    // one soft bubble
+    const o = ctx.createOscillator();
+    const og = ctx.createGain();
+    o.frequency.setValueAtTime(380, t + 0.08);
+    o.frequency.exponentialRampToValueAtTime(720, t + 0.16);
+    og.gain.setValueAtTime(0.0001, t + 0.08);
+    og.gain.linearRampToValueAtTime(0.025, t + 0.1);
+    og.gain.exponentialRampToValueAtTime(0.0001, t + 0.2);
+    o.connect(og).connect(lp);
+    o.start(t + 0.08);
+    o.stop(t + 0.22);
+  }
+
+  /** tea pouring: a thin trickle (band-passed noise) rising in pitch as the cup fills */
+  pour() {
+    if (!this.ctx) return;
+    const ctx = this.ctx;
+    const t = ctx.currentTime + 0.6;
+    const src = ctx.createBufferSource();
+    src.buffer = this.noise;
+    src.loop = true;
+    const bp = ctx.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.Q.value = 3;
+    bp.frequency.setValueAtTime(900, t);
+    bp.frequency.linearRampToValueAtTime(1700, t + 1.9);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.linearRampToValueAtTime(0.09, t + 0.15);
+    g.gain.setValueAtTime(0.09, t + 1.7);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 2.1);
+    src.connect(bp).connect(g).connect(this.buses.effects);
+    src.start(t);
+    src.stop(t + 2.2);
+  }
+
+  /** a quiet sip */
+  sip() {
+    if (!this.ctx) return;
+    const t = this.ctx.currentTime;
+    for (const d of [0.7, 1.5]) this.noiseBurst('effects', t + d, 3000, 2, 0.18, 0.04);
+  }
+
   /** soft notification for chat */
   ping() {
     if (!this.ctx) return;

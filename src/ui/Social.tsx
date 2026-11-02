@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { HALLS, MAX_CHAT_CHARS, SEAT_REQUEST_MS, SONGS, WORLD, songDurationMs } from '@sontu/shared';
+import { HALLS, MAX_CHAT_CHARS, PAVILIONS, SEAT_REQUEST_MS, SONGS, STUPA, WORLD, songDurationMs } from '@sontu/shared';
 import { serverNow, store, toast, useStore } from '../store.ts';
 import { visitorName } from '../i18n/index.ts';
 import { runtime } from '../runtime.ts';
 import { PATHS, MAP_EXTENT, gardenRect } from '../game/layout.ts';
+import { BRIDGE } from '../game/terrain.ts';
 import { Icon, Modal, closePanel, useT } from './common.tsx';
 
 // ---------------------------------------------------------------- chat
@@ -14,6 +15,9 @@ export function ChatPanel() {
   const unread = useStore((s) => s.unread);
   const me = useStore((s) => s.selfId);
   const locale = useStore((s) => s.locale);
+  const zone = useStore((s) => s.zone);
+  const roomOnly = useStore((s) => s.chatRoom);
+  const inTalk = zone === 'talk';
   const [text, setText] = useState('');
   const list = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -38,7 +42,7 @@ export function ChatPanel() {
   const send = () => {
     const m = text.trim();
     if (!m) return;
-    runtime.net?.send({ t: 'chat', m });
+    runtime.net?.send({ t: 'chat', m, ch: inTalk && roomOnly ? 1 : 0 });
     setText('');
   };
 
@@ -54,6 +58,11 @@ export function ChatPanel() {
     <section className="chat" aria-label={t('chat.title')}>
       <header>
         <strong>{t('chat.title')}</strong>
+        {inTalk && (
+          <button className={`room-pill ${roomOnly ? 'on' : ''}`} onClick={() => store.set({ chatRoom: !roomOnly })} aria-pressed={roomOnly}>
+            🗣 {t('chat.room')}
+          </button>
+        )}
         <button className="icon-btn sm" onClick={() => store.set({ chatOpen: false })} aria-label={t('chat.close')}>
           <Icon name="minus" size={16} />
         </button>
@@ -61,7 +70,8 @@ export function ChatPanel() {
       <div className="chat-lines" ref={list} aria-live="polite">
         {lines.length === 0 && <p className="muted small">{t('chat.empty')}</p>}
         {lines.map((l) => (
-          <p key={l.key} className={l.id === me ? 'mine' : ''}>
+          <p key={l.key} className={`${l.id === me ? 'mine' : ''} ${l.ch === 1 ? 'room' : ''}`}>
+            {l.ch === 1 && <i className="tag">{t('chat.roomTag')}</i>}
             <b>{l.id === me ? t('visitors.you') : l.name || visitorName(locale, l.adj, l.noun)}</b>
             <span>{l.text}</span>
           </p>
@@ -262,7 +272,22 @@ function drawBase(size: number) {
   };
   circle(WORLD.pond, WORLD.pond.r, '#4d7f86');
   circle(WORLD.moonYard, WORLD.moonYard.r, '#59607a');
-  circle(WORLD.stupa, 4.2, '#efe6d4');
+  circle(STUPA, STUPA.lowerR, '#efe6d4');
+  circle(STUPA, STUPA.upperR, '#cfa968');
+  g.fillStyle = '#b9b09c';
+  g.fillRect(P(STUPA.x - STUPA.stairW / 2), P(STUPA.z - STUPA.lowerR - STUPA.stairLen), STUPA.stairW * k, STUPA.stairLen * k);
+  // bridge across the pond
+  g.fillStyle = '#a07a52';
+  g.fillRect(P(BRIDGE.x0), P(BRIDGE.z - BRIDGE.w / 2), (BRIDGE.x1 - BRIDGE.x0) * k, Math.max(2, BRIDGE.w * k));
+  // pavilions: tea (green), talk (blue), games (gold)
+  const pavColor = { tea: '#5f8f5a', talk: '#5a76a8', games: '#c9a35a' } as const;
+  for (const p of PAVILIONS) {
+    g.fillStyle = pavColor[p.id];
+    g.fillRect(P(p.x - p.w / 2), P(p.z - p.d / 2), p.w * k, p.d * k);
+  }
+  // road to the shuttle stop
+  g.fillStyle = '#55554f';
+  g.fillRect(P(-3.2), P(WORLD.gate.z + 2), 6.4 * k, (MAP_EXTENT - WORLD.gate.z) * k);
   circle(WORLD.bodhi, 6, '#3f6a37');
   circle(WORLD.censer, 1.6, '#d4a548');
   for (const tw of [WORLD.bellTower, WORLD.drumTower]) {

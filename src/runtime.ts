@@ -27,4 +27,4 @@ export const runtime = {
 };
 
 // handy for support/debugging from the browser console
-(window as unknown as { sontu: typeof runtime }).sontu = runtime;
+(window as unknown as { sontu: typeof runtime & { store: typeof store } }).sontu = Object.assign(runtime, { store });

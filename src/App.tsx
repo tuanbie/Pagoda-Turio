@@ -12,6 +12,8 @@ import { DonatePanel, LanguageSelect, ServersPanel, SettingsPanel, VisitorsPanel
 import { BeadsOverlay } from './ui/Beads.tsx';
 import { MoktakOverlay } from './ui/Moktak.tsx';
 import { ChatPanel, DjPanel, Minimap, SeatDialogs } from './ui/Social.tsx';
+import { GamePanel } from './ui/GamePanel.tsx';
+import { FeedbackPanel } from './ui/Feedback.tsx';
 
 export function App() {
   const phase = useStore((s) => s.phase);
@@ -43,7 +45,12 @@ export function App() {
         if (m.t === 'hi') toast(tt('net.connected', { n: m.room.num }));
         if (m.t === 'bye') toast(tt('net.restart'));
       },
-      onStatus: (s) => store.set({ net: s }),
+      onStatus: (s) => {
+        // only a real disconnect (after having been online) asks the visitor to reconnect
+        if (s === 'online') store.set({ net: s, lost: false });
+        else if (s === 'reconnecting') store.set({ net: s, lost: true });
+        else store.set({ net: s });
+      },
       hint: () => runtime.game?.joinHint() ?? null,
     });
     runtime.net = net;
@@ -58,10 +65,8 @@ export function App() {
       runtime.game?.dispose();
       runtime.game = new Game(host.current!, runtime.net!);
     };
-    runtime.rebuildGame = () => {
-      build();
-      void runtime.net?.connect();
-    };
+    // graphics change: rebuild only the scene, the visitor keeps their place
+    runtime.rebuildGame = () => runtime.game?.setQuality();
     try {
       build();
     } catch {
@@ -92,13 +97,20 @@ export function App() {
       {phase === 'error' && <ErrorScreen />}
       {phase === 'left' && <LeaveScreen onAgain={() => store.set({ phase: 'welcome' })} />}
       {phase === 'in' && <InGame onLeave={leave} />}
+      <FeedbackHost />
     </>
   );
 }
 
+/** the feedback form works everywhere: welcome screen, in the temple, after leaving */
+function FeedbackHost() {
+  const panel = useStore((s) => s.panel);
+  return panel === 'feedback' ? <FeedbackPanel /> : null;
+}
+
 function InGame({ onLeave }: { onLeave: () => void }) {
   const panel = useStore((s) => s.panel);
-  const resting = useStore((s) => s.resting);
+  const lost = useStore((s) => s.lost);
   return (
     <div className="hud">
       <TopBar onLeave={onLeave} />
@@ -118,7 +130,8 @@ function InGame({ onLeave }: { onLeave: () => void }) {
       {panel === 'beads' && <BeadsOverlay />}
       {panel === 'moktak' && <MoktakOverlay />}
       {panel === 'dj' && <DjPanel />}
-      {resting && <RestOverlay />}
+      {panel === 'game' && <GamePanel />}
+      {lost && <LostOverlay />}
     </div>
   );
 }
@@ -172,6 +185,9 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
           {t('welcome.enter')}
         </button>
         <p className="muted small">{t('welcome.soundHint')}</p>
+        <button className="text-btn small-link" onClick={() => store.set({ panel: 'feedback' })}>
+          💬 {t('feedback.open')}
+        </button>
         {online > 0 && <p className="online">{t('welcome.online', { n: online })}</p>}
       </div>
     </main>
@@ -207,19 +223,18 @@ function LeaveScreen({ onAgain }: { onAgain: () => void }) {
   );
 }
 
-function RestOverlay() {
+/** Shown only when the connection really drops (switching tabs keeps you inside). */
+function LostOverlay() {
   const t = useT();
+  const net = useStore((s) => s.net);
   return (
-    <div className="rest">
-      <p>{t('rest.title')}</p>
-      <button
-        className="primary"
-        onClick={() => {
-          store.set({ resting: false });
-          void audio.resume();
-        }}
-      >
-        {t('rest.continue')}
+    <div className="rest" role="alertdialog" aria-label={t('net.lost')}>
+      <p>{t('net.lost')}</p>
+      <p className="muted small" style={{ maxWidth: 360, fontSize: 14 }}>
+        {t('net.lostText')}
+      </p>
+      <button className="primary" disabled={net === 'connecting'} onClick={() => void runtime.net?.connect()}>
+        {t('net.reconnect')}
       </button>
     </div>
   );
@@ -304,15 +319,17 @@ function useHotkeys(enabled: boolean) {
   }, [enabled]);
 }
 
-/** Tab hidden → "resting" overlay; audio pauses unless background play is on. */
+/**
+ * Switching tabs keeps you in the temple (the socket stays open; the browser just stops
+ * drawing frames). Sound pauses in the background unless "background play" is on.
+ */
 function useVisibility(enabled: boolean) {
   useEffect(() => {
     if (!enabled) return;
     const onVis = () => {
       if (document.hidden) {
-        store.set({ resting: true });
         if (!store.get().backgroundPlay) void audio.suspend();
-      }
+      } else void audio.resume();
     };
     document.addEventListener('visibilitychange', onVis);
     return () => document.removeEventListener('visibilitychange', onVis);

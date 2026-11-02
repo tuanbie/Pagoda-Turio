@@ -148,6 +148,35 @@ export const textures = {
       false,
     ),
 
+  /** Two-line board: Vietnamese name on top, Hán characters below. */
+  signBilingual(vi: string, han: string, w = 768, h = 260) {
+    const c = document.createElement('canvas');
+    c.width = w;
+    c.height = h;
+    const g = c.getContext('2d')!;
+    g.fillStyle = '#2a2420';
+    g.fillRect(0, 0, w, h);
+    g.strokeStyle = '#e2c27a';
+    g.lineWidth = 10;
+    g.strokeRect(14, 14, w - 28, h - 28);
+    g.lineWidth = 3;
+    g.strokeRect(28, 28, w - 56, h - 56);
+    g.fillStyle = '#e8c77e';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    let size = 104;
+    do g.font = `700 ${size}px "Be Vietnam Pro", serif`;
+    while (g.measureText(vi).width > w - 90 && (size -= 4) > 30);
+    g.fillText(vi, w / 2, h * 0.42);
+    g.font = '600 52px "Noto Serif TC", serif';
+    g.fillStyle = '#cfa968';
+    g.fillText(han, w / 2, h * 0.76);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    return tex;
+  },
+
   sign(text: string, fg = '#e2c27a', bg = '#2a2420', w = 512, h = 160, font = 'bold 104px "Noto Serif TC", serif') {
     const c = document.createElement('canvas');
     c.width = w;

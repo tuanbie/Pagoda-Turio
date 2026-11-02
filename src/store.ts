@@ -1,10 +1,10 @@
 import { useSyncExternalStore } from 'react';
-import type { DjState, IncenseState, Pose } from '@sontu/shared';
+import type { DjState, IncenseState, Pose, TableSnap } from '@sontu/shared';
 import type { Locale } from './i18n/index.ts';
 
-export type Panel = null | 'settings' | 'servers' | 'visitors' | 'donate' | 'beads' | 'moktak' | 'dj';
-export type Zone = 'main' | 'west' | 'east' | 'courtyard' | 'bell' | 'drum' | 'garden' | 'pond' | 'stupa' | 'bodhi' | 'moon' | 'gate' | 'path' | 'forest';
-export type Quality = 'auto' | 'high' | 'low';
+export type Panel = null | 'settings' | 'servers' | 'visitors' | 'donate' | 'beads' | 'moktak' | 'dj' | 'game' | 'feedback';
+export type Zone = 'main' | 'west' | 'east' | 'jizo' | 'maitreya' | 'tea' | 'talk' | 'games' | 'courtyard' | 'bell' | 'drum' | 'garden' | 'pond' | 'stupa' | 'bodhi' | 'moon' | 'gate' | 'path' | 'forest';
+export type Quality = 'auto' | 'high' | 'medium' | 'low';
 
 export interface Visitor {
   id: number;
@@ -18,6 +18,8 @@ export interface AppState {
   locale: Locale;
   phase: 'boot' | 'welcome' | 'in' | 'left' | 'error';
   net: 'idle' | 'connecting' | 'online' | 'reconnecting' | 'full';
+  /** the connection dropped: show the reconnect prompt */
+  lost: boolean;
   room: { id: string; num: number; cap: number } | null;
   selfId: number;
   visitors: Visitor[];
@@ -51,6 +53,13 @@ export interface AppState {
   /** someone asks for my cushion */
   seatIncoming: { i: number; from: number; at: number } | null;
   dj: DjState | null;
+  tables: TableSnap[];
+  /** game table whose board is open */
+  gameTable: number | null;
+  /** the shuttle is bringing me to the gate */
+  arriving: boolean;
+  /** inside the discussion hall: speak only to the room */
+  chatRoom: boolean;
 }
 
 export interface ChatLine {
@@ -61,6 +70,8 @@ export interface ChatLine {
   noun: number;
   text: string;
   at: number;
+  /** 0 = whole room, 1 = discussion hall only */
+  ch: number;
 }
 
 const ls = {
@@ -143,6 +154,11 @@ export const store = new Store({
   seatAsk: null,
   seatIncoming: null,
   dj: null,
+  tables: [],
+  gameTable: null,
+  arriving: false,
+  chatRoom: true,
+  lost: false,
 });
 
 export function toast(text: string) {

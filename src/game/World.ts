@@ -1,11 +1,14 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { HALLS, INCENSE_BURN_MS, INCENSE_SLOTS, SEATS, WORLD, type HallDef } from '@sontu/shared';
+import { HALLS, INCENSE_BURN_MS, INCENSE_SLOTS, SEATS, STUPA, WORLD, incenseSpot, type HallDef } from '@sontu/shared';
 import { Avatar } from './Avatar.ts';
 import { textures } from './textures.ts';
-import { PATHS, gardenRect, hallRect } from './layout.ts';
+import { BUILDINGS, PATHS, gardenRect, hallRect } from './layout.ts';
+import { groundY } from './terrain.ts';
+import { seatedBuddha, standingBodhisattva, type StatueMats } from './statues.ts';
+import { GameTables, Pond, Shuttle, buildPavilions, buildStupa, CUSHION_TOP, STONE_TOP } from './places.ts';
 
-function rng(seed: number) {
+export function rng(seed: number) {
   return () => {
     seed = (seed * 1664525 + 1013904223) >>> 0;
     return seed / 4294967296;
@@ -19,6 +22,8 @@ export interface WorldOptions {
   low: boolean;
   shadows: boolean;
   shadowSize: number;
+  /** 0..1 amount of vegetation / props */
+  density: number;
 }
 
 const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -26,11 +31,11 @@ const tmpM = new THREE.Matrix4();
 const tmpQ = new THREE.Quaternion();
 const tmpE = new THREE.Euler();
 const tmpS = new THREE.Vector3();
-function mat(x: number, y: number, z: number, ry = 0, sx = 1, sy = 1, sz = 1, rx = 0, rz = 0) {
+export function mat(x: number, y: number, z: number, ry = 0, sx = 1, sy = 1, sz = 1, rx = 0, rz = 0) {
   return tmpM.clone().compose(V(x, y, z), tmpQ.setFromEuler(tmpE.set(rx, ry, rz)), tmpS.set(sx, sy, sz));
 }
 
-function scaleUV(g: THREE.BufferGeometry, su: number, sv: number) {
+export function scaleUV(g: THREE.BufferGeometry, su: number, sv: number) {
   const uv = g.attributes.uv as THREE.BufferAttribute;
   for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * su, uv.getY(i) * sv);
   return g;
@@ -40,7 +45,10 @@ function scaleUV(g: THREE.BufferGeometry, su: number, sv: number) {
  * Collects every static mesh and merges them per material at the end:
  * a whole temple complex renders in a few dozen draw calls instead of thousands.
  */
-class Batch {
+/** world chunk size for static batching (metres) */
+const CHUNK = 40;
+
+export class Batch {
   private groups = new Map<string, { mat: THREE.Material; cast: boolean; geos: THREE.BufferGeometry[] }>();
 
   add(geo: THREE.BufferGeometry, material: THREE.Material, m: THREE.Matrix4, cast = true) {
@@ -49,7 +57,11 @@ class Batch {
     if (!g.attributes.uv) g.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(g.attributes.position.count * 2), 2));
     if (!g.attributes.normal) g.computeVertexNormals();
     g = g.applyMatrix4(m);
-    const key = material.uuid + (cast ? 'c' : '');
+    // group by material AND by 40 m chunk of the world, so frustum culling can skip
+    // everything behind / beside the camera instead of drawing the whole temple every frame
+    const cx = Math.floor(m.elements[12] / CHUNK);
+    const cz = Math.floor(m.elements[14] / CHUNK);
+    const key = `${material.uuid}${cast ? 'c' : ''}:${cx},${cz}`;
     let group = this.groups.get(key);
     if (!group) this.groups.set(key, (group = { mat: material, cast, geos: [] }));
     group.geos.push(g);
@@ -66,7 +78,9 @@ class Batch {
 
   flush(scene: THREE.Scene, receive: boolean) {
     for (const { mat, cast, geos } of this.groups.values()) {
-      const mesh = new THREE.Mesh(mergeGeometries(geos, false), mat);
+      const merged = mergeGeometries(geos, false);
+      merged.computeBoundingSphere();
+      const mesh = new THREE.Mesh(merged, mat);
       mesh.castShadow = cast;
       mesh.receiveShadow = receive;
       mesh.matrixAutoUpdate = false;
@@ -78,7 +92,7 @@ class Batch {
 }
 
 /** Concave hip roof with upturned corners — the classic East-Asian silhouette. */
-function hipRoof(w: number, d: number, h: number, lift: number, nx = 22, nz = 14) {
+export function hipRoof(w: number, d: number, h: number, lift: number, nx = 22, nz = 14) {
   const g = new THREE.PlaneGeometry(w, d, nx, nz);
   g.rotateX(-Math.PI / 2);
   const pos = g.attributes.position as THREE.BufferAttribute;
@@ -105,16 +119,20 @@ export class World {
   readonly bell = new THREE.Group();
   readonly drum = new THREE.Group();
   readonly dj: Avatar;
+  readonly pond: Pond;
+  readonly shuttle: Shuttle;
+  readonly gameTables: GameTables;
   readonly circles: Circle[] = [];
   readonly boxes: Box[] = [];
   readonly sun: THREE.DirectionalLight;
   private hemi: THREE.HemisphereLight;
+  private fill: THREE.AmbientLight;
   private skyMat: THREE.ShaderMaterial;
   private stars: THREE.Points;
   private sunDisc: THREE.Mesh;
   private moonDisc: THREE.Mesh;
-  private glowMats: THREE.MeshStandardMaterial[] = [];
-  private hallLights: THREE.PointLight[] = [];
+  readonly glowMats: THREE.MeshStandardMaterial[] = [];
+  readonly hallLights: THREE.PointLight[] = [];
   private sticks: THREE.InstancedMesh;
   private stickTips: THREE.InstancedMesh;
   private stickLitAt = new Map<number, number>();
@@ -122,15 +140,15 @@ export class World {
   private smokeData: { slot: number; age: number; life: number; vx: number; vz: number }[] = [];
   private seatMarkers: THREE.InstancedMesh;
   private dummy = new THREE.Object3D();
-  private batch = new Batch();
+  readonly batch = new Batch();
   private bellSwing = 0;
   private drumHit = 0;
   night = 0;
-  private m: Record<string, THREE.MeshStandardMaterial>;
+  readonly m: Record<string, THREE.MeshStandardMaterial>;
 
-  constructor(private opt: WorldOptions) {
+  constructor(readonly opt: WorldOptions) {
     const s = this.scene;
-    s.fog = new THREE.FogExp2('#d9dccb', opt.low ? 0.011 : 0.0065);
+    s.fog = new THREE.FogExp2('#d9dccb', opt.low ? 0.008 : 0.0042);
 
     // ---------- materials ----------
     // weak GPUs get Lambert (per-vertex-ish, far cheaper) with the same colours / textures
@@ -197,7 +215,7 @@ export class World {
           gl_FragColor = vec4(c, 1.);
         }`,
     });
-    s.add(new THREE.Mesh(new THREE.SphereGeometry(480, 32, 16), this.skyMat));
+    s.add(new THREE.Mesh(new THREE.SphereGeometry(700, 32, 16), this.skyMat));
     const starGeo = new THREE.BufferGeometry();
     const starCount = opt.low ? 400 : 1200;
     const pos = new Float32Array(starCount * 3);
@@ -216,6 +234,9 @@ export class World {
     // ---------- lights ----------
     this.hemi = new THREE.HemisphereLight('#fff6e0', '#5f6b48', 0.9);
     s.add(this.hemi);
+    // low tier has no IBL / point lights: an ambient fill keeps it bright and readable
+    this.fill = new THREE.AmbientLight('#fff4e4', opt.low ? 0.55 : 0);
+    s.add(this.fill);
     this.sun = new THREE.DirectionalLight('#fff1d6', 2.4);
     if (opt.shadows) {
       this.sun.castShadow = true;
@@ -240,8 +261,10 @@ export class World {
     this.buildWall();
     this.buildStoneLanterns();
     this.buildGarden();
-    this.buildPond();
-    this.buildStupa();
+    this.pond = new Pond(this);
+    buildStupa(this);
+    this.gameTables = buildPavilions(this);
+    this.shuttle = new Shuttle(this);
     this.buildBodhi();
     this.dj = this.buildMoonYard();
     this.buildForest();
@@ -249,23 +272,26 @@ export class World {
     this.batch.flush(s, opt.shadows);
 
     // ---------- seats ----------
-    const hallSeats = SEATS.filter((x) => x.area !== 'bodhi');
-    this.cushions = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.38, 0.42, 0.16, 20), this.m.cushion, hallSeats.length);
-    hallSeats.forEach((p, i) => {
+    const cushionIdx = SEATS.flatMap((x, i) => (x.area !== 'bodhi' ? [i] : []));
+    this.cushions = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.38, 0.42, 0.16, 20), this.m.cushion, cushionIdx.length);
+    cushionIdx.forEach((si, i) => {
+      const p = SEATS[si];
       this.dummy.position.set(p.x, this.groundHeight(p.x, p.z) + 0.08, p.z);
       this.dummy.updateMatrix();
       this.cushions.setMatrixAt(i, this.dummy.matrix);
     });
-    this.cushions.userData.seatOffset = 0;
+    this.cushions.userData.seatIdx = cushionIdx;
     this.cushions.receiveShadow = true;
-    const bodhiSeats = SEATS.filter((x) => x.area === 'bodhi');
-    this.stones = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.5, 0.6, 0.35, 10), this.m.stone, bodhiSeats.length);
-    bodhiSeats.forEach((p, i) => {
+    const stoneIdx = SEATS.flatMap((x, i) => (x.area === 'bodhi' ? [i] : []));
+    this.stones = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.5, 0.6, 0.35, 10), this.m.stone, stoneIdx.length);
+    stoneIdx.forEach((si, i) => {
+      const p = SEATS[si];
+      this.circles.push({ x: p.x, z: p.z, r: 0.4 });
       this.dummy.position.set(p.x, 0.17, p.z);
       this.dummy.updateMatrix();
       this.stones.setMatrixAt(i, this.dummy.matrix);
     });
-    this.stones.userData.seatOffset = hallSeats.length;
+    this.stones.userData.seatIdx = stoneIdx;
     this.stones.castShadow = this.stones.receiveShadow = true;
     s.add(this.cushions, this.stones);
     this.clickables.push(this.cushions, this.stones);
@@ -293,29 +319,37 @@ export class World {
   }
 
   // =================================================================== builders
-  private plane(w: number, d: number, material: THREE.Material, x: number, y: number, z: number, ry = 0, tile = 3) {
+  plane(w: number, d: number, material: THREE.Material, x: number, y: number, z: number, ry = 0, tile = 3) {
     const g = new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2);
     scaleUV(g, w / tile, d / tile);
     this.batch.add(g, material, mat(x, y, z, ry), false);
   }
 
-  private box(w: number, h: number, d: number, material: THREE.Material, x: number, y: number, z: number, ry = 0, cast = true) {
+  box(w: number, h: number, d: number, material: THREE.Material, x: number, y: number, z: number, ry = 0, cast = true) {
     const g = new THREE.BoxGeometry(w, h, d);
     scaleUV(g, Math.max(w, d) / 2, h / 2);
     this.batch.add(g, material, mat(x, y, z, ry), cast);
   }
 
   private buildGround() {
-    const g = new THREE.CircleGeometry(220, 64).rotateX(-Math.PI / 2);
-    scaleUV(g, 70, 70);
+    const g = new THREE.CircleGeometry(420, 72).rotateX(-Math.PI / 2);
+    scaleUV(g, 140, 140);
     this.batch.add(g, this.m.grass, mat(0, 0, 0), false);
     const c = WORLD.courtyard;
     const cg = new THREE.CircleGeometry(c.r, 64).rotateX(-Math.PI / 2);
     scaleUV(cg, 9, 9);
     this.batch.add(cg, this.m.paving, mat(c.x, 0.02, c.z), false);
+    // paths + round "joints" at both ends so every junction reads as one continuous walk
+    const joint = new THREE.CircleGeometry(1, 24).rotateX(-Math.PI / 2);
+    scaleUV(joint, 1.2, 1.2);
     for (const [x1, z1, x2, z2, w] of PATHS) {
       const len = Math.hypot(x2 - x1, z2 - z1);
       this.plane(w, len, this.m.paving, (x1 + x2) / 2, 0.025, (z1 + z2) / 2, Math.atan2(x2 - x1, z2 - z1), 2.2);
+      for (const [x, z] of [
+        [x1, z1],
+        [x2, z2],
+      ])
+        this.batch.add(joint, this.m.paving, mat(x, 0.026, z, 0, w / 2, 1, w / 2), false);
     }
   }
 
@@ -323,191 +357,170 @@ export class World {
     const main = h.id === 'main';
     const front = h.z + h.d / 2;
     const back = h.z - h.d / 2;
-    const H = main ? 5 : 4.2;
+    // tall halls: 8 m columns in the main hall, 6 m in the side halls
+    const H = main ? 11 : 8;
     const top = h.h;
-    // stone platform + steps
+    const colR = main ? 0.55 : 0.4;
+    // stone platform (two tiers for the main hall) + wide steps
+    if (main) this.box(h.w + 4, h.h * 0.45, h.d + 4, this.m.stoneDark, h.x, (h.h * 0.45) / 2, h.z);
     this.box(h.w + 2, h.h, h.d + 2, this.m.stone, h.x, h.h / 2, h.z);
     this.plane(h.w + 2, h.d + 2, this.m.paving, h.x, h.h + 0.005, h.z, 0, 2.2);
-    const stepW = main ? 8 : 5;
+    const stepW = main ? 10 : 6;
     for (let i = 0; i < 3; i++) this.box(stepW, (h.h * (3 - i)) / 3, 0.55, this.m.stone, h.x, (h.h * (3 - i)) / 6, front + 1 + 0.27 + i * 0.55);
+    for (const sx of [-1, 1]) {
+      const bx = h.x + sx * (stepW / 2 + 0.25);
+      this.box(0.5, h.h + 0.25, 1.75, this.m.stoneDark, bx, (h.h + 0.25) / 2, front + 1.85);
+      this.boxes.push({ x0: bx - 0.25, x1: bx + 0.25, z0: front + 1, z1: front + 2.7 });
+    }
     this.plane(h.w - 0.6, h.d - 0.6, this.m.floor, h.x, top + 0.02, h.z, 0, 2);
 
-    // walls
-    this.box(h.w, H, 0.3, this.m.plaster, h.x, top + H / 2, back + 0.15);
-    this.box(h.w, 1, 0.34, this.m.woodDark, h.x, top + 0.5, back + 0.15);
-    this.boxes.push({ x0: h.x - h.w / 2, x1: h.x + h.w / 2, z0: back - 1.2, z1: back + 0.5 });
+    // walls (plaster over a dark wooden dado)
+    this.box(h.w, H, 0.35, this.m.plaster, h.x, top + H / 2, back + 0.17);
+    this.box(h.w, 1.2, 0.4, this.m.woodDark, h.x, top + 0.6, back + 0.17);
+    this.boxes.push({ x0: h.x - h.w / 2, x1: h.x + h.w / 2, z0: back - 1.2, z1: back + 0.55 });
     for (const sx of [-1, 1]) {
-      const wx = h.x + sx * (h.w / 2 - 0.15);
-      this.box(0.3, H, h.d, this.m.plaster, wx, top + H / 2, h.z);
-      this.box(0.34, 1, h.d, this.m.woodDark, wx, top + 0.5, h.z);
-      this.boxes.push({ x0: wx - 0.5, x1: wx + 0.5, z0: back - 1, z1: front + 0.2 });
+      const wx = h.x + sx * (h.w / 2 - 0.17);
+      this.box(0.35, H, h.d, this.m.plaster, wx, top + H / 2, h.z);
+      this.box(0.4, 1.2, h.d, this.m.woodDark, wx, top + 0.6, h.z);
+      this.boxes.push({ x0: wx - 0.55, x1: wx + 0.55, z0: back - 1, z1: front + 0.2 });
     }
-    // columns: front row + back corners
-    const bays = main ? 7 : 5;
-    const colGeo = new THREE.CylinderGeometry(0.28, 0.32, H, 14);
-    const baseGeo = new THREE.CylinderGeometry(0.45, 0.5, 0.3, 10);
+    // front colonnade
+    const bays = main ? 13 : 9;
+    const colGeo = new THREE.CylinderGeometry(colR, colR * 1.12, H, 16);
+    const baseGeo = new THREE.CylinderGeometry(colR * 1.6, colR * 1.75, 0.35, 12);
+    const capGeo = new THREE.BoxGeometry(colR * 3, 0.35, colR * 3);
     const colX: number[] = [];
-    for (let i = 0; i <= bays - 1; i++) colX.push(h.x - h.w / 2 + 0.4 + (i * (h.w - 0.8)) / (bays - 1));
-    for (const x of colX) {
-      this.batch.add(colGeo, this.m.lacquer, mat(x, top + H / 2, front - 0.3));
-      this.batch.add(baseGeo, this.m.stone, mat(x, top + 0.15, front - 0.3));
-      this.circles.push({ x, z: front - 0.3, r: 0.45 });
-    }
-    // lattice doors on the outer bays, centre bays open
-    // centre bays stay open (4 in the main hall, 2 in the side halls), outer bays get lattice doors
+    for (let i = 0; i <= bays - 1; i++) colX.push(h.x - h.w / 2 + 0.5 + (i * (h.w - 1)) / (bays - 1));
+    const column = (x: number, z: number) => {
+      this.batch.add(colGeo, this.m.lacquer, mat(x, top + H / 2, z));
+      this.batch.add(baseGeo, this.m.stone, mat(x, top + 0.17, z));
+      this.batch.add(capGeo, this.m.trim, mat(x, top + H - 0.17, z));
+      this.circles.push({ x, z, r: colR + 0.2 });
+    };
+    for (const x of colX) column(x, front - 0.4);
+    // inner colonnade along both sides (between the cushions and the walls)
+    // inner colonnade hugs the walls so the floor stays open and airy
+    const innerX = h.w / 2 - (main ? 3 : 2.6);
+    for (let z = back + 4; z < front - 3; z += main ? 6 : 5.5) for (const sx of [-1, 1]) column(h.x + sx * innerX, z);
+    // centre bays stay open, outer bays get lattice doors
     const nBays = bays - 1;
-    const openCount = main ? 4 : 2;
+    const openCount = main ? 8 : 4;
     const openFrom = Math.floor((nBays - openCount) / 2);
     const openTo = openFrom + openCount - 1;
-    for (let i = 0; i < bays - 1; i++) {
+    for (let i = 0; i < nBays; i++) {
       if (i >= openFrom && i <= openTo) continue;
-      const x0 = colX[i] + 0.3;
-      const x1 = colX[i + 1] - 0.3;
-      const g = new THREE.BoxGeometry(x1 - x0, H - 1.1, 0.1);
-      scaleUV(g, (x1 - x0) / 1.4, (H - 1.1) / 1.4);
-      this.batch.add(g, this.m.lattice, mat((x0 + x1) / 2, top + (H - 1.1) / 2 + 0.25, front - 0.3));
-      this.boxes.push({ x0, x1, z0: front - 0.6, z1: front });
+      const x0 = colX[i] + colR + 0.05;
+      const x1 = colX[i + 1] - colR - 0.05;
+      const dh = H - 1.6;
+      const g = new THREE.BoxGeometry(x1 - x0, dh, 0.12);
+      scaleUV(g, (x1 - x0) / 1.5, dh / 1.5);
+      this.batch.add(g, this.m.lattice, mat((x0 + x1) / 2, top + dh / 2 + 0.3, front - 0.4));
+      this.boxes.push({ x0, x1, z0: front - 0.7, z1: front - 0.1 });
     }
-    // beams with painted band (dancheong-like)
-    this.box(h.w + 0.6, 0.45, 0.5, this.m.lacquer, h.x, top + H + 0.05, front - 0.3);
-    this.box(h.w + 0.6, 0.3, 0.52, this.m.trim, h.x, top + H + 0.42, front - 0.3);
-    this.box(h.w + 0.6, 0.45, 0.5, this.m.lacquer, h.x, top + H + 0.05, back + 0.15);
-    // hanging lanterns under the eaves
-    const lanternGeo = new THREE.SphereGeometry(0.28, 12, 8).scale(1, 1.25, 1);
-    for (let i = 0; i < colX.length - 1; i++) this.batch.add(lanternGeo, this.m.lantern, mat((colX[i] + colX[i + 1]) / 2, top + H - 0.6, front + 0.6), false);
+    // beams with painted bands (dancheong-like)
+    for (const z of [front - 0.4, back + 0.17]) {
+      this.box(h.w + 0.8, 0.6, 0.6, this.m.lacquer, h.x, top + H + 0.1, z);
+      this.box(h.w + 0.8, 0.4, 0.62, this.m.trim, h.x, top + H + 0.6, z);
+    }
+    for (const sx of [-1, 1]) this.box(0.6, 0.6, h.d + 0.6, this.m.lacquer, h.x + sx * (h.w / 2), top + H + 0.1, h.z);
+    // hanging lanterns under the eaves, one per bay
+    const lanternGeo = new THREE.SphereGeometry(main ? 0.38 : 0.3, 12, 8).scale(1, 1.25, 1);
+    for (let i = 0; i < colX.length - 1; i++) this.batch.add(lanternGeo, this.m.lantern, mat((colX[i] + colX[i + 1]) / 2, top + H - 0.9, front + 0.9), false);
 
-    // roof(s)
-    const y0 = top + H + 0.55;
+    // roof(s): main hall gets the classic double roof
+    const y0 = top + H + 0.85;
     if (main) {
-      this.batch.add(hipRoof(h.w + 6, h.d + 6, 2.4, 1.0), this.m.roof, mat(h.x, y0, h.z));
-      this.box(h.w * 0.62, 1.6, h.d * 0.52, this.m.plaster, h.x, y0 + 1.9, h.z);
-      this.box(h.w * 0.62 + 0.2, 0.3, h.d * 0.52 + 0.2, this.m.trim, h.x, y0 + 2.6, h.z);
-      this.batch.add(hipRoof(h.w * 0.78 + 2, h.d * 0.66 + 2, 3.2, 0.9), this.m.roof, mat(h.x, y0 + 2.6, h.z));
-      this.ridge(h.x, y0 + 5.8, h.z, h.w * 0.78 + 2 - (h.d * 0.66 + 2));
+      this.batch.add(hipRoof(h.w + 10, h.d + 10, 4.6, 2), this.m.roof, mat(h.x, y0, h.z));
+      const bw = h.w * 0.66;
+      const bd = h.d * 0.54;
+      this.box(bw, 3.6, bd, this.m.plaster, h.x, y0 + 3.8, h.z);
+      this.box(bw + 0.3, 0.6, bd + 0.3, this.m.trim, h.x, y0 + 5.6, h.z);
+      this.batch.add(hipRoof(bw + 9, bd + 9, 6.8, 1.8), this.m.roof, mat(h.x, y0 + 5.8, h.z));
+      this.ridge(h.x, y0 + 12.6, h.z, bw - bd, 2.1);
     } else {
-      this.batch.add(hipRoof(h.w + 5, h.d + 5, 3.4, 0.9), this.m.roof, mat(h.x, y0, h.z));
-      this.ridge(h.x, y0 + 3.4, h.z, h.w - h.d);
+      this.batch.add(hipRoof(h.w + 8, h.d + 8, 6.2, 1.5), this.m.roof, mat(h.x, y0, h.z));
+      this.ridge(h.x, y0 + 6.2, h.z, h.w - h.d, 1.6);
     }
     // name board
-    const label = { main: '大 雄 寶 殿', west: '觀 音 殿', east: '藥 師 殿' }[h.id];
-    const board = new THREE.Mesh(new THREE.PlaneGeometry(main ? 4.2 : 3, main ? 1.1 : 0.9), new THREE.MeshBasicMaterial({ map: textures.sign(label), toneMapped: false }));
-    board.position.set(h.x, top + H + 0.95, front - 0.02);
+    const names: Record<HallDef['id'], [string, string]> = {
+      main: ['ĐẠI HÙNG BẢO ĐIỆN', '大 雄 寶 殿'],
+      west: ['QUAN ÂM ĐIỆN', '觀 音 殿'],
+      east: ['DƯỢC SƯ ĐIỆN', '藥 師 殿'],
+      jizo: ['ĐỊA TẠNG ĐIỆN', '地 藏 殿'],
+      maitreya: ['DI LẶC ĐIỆN', '彌 勒 殿'],
+    };
+    const [vi, han] = names[h.id];
+    const board = new THREE.Mesh(new THREE.PlaneGeometry(main ? 9 : 6.2, main ? 3 : 2.1), new THREE.MeshBasicMaterial({ map: textures.signBilingual(vi, han), toneMapped: false }));
+    board.position.set(h.x, top + H + (main ? 1.9 : 1.5), front - 0.08);
     this.scene.add(board);
 
     // altar & statues
-    const altarD = main ? 4.2 : 3.2;
-    this.box(h.w * 0.62, 1.1, altarD, this.m.lacquer, h.x, top + 0.55, back + 0.3 + altarD / 2);
-    this.box(h.w * 0.62 + 0.2, 0.12, altarD + 0.2, this.m.gold, h.x, top + 1.12, back + 0.3 + altarD / 2, 0, false);
-    this.boxes.push({ x0: h.x - h.w * 0.31 - 0.3, x1: h.x + h.w * 0.31 + 0.3, z0: back, z1: back + 0.6 + altarD });
-    const sy = top + 1.18;
-    const sz = back + 0.3 + altarD / 2 - 0.2;
+    const altarD = h.altar - 0.8;
+    const altarW = h.w * 0.66;
+    const altarH = main ? 1.5 : 1.2;
+    const az = back + 0.4 + altarD / 2;
+    this.box(altarW, altarH, altarD, this.m.lacquer, h.x, top + altarH / 2, az);
+    this.box(altarW + 0.3, 0.14, altarD + 0.3, this.m.gold, h.x, top + altarH + 0.02, az, 0, false);
+    this.boxes.push({ x0: h.x - altarW / 2 - 0.3, x1: h.x + altarW / 2 + 0.3, z0: back, z1: back + 0.7 + altarD });
+    const sy = top + altarH + 0.08;
+    const sz = az - 0.3;
     if (main) {
+      // Three Buddhas of the three times, flanked by two standing bodhisattvas
       for (const [dx, k] of [
-        [0, 1.15],
-        [-4.2, 0.9],
-        [4.2, 0.9],
+        [0, 2.5],
+        [-9, 1.9],
+        [9, 1.9],
       ] as const)
-        this.batch.addObject(this.buddha(this.m.gold, k, h.x + dx, sy, sz));
+        this.statue('buddha', this.m.gold, k, h.x + dx, sy, sz);
+      for (const sx of [-1, 1]) this.statue('standing', sx < 0 ? this.m.white : this.m.gold, 2.0, h.x + sx * 14, sy, sz + 0.4);
     } else if (h.id === 'west') {
-      this.batch.addObject(this.standing(this.m.white, h.x, sy, sz, 1.15));
-      this.batch.addObject(this.standing(this.m.gold, h.x - 2.6, sy, sz, 0.85));
-      this.batch.addObject(this.standing(this.m.gold, h.x + 2.6, sy, sz, 0.85));
+      this.statue('standing', this.m.white, 2.3, h.x, sy, sz);
+      this.statue('standing', this.m.gold, 1.6, h.x - 5.5, sy, sz + 0.3);
+      this.statue('standing', this.m.gold, 1.6, h.x + 5.5, sy, sz + 0.3);
+    } else if (h.id === 'jizo') {
+      // Kṣitigarbha: a monk-like standing figure, flanked by two attendants
+      this.statue('standing', this.m.gold, 2.1, h.x, sy, sz);
+      this.statue('standing', this.m.white, 1.4, h.x - 5, sy, sz + 0.3);
+      this.statue('standing', this.m.white, 1.4, h.x + 5, sy, sz + 0.3);
+    } else if (h.id === 'maitreya') {
+      this.statue('buddha', this.m.gold, 2.1, h.x, sy, sz);
     } else {
-      this.batch.addObject(this.buddha(this.m.gold, 0.95, h.x, sy, sz));
+      this.statue('buddha', this.m.gold, 2.0, h.x, sy, sz);
+      this.statue('standing', this.m.white, 1.6, h.x - 5.5, sy, sz + 0.3);
+      this.statue('standing', this.m.white, 1.6, h.x + 5.5, sy, sz + 0.3);
     }
-    // candles + offerings
-    for (const dx of [-1.8, 1.8]) {
-      this.batch.add(new THREE.CylinderGeometry(0.06, 0.06, 0.35, 8), this.m.white, mat(h.x + dx, top + 1.36, back + 0.3 + altarD - 0.3));
-      this.batch.add(new THREE.SphereGeometry(0.05, 8, 6).scale(1, 1.8, 1), this.m.lanternWarm, mat(h.x + dx, top + 1.6, back + 0.3 + altarD - 0.3), false);
+    // candles + offerings along the altar front
+    const cz = back + 0.4 + altarD - 0.35;
+    for (const dx of main ? [-12, -4.5, 4.5, 12] : [-3.2, 3.2]) {
+      this.batch.add(new THREE.CylinderGeometry(0.08, 0.08, 0.5, 8), this.m.white, mat(h.x + dx, top + altarH + 0.3, cz));
+      this.batch.add(new THREE.SphereGeometry(0.065, 8, 6).scale(1, 1.8, 1), this.m.lanternWarm, mat(h.x + dx, top + altarH + 0.65, cz), false);
     }
     if (!this.opt.low) {
-      const light = new THREE.PointLight('#ffbb66', 4, main ? 22 : 15, 1.6);
-      light.position.set(h.x, top + 3.4, back + altarD + 2.5);
+      const light = new THREE.PointLight('#ffbb66', main ? 9 : 6, main ? 48 : 32, 1.4);
+      light.position.set(h.x, top + H * 0.62, back + h.altar + 3);
       this.scene.add(light);
       this.hallLights.push(light);
     }
   }
 
-  private ridge(x: number, y: number, z: number, len: number) {
+  private ridge(x: number, y: number, z: number, len: number, k = 1) {
     const L = Math.max(1.5, len);
-    this.box(L, 0.4, 0.45, this.m.trim, x, y, z);
-    const curl = new THREE.TorusGeometry(0.35, 0.1, 6, 12, Math.PI * 1.3);
-    for (const sx of [-1, 1]) this.batch.add(curl, this.m.trim, mat(x + (sx * L) / 2, y + 0.35, z, 0, sx, 1, 1));
+    this.box(L, 0.45 * k, 0.5 * k, this.m.trim, x, y, z);
+    const curl = new THREE.TorusGeometry(0.4 * k, 0.11 * k, 6, 12, Math.PI * 1.3);
+    for (const sx of [-1, 1]) this.batch.add(curl, this.m.trim, mat(x + (sx * L) / 2, y + 0.4 * k, z, 0, sx, 1, 1));
+    // flaming pearl in the middle of the ridge
+    this.batch.add(new THREE.SphereGeometry(0.3 * k, 12, 8), this.m.gold, mat(x, y + 0.5 * k, z));
   }
 
-  private buddha(material: THREE.Material, k: number, x: number, y: number, z: number) {
-    const g = new THREE.Group();
-    g.position.set(x, y, z);
-    const add = (geo: THREE.BufferGeometry, px: number, py: number, pz: number, mm = material) => {
-      const m = new THREE.Mesh(geo, mm);
-      m.position.set(px * k, py * k, pz * k);
-      g.add(m);
-      return m;
-    };
-    add(new THREE.CylinderGeometry(1.25 * k, 1.05 * k, 0.45 * k, 20), 0, 0.22, 0);
-    for (let i = 0; i < 14; i++) {
-      const a = (i / 14) * Math.PI * 2;
-      const p = add(new THREE.SphereGeometry(0.3 * k, 8, 6), Math.cos(a) * 1.18, 0.42, Math.sin(a) * 1.18);
-      p.scale.set(0.6, 1, 0.35);
-      p.lookAt(x, y + 0.42 * k, z);
-    }
-    add(
-      new THREE.LatheGeometry(
-        [
-          [0, 0],
-          [1.05, 0],
-          [1.12, 0.35],
-          [0.78, 0.55],
-          [0.64, 1.1],
-          [0.6, 1.5],
-          [0.3, 1.72],
-          [0, 1.74],
-        ].map(([a, b]) => new THREE.Vector2(a * k, b * k)),
-        28,
-      ),
-      0,
-      0.45,
-      0,
-    );
-    add(new THREE.SphereGeometry(0.42 * k, 22, 16), 0, 2.52, 0).scale.y = 1.12;
-    add(new THREE.SphereGeometry(0.2 * k, 12, 8), 0, 3.0, 0);
-    const halo = add(new THREE.TorusGeometry(1.4 * k, 0.06 * k, 8, 48), 0, 2.45, -0.55);
-    halo.castShadow = false;
-    add(new THREE.CircleGeometry(1.3 * k, 40), 0, 2.45, -0.6, this.m.lanternWarm).castShadow = false;
-    return g;
+  private statueMats(body: THREE.Material): StatueMats {
+    return { body, trim: this.m.gold, glow: this.m.lanternWarm, dark: this.m.woodDark };
   }
 
-  private standing(robe: THREE.Material, x: number, y: number, z: number, k: number) {
-    const g = new THREE.Group();
+  /** Bake a statue (seated Buddha or standing Bodhisattva) into the static batch. */
+  private statue(kind: 'buddha' | 'standing', body: THREE.Material, k: number, x: number, y: number, z: number) {
+    const g = kind === 'buddha' ? seatedBuddha(this.statueMats(body), k, Math.round(40 + 70 * this.opt.density)) : standingBodhisattva(this.statueMats(body), k);
     g.position.set(x, y, z);
-    g.scale.setScalar(k);
-    const add = (geo: THREE.BufferGeometry, py: number, m: THREE.Material = robe) => {
-      const mesh = new THREE.Mesh(geo, m);
-      mesh.position.y = py;
-      g.add(mesh);
-      return mesh;
-    };
-    add(new THREE.CylinderGeometry(0.6, 0.65, 0.3, 16), 0.15, this.m.gold);
-    add(
-      new THREE.LatheGeometry(
-        [
-          [0, 0],
-          [0.48, 0],
-          [0.4, 0.9],
-          [0.36, 1.6],
-          [0.42, 1.9],
-          [0.2, 2.05],
-          [0, 2.06],
-        ].map(([a, b]) => new THREE.Vector2(a, b)),
-        20,
-      ),
-      0.3,
-    );
-    add(new THREE.SphereGeometry(0.24, 16, 12), 2.6, this.m.gold);
-    add(new THREE.ConeGeometry(0.2, 0.38, 10), 2.92, this.m.gold);
-    const halo = add(new THREE.TorusGeometry(0.55, 0.035, 6, 36), 2.62);
-    halo.position.z = -0.3;
-    return g;
+    this.batch.addObject(g);
   }
 
   private buildCourtyardPieces() {
@@ -528,12 +541,12 @@ export class World {
     this.clickables.push(hit);
     this.circles.push({ x: censer.x, z: censer.z, r: 1.55 });
 
-    // merit box
+    // donate box (supports the app's development)
     const box = new THREE.Group();
     const body = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.95, 0.75), this.m.woodDark);
     body.position.y = 0.48;
     body.castShadow = true;
-    const label = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.4), new THREE.MeshBasicMaterial({ map: textures.sign('功 德', '#f0d28a', '#4b2615', 256, 110, 'bold 70px "Noto Serif TC", serif') }));
+    const label = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.4), new THREE.MeshBasicMaterial({ map: textures.sign('DONATE', '#f0d28a', '#4b2615', 256, 110, 'bold 54px "Be Vietnam Pro", sans-serif') }));
     label.position.set(0, 0.55, 0.38);
     box.add(body, label);
     box.position.set(donation.x, this.groundHeight(donation.x, donation.z), donation.z);
@@ -613,8 +626,9 @@ export class World {
     this.batch.add(hipRoof(6.6, 3.6, 1.9, 0.6), this.m.roof, mat(gate.x, 5.3, gate.z));
     this.batch.add(hipRoof(4.6, 3.2, 1.5, 0.5), this.m.roof, mat(gate.x - 4.4, 4.9, gate.z));
     this.batch.add(hipRoof(4.6, 3.2, 1.5, 0.5), this.m.roof, mat(gate.x + 4.4, 4.9, gate.z));
-    const board = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 0.95), new THREE.MeshBasicMaterial({ map: textures.sign('淨 心 寺'), toneMapped: false }));
-    board.position.set(gate.x, 4.2, gate.z + 0.32);
+    // the temple's name board: Tịnh Tâm Tự (淨心寺)
+    const board = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 1.56), new THREE.MeshBasicMaterial({ map: textures.signBilingual('TỊNH TÂM TỰ', '淨 心 寺'), toneMapped: false }));
+    board.position.set(gate.x, 3.85, gate.z + 0.32);
     this.scene.add(board);
     const back = board.clone();
     back.rotation.y = Math.PI;
@@ -625,17 +639,23 @@ export class World {
       this.box(6, 2.2, 0.7, this.m.plaster, gate.x + sx * 9, 1.1, gate.z);
       this.box(6.4, 0.3, 1.1, this.m.roof, gate.x + sx * 9, 2.35, gate.z);
       this.boxes.push({ x0: gate.x + sx * 9 - 3, x1: gate.x + sx * 9 + 3, z0: gate.z - 0.5, z1: gate.z + 0.5 });
+      // forecourt walls from the gate wings out to the perimeter wall
+      const zz = (gate.z + WORLD.radius + 2) / 2;
+      const len = WORLD.radius + 2 - gate.z;
+      this.box(0.7, 1.9, len, this.m.plaster, gate.x + sx * 12, 0.95, zz);
+      this.box(1.0, 0.25, len + 0.1, this.m.roof, gate.x + sx * 12, 2.0, zz);
+      this.boxes.push({ x0: gate.x + sx * 12 - 0.5, x1: gate.x + sx * 12 + 0.5, z0: gate.z, z1: WORLD.radius + 2 });
     }
   }
 
   private buildWall() {
-    const R = 67.5;
+    const R = WORLD.radius + 1.5;
     const n = 96;
     for (let i = 0; i < n; i++) {
       const a = ((i + 0.5) / n) * Math.PI * 2;
       const x = Math.cos(a) * R;
       const z = Math.sin(a) * R;
-      if (z > 55 && Math.abs(x) < 13) continue; // gate gap
+      if (z > 0 && Math.abs(x) < 13) continue; // gate gap
       const len = ((2 * Math.PI * R) / n) * 1.02;
       this.box(len, 1.9, 0.6, this.m.plaster, x, 0.95, z, -a + Math.PI / 2, false);
       this.box(len + 0.1, 0.25, 1.0, this.m.roof, x, 2.0, z, -a + Math.PI / 2, false);
@@ -652,7 +672,11 @@ export class World {
   }
 
   private buildStoneLanterns() {
-    for (let z = 20; z <= 54; z += 7) for (const sx of [-1, 1]) this.stoneLantern(sx * 3.4, z);
+    const branches = PATHS.filter(([x1]) => Math.abs(x1) < 2.6 && x1 !== 0).map(([, z1]) => z1);
+    for (let z = 4; z <= 116; z += 8) {
+      if (branches.some((bz) => Math.abs(bz - z) < 3.5)) continue; // keep junctions open
+      for (const sx of [-1, 1]) this.stoneLantern(sx * 4, z);
+    }
     for (let i = 0; i < 10; i++) {
       const a = (i / 10) * Math.PI * 2 + 0.31;
       const x = WORLD.courtyard.x + Math.cos(a) * (WORLD.courtyard.r + 0.8);
@@ -688,7 +712,7 @@ export class World {
     const colors = ['#f4a6c0', '#ffffff', '#f6d36a', '#b58ae0', '#e8504a', '#ff9f5a'].map((c) => new THREE.Color(c));
     const beds: [number, number][] = [];
     for (const bx of [-1, 1]) for (const bz of [-1, 1]) for (const k of [0.32, 0.75]) beds.push([cx + bx * (g.x1 - cx) * k, cz + bz * (g.z1 - cz) * 0.55]);
-    const perBed = this.opt.low ? 40 : 90;
+    const perBed = Math.round(90 * Math.max(0.5, this.opt.density));
     const flowers = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(0.11, 0), new THREE.MeshStandardMaterial({ roughness: 0.8 }), beds.length * perBed);
     const stems = new THREE.InstancedMesh(new THREE.ConeGeometry(0.12, 0.4, 4), this.m.leaf2, beds.length * perBed);
     let fi = 0;
@@ -736,77 +760,8 @@ export class World {
       this.boxes.push({ x0: bx - 1, x1: bx + 1, z0: bz + 1.9, z1: bz + 2.5 });
     }
     this.batch.add(new THREE.CylinderGeometry(0.9, 1, 0.6, 16), this.m.stone, mat(cx, 0.3, cz));
-    this.batch.addObject(this.standing(this.m.white, cx, 0.6, cz, 0.75));
+    this.statue('standing', this.m.white, 0.75, cx, 0.6, cz);
     this.circles.push({ x: cx, z: cz, r: 1.3 });
-  }
-
-  private buildPond() {
-    const { pond } = WORLD;
-    const r = rng(3);
-    const water = new THREE.Mesh(new THREE.CircleGeometry(pond.r, 48).rotateX(-Math.PI / 2), this.m.water);
-    water.position.set(pond.x, 0.06, pond.z);
-    water.receiveShadow = true;
-    this.scene.add(water);
-    this.batch.add(new THREE.CircleGeometry(pond.r + 0.6, 48).rotateX(-Math.PI / 2), this.m.soil, mat(pond.x, 0.03, pond.z), false);
-    this.circles.push({ x: pond.x, z: pond.z, r: pond.r + 0.5 });
-    const rock = new THREE.DodecahedronGeometry(0.55, 0);
-    for (let i = 0; i < 42; i++) {
-      const a = (i / 42) * Math.PI * 2;
-      const k = 0.6 + r() * 0.7;
-      this.batch.add(rock, this.m.stoneDark, mat(pond.x + Math.cos(a) * (pond.r + 0.3), 0.12, pond.z + Math.sin(a) * (pond.r + 0.3), r() * 3, k, k * 0.6, k, r(), r()));
-    }
-    const pads = new THREE.InstancedMesh(new THREE.CircleGeometry(0.5, 14).rotateX(-Math.PI / 2), this.m.pad, 30);
-    const flowers = new THREE.InstancedMesh(new THREE.ConeGeometry(0.18, 0.32, 8, 1, true), this.m.lotus, 14);
-    for (let i = 0; i < 30; i++) {
-      const a = r() * Math.PI * 2;
-      const d = 1.2 + r() * (pond.r - 2);
-      const x = pond.x + Math.cos(a) * d;
-      const z = pond.z + Math.sin(a) * d;
-      this.dummy.position.set(x, 0.08, z);
-      this.dummy.scale.setScalar(0.7 + r() * 0.6);
-      this.dummy.updateMatrix();
-      pads.setMatrixAt(i, this.dummy.matrix);
-      if (i < 14) {
-        this.dummy.position.set(x, 0.24, z);
-        this.dummy.scale.setScalar(1);
-        this.dummy.rotation.x = Math.PI;
-        this.dummy.updateMatrix();
-        flowers.setMatrixAt(i, this.dummy.matrix);
-        this.dummy.rotation.x = 0;
-      }
-    }
-    this.dummy.scale.setScalar(1);
-    this.scene.add(pads, flowers);
-    // waterside pavilion (thủy tạ) on the north bank
-    const px = pond.x;
-    const pz = pond.z - pond.r - 2.2;
-    this.box(4.4, 0.4, 3.4, this.m.stone, px, 0.2, pz);
-    for (const [dx, dz] of [
-      [-1.8, -1.3],
-      [1.8, -1.3],
-      [-1.8, 1.3],
-      [1.8, 1.3],
-    ])
-      this.batch.add(new THREE.CylinderGeometry(0.14, 0.16, 2.8, 8), this.m.lacquer, mat(px + dx, 1.8, pz + dz));
-    this.batch.add(hipRoof(5.6, 4.6, 1.8, 0.6), this.m.roof, mat(px, 3.2, pz));
-    this.boxes.push({ x0: px - 2.2, x1: px + 2.2, z0: pz - 1.7, z1: pz + 1.7 });
-  }
-
-  private buildStupa() {
-    const { stupa } = WORLD;
-    this.batch.add(new THREE.CylinderGeometry(4.2, 4.6, 0.8, 8), this.m.stone, mat(stupa.x, 0.4, stupa.z));
-    let y = 0.8;
-    let rad = 3;
-    for (let i = 0; i < 7; i++) {
-      const h = 1.7 - i * 0.08;
-      this.batch.add(new THREE.CylinderGeometry(rad * 0.92, rad, h, 8), this.m.plaster, mat(stupa.x, y + h / 2, stupa.z));
-      this.batch.add(new THREE.CylinderGeometry(rad * 0.7, rad + 0.7, 0.45, 8), this.m.roof, mat(stupa.x, y + h + 0.2, stupa.z));
-      y += h + 0.4;
-      rad *= 0.86;
-    }
-    this.batch.add(new THREE.CylinderGeometry(0.08, 0.14, 2.6, 8), this.m.gold, mat(stupa.x, y + 1.3, stupa.z));
-    for (let i = 0; i < 4; i++) this.batch.add(new THREE.SphereGeometry(0.28 - i * 0.04, 10, 8), this.m.gold, mat(stupa.x, y + 0.4 + i * 0.55, stupa.z));
-    this.circles.push({ x: stupa.x, z: stupa.z, r: 4.6 });
   }
 
   private buildBodhi() {
@@ -883,13 +838,16 @@ export class World {
 
   /** Is (x,z) somewhere we must not put trees? */
   private occupied(x: number, z: number, pad = 0): boolean {
-    for (const h of HALLS) {
+    for (const h of BUILDINGS) {
       const r = hallRect(h, 4 + pad);
       if (x > r.x0 && x < r.x1 && z > r.z0 && z < r.z1 + 4) return true;
     }
+    if ((x - STUPA.x) ** 2 + (z - STUPA.z) ** 2 < (STUPA.lowerR + 5 + pad) ** 2) return true;
+    if (Math.abs(x - STUPA.x) < 4 + pad && z < STUPA.z && z > STUPA.z - STUPA.lowerR - STUPA.stairLen - 4) return true;
+    if (Math.abs(x) < 14 && z > WORLD.gate.z - 6) return true;
     const near = (p: { x: number; z: number }, rr: number) => (x - p.x) ** 2 + (z - p.z) ** 2 < (rr + pad) ** 2;
     if (near(WORLD.courtyard, WORLD.courtyard.r + 4)) return true;
-    if (near(WORLD.pond, WORLD.pond.r + 4.5) || near(WORLD.moonYard, WORLD.moonYard.r + 3) || near(WORLD.stupa, 6.5) || near(WORLD.bodhi, 8.5)) return true;
+    if (near(WORLD.pond, WORLD.pond.r + 5) || near(WORLD.moonYard, WORLD.moonYard.r + 3) || near(WORLD.bodhi, 9)) return true;
     if (near(WORLD.bellTower, 5) || near(WORLD.drumTower, 5) || near(WORLD.gate, 8)) return true;
     const g = gardenRect();
     if (x > g.x0 - 3 && x < g.x1 + 3 && z > g.z0 - 3 && z < g.z1 + 3) return true;
@@ -904,13 +862,13 @@ export class World {
 
   private buildForest() {
     const r = rng(11);
-    const want = this.opt.low ? 110 : 230;
+    const want = Math.round(460 * this.opt.density);
     type T = [number, number, number, number];
     const spots: T[] = [];
     let tries = 0;
     while (spots.length < want && tries++ < 12000) {
       const a = r() * Math.PI * 2;
-      const d = 12 + r() * 53;
+      const d = 14 + r() * 114;
       const x = Math.cos(a) * d;
       const z = Math.sin(a) * d;
       if (this.occupied(x, z)) continue;
@@ -967,12 +925,12 @@ export class World {
     this.dummy.scale.setScalar(1);
     // grass tufts & rocks (detail only on capable devices)
     if (!this.opt.low) {
-      const tuftsN = 1400;
+      const tuftsN = Math.round(2600 * this.opt.density);
       const grass = new THREE.InstancedMesh(new THREE.ConeGeometry(0.12, 0.45, 3), this.m.leaf2, tuftsN);
       let gi = 0;
       while (gi < tuftsN) {
         const a = r() * Math.PI * 2;
-        const d = 6 + r() * 60;
+        const d = 6 + r() * 122;
         const x = Math.cos(a) * d;
         const z = Math.sin(a) * d;
         if (this.occupied(x, z, -1.5)) continue;
@@ -983,7 +941,7 @@ export class World {
     const rock = new THREE.DodecahedronGeometry(0.6, 0);
     for (let i = 0; i < 40; i++) {
       const a = r() * Math.PI * 2;
-      const d = 18 + r() * 46;
+      const d = 18 + r() * 108;
       const x = Math.cos(a) * d;
       const z = Math.sin(a) * d;
       if (this.occupied(x, z)) continue;
@@ -1000,7 +958,7 @@ export class World {
     const geo = new THREE.ConeGeometry(1, 1, 8, 2);
     for (let i = 0; i < 40; i++) {
       const a = (i / 40) * Math.PI * 2 + r() * 0.12;
-      const d = 115 + r() * 70;
+      const d = 190 + r() * 80;
       const h = 26 + r() * 46;
       const sx = 22 + r() * 26;
       this.batch.add(geo, i % 2 ? this.m.mountain : this.m.mountain2, mat(Math.cos(a) * d, h / 2 - 2, Math.sin(a) * d, r() * 3, sx, h, sx), false);
@@ -1044,8 +1002,9 @@ export class World {
     this.sun.castShadow = this.opt.shadows && (e > 0.05 || (night > 0.9 && moonDir.y > 0.3));
     this.hemi.color.copy(c('#6c7fb8').lerp(c('#fff5e2'), day));
     this.hemi.groundColor.copy(c('#1a2016').lerp(c('#5d6a47'), day));
-    // without hall point lights, low-end mode needs a little more fill light at night
-    this.hemi.intensity = 0.45 + 0.55 * day + (this.opt.low ? 0.4 * night : 0);
+    this.hemi.intensity = 0.45 + 0.55 * day + (this.opt.low ? 0.35 + 0.3 * night : 0);
+    // low tier: warm fill (stronger at night, when lanterns would normally light the halls)
+    this.fill.intensity = this.opt.low ? 0.5 + 0.35 * night : 0;
 
     this.sunDisc.position.copy(sunDir).multiplyScalar(420);
     this.sunDisc.visible = e > -0.05;
@@ -1054,7 +1013,7 @@ export class World {
     (this.stars.material as THREE.PointsMaterial).opacity = Math.max(0, night * 1.2 - 0.2);
     this.stars.visible = night > 0.15;
     for (const m of this.glowMats) m.emissiveIntensity = 0.15 + 2.4 * Math.max(night, golden * 0.5);
-    for (const l of this.hallLights) l.intensity = 3 + 22 * Math.max(night, golden * 0.6);
+    for (const l of this.hallLights) l.intensity = (l.distance > 30 ? 5 : 3) + (l.distance > 30 ? 34 : 22) * Math.max(night, golden * 0.6);
   }
 
   /** Keep the shadow camera centred on the player (snapped to avoid shimmering). */
@@ -1066,6 +1025,25 @@ export class World {
     this.sun.position.set(sx + dir.x * 80, dir.y * 80, sz + dir.z * 80);
   }
 
+  /** Free GPU memory (avatars use shared geometry, so they are left alone). */
+  dispose() {
+    const textures = new Set<THREE.Texture>();
+    this.scene.traverse((o) => {
+      if (o.userData.kind === 'avatar') return;
+      const m = o as THREE.Mesh;
+      if (!m.isMesh && !(o as THREE.Points).isPoints && !(o as THREE.Sprite).isSprite) return;
+      m.geometry?.dispose();
+      for (const mat of Array.isArray(m.material) ? m.material : [m.material]) {
+        if (!mat) continue;
+        for (const v of Object.values(mat)) if (v instanceof THREE.Texture) textures.add(v);
+        mat.dispose();
+      }
+    });
+    for (const t of textures) t.dispose();
+    this.scene.environment?.dispose();
+    this.scene.clear();
+  }
+
   ring(kind: 'bell' | 'drum') {
     if (kind === 'bell') this.bellSwing = 1;
     else this.drumHit = 1;
@@ -1073,7 +1051,7 @@ export class World {
 
   setSeatTaken(i: number, taken: boolean) {
     const p = SEATS[i];
-    this.dummy.position.set(p.x, this.groundHeight(p.x, p.z) + (p.area === 'bodhi' ? 0.37 : 0.18), p.z);
+    this.dummy.position.set(p.x, this.groundHeight(p.x, p.z) + (p.area === 'bodhi' ? STONE_TOP : CUSHION_TOP) + 0.02, p.z);
     this.dummy.rotation.set(-Math.PI / 2, 0, 0);
     this.dummy.scale.setScalar(taken ? 1 : 0.0001);
     this.dummy.updateMatrix();
@@ -1090,9 +1068,8 @@ export class World {
   }
 
   private stickPos(slot: number) {
-    const a = (slot / INCENSE_SLOTS) * Math.PI * 2 * 3.0;
-    const rr = 0.18 + (slot % 3) * 0.19;
-    return [WORLD.censer.x + Math.cos(a) * rr, WORLD.censer.z + Math.sin(a) * rr];
+    const [dx, dz] = incenseSpot(slot);
+    return [WORLD.censer.x + dx, WORLD.censer.z + dz];
   }
 
   private updateStick(slot: number, now: number) {
@@ -1116,6 +1093,9 @@ export class World {
 
   private stickClock = 0;
   update(dt: number, now: number, t: number) {
+    const pnow = performance.now();
+    this.pond.update(pnow);
+    this.shuttle.update(pnow);
     this.stickClock += dt;
     if (this.stickClock > 0.5) {
       this.stickClock = 0;
@@ -1157,26 +1137,21 @@ export class World {
 
   // =================================================================== movement helpers
   groundHeight(x: number, z: number) {
-    for (const h of HALLS) {
-      const front = h.z + h.d / 2;
-      if (Math.abs(x - h.x) < h.w / 2 + 1 && z > h.z - h.d / 2 - 1 && z <= front + 1) return h.h;
-      const stepW = h.id === 'main' ? 4 : 2.5;
-      if (Math.abs(x - h.x) < stepW && z > front + 1 && z < front + 2.65) return h.h * (1 - (z - front - 1) / 1.65);
-    }
-    return 0;
+    return groundY(x, z);
   }
 
-  /** Ground pick without raycasting thousands of merged triangles: analytic planes per height level. */
+  /** Ground pick by ray-marching the heightfield (works on stairs, bridge and the stupa). */
   pickGround(ray: THREE.Ray): THREE.Vector3 | null {
-    const levels = [...new Set(HALLS.map((h) => h.h)), 0];
-    let best: THREE.Vector3 | null = null;
-    for (const y of levels) {
-      const p = ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 1, 0), -y), new THREE.Vector3());
-      if (!p) continue;
-      if (Math.abs(this.groundHeight(p.x, p.z) - y) > 0.05) continue;
-      if (!best || p.distanceToSquared(ray.origin) < best.distanceToSquared(ray.origin)) best = p;
+    const p = new THREE.Vector3();
+    let prevAbove = true;
+    for (let t = 0.5; t < 500; t += t < 60 ? 0.2 : 0.6) {
+      ray.at(t, p);
+      const h = groundY(p.x, p.z);
+      const above = p.y > h;
+      if (!above && prevAbove) return p.setY(h);
+      prevAbove = above;
     }
-    return best;
+    return null;
   }
 
   /** Push a point out of obstacles and keep it inside the world. */
