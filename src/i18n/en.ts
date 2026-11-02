@@ -32,7 +32,7 @@ export const en = {
 
   'hint.desktop': 'Click the ground to walk · drag to look around · wheel to zoom',
   'hint.touch': 'Tap to walk · swipe to look · pinch to zoom',
-  'hint.cushion': 'Click a cushion in the hall to sit',
+  'hint.cushion': "Click a cushion to sit · click the censer to offer incense",
 
   'zone.hall': 'Pure Lotus Hall',
   'zone.courtyard': 'Courtyard',

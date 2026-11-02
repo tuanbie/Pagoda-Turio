@@ -503,15 +503,21 @@ export class World {
       this.statue('standing', this.m.white, 1.6, h.x - 5.5, sy, sz + 0.3);
       this.statue('standing', this.m.white, 1.6, h.x + 5.5, sy, sz + 0.3);
     }
-    // the hall's own censer at the front edge of the altar
+    // the hall's own floor-standing bronze censer, in front of the altar
     const ci = CENSERS.findIndex((c) => c.hall === h.id);
-    const cz0 = CENSERS[ci].z;
-    const cy = top + altarHeight(h);
-    this.batch.add(new THREE.CylinderGeometry(0.42, 0.32, 0.3, 20), this.m.bronze, mat(h.x, cy + 0.15, cz0));
-    this.batch.add(new THREE.TorusGeometry(0.42, 0.035, 6, 24).rotateX(Math.PI / 2), this.m.bronze, mat(h.x, cy + 0.3, cz0));
-    this.batch.add(new THREE.CircleGeometry(0.4, 20).rotateX(-Math.PI / 2), this.m.stone, mat(h.x, cy + 0.29, cz0), false);
-    const chit = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 1.2, 10), new THREE.MeshBasicMaterial({ visible: false }));
-    chit.position.set(h.x, cy + 0.4, cz0);
+    const cen = CENSERS[ci];
+    this.batch.add(new THREE.CylinderGeometry(0.62, 0.68, 0.16, 16), this.m.woodDark, mat(h.x, top + 0.08, cen.z));
+    for (let i = 0; i < 3; i++) {
+      const a = (i / 3) * Math.PI * 2 + Math.PI / 2;
+      this.batch.add(new THREE.CylinderGeometry(0.06, 0.045, 0.62, 8), this.m.bronze, mat(h.x + Math.cos(a) * 0.34, top + 0.47, cen.z + Math.sin(a) * 0.34));
+    }
+    this.batch.add(new THREE.CylinderGeometry(0.5, 0.36, 0.34, 20), this.m.bronze, mat(h.x, top + 0.86, cen.z));
+    this.batch.add(new THREE.TorusGeometry(0.5, 0.045, 8, 24).rotateX(Math.PI / 2), this.m.bronze, mat(h.x, top + 1.03, cen.z));
+    for (const sx of [-1, 1]) this.batch.add(new THREE.TorusGeometry(0.11, 0.025, 6, 12), this.m.bronze, mat(h.x + sx * 0.52, top + 1.04, cen.z, Math.PI / 2)); // handles
+    this.batch.add(new THREE.CircleGeometry(0.47, 20).rotateX(-Math.PI / 2), this.m.stone, mat(h.x, top + 1.015, cen.z), false);
+    this.circles.push({ x: h.x, z: cen.z, r: 0.7 });
+    const chit = new THREE.Mesh(new THREE.CylinderGeometry(0.75, 0.75, 1.6, 10), new THREE.MeshBasicMaterial({ visible: false }));
+    chit.position.set(h.x, top + 0.8, cen.z);
     chit.userData.kind = 'censer';
     chit.userData.censer = ci;
     this.scene.add(chit);

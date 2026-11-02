@@ -34,7 +34,7 @@ export const vi: Record<Key, string> = {
 
   'hint.desktop': 'Nhấp xuống đất để đi · kéo để nhìn quanh · lăn chuột để phóng to',
   'hint.touch': 'Chạm để đi · vuốt để nhìn · chụm hai ngón để phóng to',
-  'hint.cushion': 'Nhấp vào bồ đoàn trong chánh điện để ngồi',
+  'hint.cushion': "Nhấp vào bồ đoàn để ngồi · nhấp vào lư hương để dâng hương",
 
   'zone.hall': 'Tịnh Liên Đường',
   'zone.courtyard': 'Sân chùa',
