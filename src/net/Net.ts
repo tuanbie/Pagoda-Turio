@@ -4,7 +4,13 @@ import { store, prefs } from '../store.ts';
 export interface NetHandlers {
   onMessage(msg: ServerMsg): void;
   onStatus(status: 'connecting' | 'online' | 'reconnecting' | 'full'): void;
+  /** where I am / who I am, so a fresh server instance can put me back in place */
+  hint?(): { x: number; z: number; a: number; n: number; c: number } | null;
 }
+
+/** Backend origin when the frontend is hosted elsewhere (e.g. Vercel); empty = same origin. */
+export const BACKEND = (import.meta.env.VITE_BACKEND_URL ?? '').replace(/\/$/, '');
+const backendBase = () => BACKEND || location.origin;
 
 /**
  * WebSocket client with:
@@ -30,7 +36,7 @@ export class Net {
   constructor(private h: NetHandlers) {}
 
   static async rooms(): Promise<RoomInfo[]> {
-    const res = await fetch('/api/rooms', { cache: 'no-store' });
+    const res = await fetch(`${BACKEND}/api/rooms`, { cache: 'no-store' });
     if (!res.ok) throw new Error('rooms ' + res.status);
     return ((await res.json()) as { rooms: RoomInfo[] }).rooms;
   }
@@ -50,8 +56,10 @@ export class Net {
     } catch {
       /* directory down -> let the default node pick */
     }
-    const abs = /^wss?:/.test(url) ? new URL(url) : new URL(url, location.href.replace(/^http/, 'ws'));
+    const abs = /^wss?:/.test(url) ? new URL(url) : new URL(url, backendBase().replace(/^http/, 'ws'));
     if (roomId) abs.searchParams.set('room', roomId);
+    const h = this.h.hint?.();
+    if (h) for (const [k, v] of Object.entries(h)) abs.searchParams.set(k, String(Math.round(v * 100) / 100));
     const name = store.get().myName;
     if (name) abs.searchParams.set('name', name);
     const token = sessionStorage.getItem('sontu:token');

@@ -18,7 +18,8 @@ npm run dev            # http://localhost:5173 (proxies /api and /ws to the back
 npm run build          # production build → dist/
 ```
 
-The app needs the realtime backend, which defaults to `http://localhost:8787`.
+The app needs the realtime backend (https://github.com/tuanbie/Pagoda-BE). Locally it defaults to `http://localhost:8787`.
+In production, set the `VITE_BACKEND_URL` environment variable (on Vercel: `https://pagoda-be.vercel.app`).
 To use a different one: `BACKEND_URL=http://host:port npm run dev`.
 
 ## Structure

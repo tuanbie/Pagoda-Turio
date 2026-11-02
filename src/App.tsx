@@ -44,6 +44,7 @@ export function App() {
         if (m.t === 'bye') toast(tt('net.restart'));
       },
       onStatus: (s) => store.set({ net: s }),
+      hint: () => runtime.game?.joinHint() ?? null,
     });
     runtime.net = net;
     store.set({ phase: 'in', panel: null });

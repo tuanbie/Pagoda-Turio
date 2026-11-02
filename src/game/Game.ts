@@ -67,6 +67,10 @@ export class Game {
   private seated = false;
   private keys = new Set<string>();
   private lastAskedName = '';
+  private ident = { a: 0, n: 0, c: 0 };
+  /** cushion to reclaim after a reconnect (server instance may have changed) */
+  private reclaimSeat = -1;
+  private silentSeat = false;
 
   // camera (input sets targets, actual values ease toward them)
   private yaw = 0;
@@ -172,11 +176,13 @@ export class Game {
         this.remotes.clear();
         this.seatOwner.clear();
         SEATS.forEach((_, i) => this.world.setSeatTaken(i, false));
+        const reclaim = this.seat >= 0 ? this.seat : this.reclaimSeat;
         for (const p of msg.players) {
           if (p[0] === msg.id) {
             this.x = p[3];
             this.z = p[4];
             this.r = p[5];
+            this.ident = { a: p[1], n: p[2], c: p[7] };
           } else this.addRemote(p);
         }
         this.camTarget.set(this.x, 1.3, this.z);
@@ -199,6 +205,12 @@ export class Game {
         this.onIncense(msg.inc);
         this.visitorsDirty = true;
         this.sendMove(true);
+        // quietly sit back down on the same cushion if it is still free
+        this.reclaimSeat = -1;
+        if (reclaim >= 0 && !msg.seats.some(([i]) => i === reclaim)) {
+          this.silentSeat = true;
+          this.net.send({ t: 'seat', i: reclaim });
+        }
         break;
       }
       case 's':
@@ -219,7 +231,8 @@ export class Game {
         this.setSeat(msg.i, msg.id);
         break;
       case 'seatno':
-        toast(t('seat.taken'));
+        if (!this.silentSeat) toast(t('seat.taken'));
+        this.silentSeat = false;
         break;
       case 'sreq':
         store.set({ seatIncoming: { i: msg.i, from: msg.from, at: Date.now() } });
@@ -293,6 +306,12 @@ export class Game {
     if (id === this.id) {
       this.seat = i;
       this.activity = null;
+      if (this.silentSeat) {
+        this.silentSeat = false;
+        this.then = 'sit';
+        this.arrive();
+        return;
+      }
       this.goTo(SEATS[i].x, SEATS[i].z, 'sit');
     } else if (prev === this.id && this.seat === i) {
       // my cushion went to someone else (I offered it) → stand up and step aside
@@ -441,6 +460,13 @@ export class Game {
     this.leaveSeat();
     if (this.activity === Pose.Bow || this.activity === Pose.Dance) this.activity = null;
     this.goTo(x, z);
+  }
+
+  /** sent with every (re)connect so a different server instance restores me in place */
+  joinHint(): JoinHint | null {
+    if (!this.id) return null;
+    if (this.seat >= 0) this.reclaimSeat = this.seat;
+    return { x: this.x, z: this.z, ...this.ident };
   }
 
   // ---------------- minimap ----------------
@@ -826,3 +852,5 @@ export function webglAvailable() {
     return false;
   }
 }
+
+export type JoinHint = { x: number; z: number; a: number; n: number; c: number };
