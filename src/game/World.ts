@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { HALLS, INCENSE_BURN_MS, INCENSE_SLOTS, SEATS, STUPA, WORLD, incenseSpot, type HallDef } from '@sontu/shared';
+import { CENSERS, HALLS, INCENSE_BURN_MS, INCENSE_SLOTS, SEATS, STUPA, WORLD, altarHeight, incenseSpot, type HallDef } from '@sontu/shared';
 import { Avatar } from './Avatar.ts';
 import { textures } from './textures.ts';
 import { BUILDINGS, PATHS, gardenRect, hallRect } from './layout.ts';
@@ -313,9 +313,12 @@ export class World {
     // ---------- incense ----------
     const stickGeo = new THREE.CylinderGeometry(0.012, 0.012, 1, 4);
     stickGeo.translate(0, 0.5, 0);
-    this.sticks = new THREE.InstancedMesh(stickGeo, this.m.woodDark, INCENSE_SLOTS);
-    this.stickTips = new THREE.InstancedMesh(new THREE.SphereGeometry(0.025, 6, 4), new THREE.MeshBasicMaterial({ color: '#ff7a2a' }), INCENSE_SLOTS);
-    for (let i = 0; i < INCENSE_SLOTS; i++) this.setStick(i, 0);
+    // one tray of INCENSE_SLOTS spots per censer (courtyard + every hall)
+    const total = INCENSE_SLOTS * CENSERS.length;
+    this.sticks = new THREE.InstancedMesh(stickGeo, this.m.woodDark, total);
+    this.stickTips = new THREE.InstancedMesh(new THREE.SphereGeometry(0.025, 6, 4), new THREE.MeshBasicMaterial({ color: '#ff7a2a' }), total);
+    this.sticks.frustumCulled = this.stickTips.frustumCulled = false;
+    for (let i = 0; i < total; i++) this.updateStick(i, Date.now());
     s.add(this.sticks, this.stickTips);
     const smokeCount = opt.low ? 80 : 180;
     const smokeGeo = new THREE.BufferGeometry();
@@ -500,6 +503,20 @@ export class World {
       this.statue('standing', this.m.white, 1.6, h.x - 5.5, sy, sz + 0.3);
       this.statue('standing', this.m.white, 1.6, h.x + 5.5, sy, sz + 0.3);
     }
+    // the hall's own censer at the front edge of the altar
+    const ci = CENSERS.findIndex((c) => c.hall === h.id);
+    const cz0 = CENSERS[ci].z;
+    const cy = top + altarHeight(h);
+    this.batch.add(new THREE.CylinderGeometry(0.42, 0.32, 0.3, 20), this.m.bronze, mat(h.x, cy + 0.15, cz0));
+    this.batch.add(new THREE.TorusGeometry(0.42, 0.035, 6, 24).rotateX(Math.PI / 2), this.m.bronze, mat(h.x, cy + 0.3, cz0));
+    this.batch.add(new THREE.CircleGeometry(0.4, 20).rotateX(-Math.PI / 2), this.m.stone, mat(h.x, cy + 0.29, cz0), false);
+    const chit = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 1.2, 10), new THREE.MeshBasicMaterial({ visible: false }));
+    chit.position.set(h.x, cy + 0.4, cz0);
+    chit.userData.kind = 'censer';
+    chit.userData.censer = ci;
+    this.scene.add(chit);
+    this.clickables.push(chit);
+
     // candles + offerings along the altar front
     const cz = back + 0.4 + altarD - 0.35;
     for (const dx of main ? [-12, -4.5, 4.5, 12] : [-3.2, 3.2]) {
@@ -548,6 +565,7 @@ export class World {
     const hit = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 1.6, 12), new THREE.MeshBasicMaterial({ visible: false }));
     hit.position.set(censer.x, 0.8, censer.z);
     hit.userData.kind = 'censer';
+    hit.userData.censer = 0;
     this.scene.add(hit);
     this.clickables.push(hit);
     this.circles.push({ x: censer.x, z: censer.z, r: 1.55 });
@@ -1133,27 +1151,29 @@ export class World {
     this.dummy.scale.setScalar(1);
   }
 
+  /** `slot` here is the global index censer * INCENSE_SLOTS + spot */
   setStick(slot: number, litAt: number) {
     if (litAt) this.stickLitAt.set(slot, litAt);
     else this.stickLitAt.delete(slot);
     this.updateStick(slot, Date.now());
   }
 
-  private stickPos(slot: number) {
-    const [dx, dz] = incenseSpot(slot);
-    return [WORLD.censer.x + dx, WORLD.censer.z + dz];
+  private stickPos(slot: number): [number, number, number, number] {
+    const c = CENSERS[Math.floor(slot / INCENSE_SLOTS)];
+    const [dx, dz] = incenseSpot(slot % INCENSE_SLOTS);
+    return [c.x + dx * c.scale, c.y, c.z + dz * c.scale, c.scale];
   }
 
   private updateStick(slot: number, now: number) {
     const lit = this.stickLitAt.get(slot);
-    const [x, z] = this.stickPos(slot);
+    const [x, y, z, k] = this.stickPos(slot);
     const left = lit ? 1 - (now - lit) / INCENSE_BURN_MS : 0;
-    const len = left > 0 ? 0.08 + 0.5 * left : 0;
-    this.dummy.position.set(x, 1.24, z);
+    const len = left > 0 ? (0.08 + 0.5 * left) * Math.max(0.6, k) : 0;
+    this.dummy.position.set(x, y, z);
     this.dummy.scale.set(1, Math.max(len, 0.0001), 1);
     this.dummy.updateMatrix();
     this.sticks.setMatrixAt(slot, this.dummy.matrix);
-    this.dummy.position.set(x, 1.24 + len, z);
+    this.dummy.position.set(x, y + len, z);
     this.dummy.scale.setScalar(len ? 1 : 0.0001);
     this.dummy.updateMatrix();
     this.stickTips.setMatrixAt(slot, this.dummy.matrix);
@@ -1197,8 +1217,8 @@ export class World {
         p.life = 3 + Math.random() * 3;
         p.vx = (Math.random() - 0.5) * 0.12;
         p.vz = (Math.random() - 0.5) * 0.12;
-        const [x, z] = this.stickPos(p.slot);
-        pos.setXYZ(i, x, 1.8, z);
+        const [x, y, z] = this.stickPos(p.slot);
+        pos.setXYZ(i, x, y + 0.55, z);
         return;
       }
       const sway = Math.sin(p.age * 1.7 + i) * 0.004;

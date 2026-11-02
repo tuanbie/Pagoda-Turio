@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import {
+  CENSERS,
   HALLS,
+  INCENSE_SLOTS,
   Instrument,
   PAVILIONS,
   Pose,
@@ -79,6 +81,7 @@ export class Game {
   private stickCache = new Map<number, number>();
   private fishLog: [number, number][] = [];
   private teaPose: Pose = Pose.PourTea;
+  private censer = 0;
   private teaUntil = 0;
   /** game table I'm sitting at (or walking to) */
   private table = -1;
@@ -252,9 +255,10 @@ export class Game {
         }
         this.camTarget.set(this.x, 1.3, this.z);
         for (const [i, id] of msg.seats) this.setSeat(i, id);
-        for (const [slot, at] of msg.sticks) {
-          this.stickCache.set(slot, at - store.get().clockOffset);
-          this.world.setStick(slot, at - store.get().clockOffset);
+        for (const [c, slot, at] of msg.sticks) {
+          const k = c * INCENSE_SLOTS + slot;
+          this.stickCache.set(k, at - store.get().clockOffset);
+          this.world.setStick(k, at - store.get().clockOffset);
         }
         this.seat = -1;
         this.seated = false;
@@ -262,7 +266,7 @@ export class Game {
         store.set({
           selfId: msg.id,
           room: msg.room,
-          inc: msg.inc,
+          incs: msg.inc,
           seated: false,
           dj: msg.dj,
           chat: msg.chat.map(([id, name, adj, noun, text, at, ch]) => ({ key: ++chatKey, id, name, adj, noun, text, at, ch: ch ?? 0 })),
@@ -279,7 +283,7 @@ export class Game {
           }
         this.table = -1;
         this.atTable = false;
-        this.onIncense(msg.inc);
+        msg.inc.forEach((st, c) => this.onIncense(c, st));
         this.visitorsDirty = true;
         this.sendMove(true);
         // quietly sit back down on the same cushion if it is still free
@@ -336,12 +340,14 @@ export class Game {
         break;
       }
       case 'inc':
-        this.onIncense(msg.s);
+        this.onIncense(msg.c, msg.s);
         break;
-      case 'stk':
-        this.stickCache.set(msg.s[0], msg.s[1] - store.get().clockOffset);
-        this.world.setStick(msg.s[0], msg.s[1] - store.get().clockOffset);
+      case 'stk': {
+        const k = msg.c * INCENSE_SLOTS + msg.s[0];
+        this.stickCache.set(k, msg.s[1] - store.get().clockOffset);
+        this.world.setStick(k, msg.s[1] - store.get().clockOffset);
         break;
+      }
       case 'nm': {
         const r = this.remotes.get(msg.id);
         if (r) {
@@ -460,15 +466,41 @@ export class Game {
     }
   }
 
-  private onIncense(s: IncenseState) {
-    const prev = store.get().inc;
-    if (prev.cur === this.id && prev.ph === 1 && s.cur !== this.id) store.set({ myStickAt: serverNow() });
-    store.set({ inc: s });
-    if (s.cur === this.id && s.ph === 0 && this.then !== 'censer') {
+  private onIncense(c: number, s: IncenseState) {
+    const incs = [...store.get().incs];
+    const prev = incs[c];
+    if (prev && prev.cur === this.id && prev.ph === 1 && s.cur !== this.id) store.set({ myStickAt: serverNow() });
+    incs[c] = s;
+    store.set({ incs });
+    if (s.cur === this.id && s.ph === 0 && !(this.then === 'censer' && this.censer === c)) {
       this.leaveSeat();
+      this.leaveTable();
       this.activity = null;
-      this.goTo(WORLD.censerStand.x, WORLD.censerStand.z, 'censer');
+      this.censer = c;
+      this.goTo(CENSERS[c].stand.x, CENSERS[c].stand.z, 'censer');
     }
+  }
+
+  /** censer I'm offering at / queued for, or -1 */
+  private myCenser(): number {
+    return store.get().incs.findIndex((st) => st && (st.cur === this.id || st.q.includes(this.id)));
+  }
+
+  /** The hall I'm standing in gets the offering; otherwise the nearest censer. */
+  censerHere(): number {
+    const zone = store.get().zone;
+    const inHall = CENSERS.findIndex((c) => c.hall === zone);
+    if (inHall >= 0) return inHall;
+    let best = 0;
+    let bestD = Infinity;
+    CENSERS.forEach((c, i) => {
+      const d = Math.hypot(this.x - c.stand.x, this.z - c.stand.z);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    });
+    return best;
   }
 
   // ---------------- actions (called by UI / hotkeys) ----------------
@@ -497,9 +529,9 @@ export class Game {
     this.sendMove();
   }
 
-  offerIncense() {
+  offerIncense(c = this.censerHere()) {
     if (!this.net.online) return toast(t('incense.offline'));
-    this.net.send({ t: 'inc' });
+    this.net.send({ t: 'inc', c });
   }
 
   cancelIncense() {
@@ -598,8 +630,7 @@ export class Game {
 
   get pose(): Pose {
     if (performance.now() < this.teaUntil && this.seated) return this.teaPose;
-    const inc = store.get().inc;
-    if (inc.cur === this.id && inc.ph === 1) return Pose.Offer;
+    if (store.get().incs.some((st) => st && st.cur === this.id && st.ph === 1)) return Pose.Offer;
     if (this.speed > 0.3) return Pose.Idle;
     if (performance.now() < this.greetUntil) return Pose.Greet;
     if (this.activity !== null) return this.activity;
@@ -638,7 +669,7 @@ export class Game {
 
   private moveTo(x: number, z: number) {
     if (this.arriving) return;
-    if (store.get().inc.cur === this.id) this.cancelIncense();
+    if (this.myCenser() >= 0) this.cancelIncense();
     this.leaveSeat();
     this.leaveTable();
     if (this.activity === Pose.Bow || this.activity === Pose.Dance) this.activity = null;
@@ -754,7 +785,7 @@ export class Game {
     // an object wins only if it is in front of the ground point
     if (hit && (!ground || hit.distance < ground.distanceTo(this.ray.ray.origin) + 0.5)) {
       const kind = hit.object.userData.kind as string | undefined;
-      if (kind === 'censer') return this.offerIncense();
+      if (kind === 'censer') return this.offerIncense(hit.object.userData.censer as number);
       if (kind === 'donation') return store.set({ panel: 'donate' });
       if (kind === 'dj') return store.set({ panel: 'dj' });
       if (kind === 'table') return store.set({ panel: 'game', gameTable: hit.object.userData.table as number });
@@ -1027,9 +1058,10 @@ export class Game {
       this.seated = true;
       store.set({ seated: true });
     } else if (then === 'censer') {
-      this.x = WORLD.censerStand.x;
-      this.z = WORLD.censerStand.z;
-      this.r = Math.PI;
+      const c = CENSERS[this.censer];
+      this.x = c.stand.x;
+      this.z = c.stand.z;
+      this.r = Math.atan2(c.x - c.stand.x, c.z - c.stand.z);
     } else if (then === 'table' && this.table >= 0) {
       const st = tableSeat(TABLES[this.table], this.tableSide);
       this.x = st.x;

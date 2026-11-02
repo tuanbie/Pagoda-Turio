@@ -31,7 +31,8 @@ export interface AppState {
   seated: boolean;
   zone: Zone;
   panel: Panel;
-  inc: IncenseState;
+  /** incense queue per censer (0 = courtyard, then one per hall) */
+  incs: IncenseState[];
   myStickAt: number;
   beadsTotal: number;
   moktakAuto: boolean;
@@ -136,7 +137,7 @@ export const store = new Store({
   seated: false,
   zone: 'path',
   panel: null,
-  inc: { cur: null, ph: 0, until: 0, q: [] },
+  incs: [],
   myStickAt: 0,
   beadsTotal: ls.get('beadsTotal', 0),
   moktakAuto: false,

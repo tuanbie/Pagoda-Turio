@@ -143,8 +143,14 @@ export function ServiceBanner() {
 
 export function IncenseCard() {
   const t = useT();
-  const inc = useStore((s) => s.inc);
+  const incs = useStore((s) => s.incs);
   const me = useStore((s) => s.selfId);
+  const zone = useStore((s) => s.zone);
+  // the censer I'm queued at, else the one of the hall I'm in (to show who is offering)
+  const mine = incs.findIndex((st) => st && (st.cur === me || st.q.includes(me)));
+  const here = runtime.game?.censerHere() ?? 0;
+  void zone;
+  const inc = incs[mine >= 0 ? mine : here] ?? { cur: null, ph: 0, until: 0, q: [] };
   const myStickAt = useStore((s) => s.myStickAt);
   const locale = useStore((s) => s.locale);
   const visitors = useStore((s) => s.visitors);
