@@ -342,6 +342,7 @@ export class Pond {
       }
     }
     flowers.count = fi;
+    pads.userData.chunk = flowers.userData.chunk = true;
     w.scene.add(pads, flowers);
     this.buildBridge();
 

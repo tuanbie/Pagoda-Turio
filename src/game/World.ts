@@ -76,7 +76,8 @@ export class Batch {
     });
   }
 
-  flush(scene: THREE.Scene, receive: boolean) {
+  flush(scene: THREE.Scene, receive: boolean): THREE.Mesh[] {
+    const out: THREE.Mesh[] = [];
     for (const { mat, cast, geos } of this.groups.values()) {
       const merged = mergeGeometries(geos, false);
       merged.computeBoundingSphere();
@@ -85,9 +86,11 @@ export class Batch {
       mesh.receiveShadow = receive;
       mesh.matrixAutoUpdate = false;
       scene.add(mesh);
+      out.push(mesh);
       for (const g of geos) g.dispose();
     }
     this.groups.clear();
+    return out;
   }
 }
 
@@ -120,6 +123,9 @@ export class World {
   readonly drum = new THREE.Group();
   readonly dj: Avatar;
   readonly pond: Pond;
+  private cullables: { obj: THREE.Object3D; c: THREE.Vector3; r: number }[] = [];
+  private cullDist = Infinity;
+  private cullClock = 0;
   readonly shuttle: Shuttle;
   readonly gameTables: GameTables;
   readonly circles: Circle[] = [];
@@ -148,7 +154,8 @@ export class World {
 
   constructor(readonly opt: WorldOptions) {
     const s = this.scene;
-    s.fog = new THREE.FogExp2('#d9dccb', opt.low ? 0.008 : 0.0042);
+    // denser fog on lighter tiers matches their shorter draw distance
+    s.fog = new THREE.FogExp2('#d9dccb', opt.low ? 0.0105 : opt.density < 1 ? 0.0075 : 0.0042);
 
     // ---------- materials ----------
     // weak GPUs get Lambert (per-vertex-ish, far cheaper) with the same colours / textures
@@ -269,7 +276,11 @@ export class World {
     this.dj = this.buildMoonYard();
     this.buildForest();
     this.buildMountains();
-    this.batch.flush(s, opt.shadows);
+    for (const mesh of this.batch.flush(s, opt.shadows))
+      if (mesh.material !== this.m.mountain && mesh.material !== this.m.mountain2) this.cullable(mesh);
+    this.chunkInstances();
+    // phones / weak GPUs: chunks beyond this distance are hidden; fog hides the edge
+    this.cullDist = opt.density >= 1 ? Infinity : opt.low ? 100 : 140;
 
     // ---------- seats ----------
     const cushionIdx = SEATS.flatMap((x, i) => (x.area !== 'bodhi' ? [i] : []));
@@ -737,6 +748,7 @@ export class World {
     }
     this.dummy.scale.setScalar(1);
     flowers.castShadow = true;
+    flowers.userData.chunk = stems.userData.chunk = true;
     this.scene.add(flowers, stems);
     // bonsai pots + benches + a white Quan Âm statue at the centre
     for (const [px, pz] of [
@@ -881,6 +893,7 @@ export class World {
     const bamboo = spots.filter((s) => s[3] >= 0.85);
     const inst = (geo: THREE.BufferGeometry, m: THREE.Material, n: number) => {
       const im = new THREE.InstancedMesh(geo, m, Math.max(1, n));
+      im.userData.chunk = true;
       im.castShadow = true;
       im.receiveShadow = false;
       this.scene.add(im);
@@ -936,6 +949,7 @@ export class World {
         if (this.occupied(x, z, -1.5)) continue;
         put(grass, gi++, x, 0.2, z, 0.7 + r() * 0.8, 0.6 + r() * 0.8, 0.7 + r() * 0.8, r() * 3);
       }
+      grass.userData.chunk = true;
       this.scene.add(grass);
     }
     const rock = new THREE.DodecahedronGeometry(0.6, 0);
@@ -1023,6 +1037,64 @@ export class World {
     const sz = Math.round(z);
     this.sun.target.position.set(sx, 0, sz);
     this.sun.position.set(sx + dir.x * 80, dir.y * 80, sz + dir.z * 80);
+  }
+
+  /**
+   * Split big instanced crowds (trees, bamboo, grass, flowers, lily pads) into 40 m chunks.
+   * One InstancedMesh spanning the whole grounds is always "in view"; per-chunk meshes let
+   * frustum culling skip everything behind the camera — the biggest win on phones.
+   */
+  private cullable(obj: THREE.Mesh | THREE.InstancedMesh) {
+    const bs = (obj as THREE.InstancedMesh).boundingSphere ?? obj.geometry.boundingSphere;
+    if (!bs) return;
+    // huge things (the ground) stay visible
+    if (bs.radius > 120) return;
+    this.cullables.push({ obj, c: bs.center.clone(), r: bs.radius });
+  }
+
+  /** Distance culling (only on medium / low tiers). Cheap: ~a few hundred checks, 4× a second. */
+  cull(cam: THREE.Vector3, dt: number) {
+    if (this.cullDist === Infinity) return;
+    this.cullClock += dt;
+    if (this.cullClock < 0.25) return;
+    this.cullClock = 0;
+    for (const c of this.cullables) c.obj.visible = c.c.distanceTo(cam) - c.r < this.cullDist;
+  }
+
+  private chunkInstances() {
+    const CH = 40;
+    const m = new THREE.Matrix4();
+    const color = new THREE.Color();
+    const crowds = this.scene.children.filter((o) => (o as THREE.InstancedMesh).isInstancedMesh && o.userData.chunk) as THREE.InstancedMesh[];
+    for (const im of crowds) {
+      const groups = new Map<string, number[]>();
+      for (let i = 0; i < im.count; i++) {
+        im.getMatrixAt(i, m);
+        const key = `${Math.floor(m.elements[12] / CH)},${Math.floor(m.elements[14] / CH)}`;
+        let g = groups.get(key);
+        if (!g) groups.set(key, (g = []));
+        g.push(i);
+      }
+      if (groups.size <= 1) continue;
+      for (const idx of groups.values()) {
+        const part = new THREE.InstancedMesh(im.geometry, im.material, idx.length);
+        idx.forEach((src, j) => {
+          im.getMatrixAt(src, m);
+          part.setMatrixAt(j, m);
+          if (im.instanceColor) {
+            im.getColorAt(src, color);
+            part.setColorAt(j, color);
+          }
+        });
+        part.castShadow = im.castShadow;
+        part.receiveShadow = im.receiveShadow;
+        part.computeBoundingSphere();
+        this.scene.add(part);
+        this.cullable(part);
+      }
+      im.removeFromParent();
+      im.dispose();
+    }
   }
 
   /** Free GPU memory (avatars use shared geometry, so they are left alone). */

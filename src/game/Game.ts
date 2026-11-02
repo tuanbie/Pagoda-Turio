@@ -846,6 +846,7 @@ export class Game {
     );
     this.camera.lookAt(this.camTarget);
     this.world.followShadow(this.x, this.z);
+    this.world.cull(this.camera.position, dt);
 
     this.slowUpdates(dt);
     this.renderer.render(this.world.scene, this.camera);
