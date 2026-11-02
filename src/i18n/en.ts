@@ -99,7 +99,7 @@ export const en = {
   'settings.qAuto': 'Auto',
   'settings.qHigh': 'High',
   'settings.qMedium': "Medium",
-  'settings.qLow': 'Battery saver',
+  'settings.qLow': "Low",
   'settings.controls': 'Controls',
   'settings.controlsText':
     'Click ground · WASD · arrows to walk\nDrag to look around · wheel to zoom\n1 · E · Space bow / stop · 2 beads · 3 greet · 4 dance · 5 moktak · 6 incense\nIn the moonlight yard you dance instead of bowing.',

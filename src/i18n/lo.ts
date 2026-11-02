@@ -102,7 +102,7 @@ export const lo: Record<Key, string> = {
   'settings.qAuto': 'ອັດຕະໂນມັດ',
   'settings.qHigh': 'ສູງ',
   'settings.qMedium': "ກາງ",
-  'settings.qLow': 'ປະຢັດແບັດ',
+  'settings.qLow': "ຕ່ຳ",
   'settings.controls': 'ວິທີຄວບຄຸມ',
   'settings.controlsText':
     'ຄລິກພື້ນ · WASD · ປຸ່ມລູກສອນເພື່ອຍ່າງ\nລາກເພື່ອເບິ່ງອ້ອມ · ໝຸນລໍ້ເມົາເພື່ອຊູມ\n1 · E · Space ກາບ / ຢຸດ · 2 ລູກປະຄຳ · 3 ພະນົມມື · 4 ເຕັ້ນ · 5 ໂປງໄມ້ · 6 ຈູດທູບ\nຢູ່ລານແສງເດືອນ ທ່ານຈະເຕັ້ນແທນການກາບ.',

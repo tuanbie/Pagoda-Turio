@@ -102,7 +102,7 @@ export const km: Record<Key, string> = {
   'settings.qAuto': 'ស្វ័យប្រវត្តិ',
   'settings.qHigh': 'ខ្ពស់',
   'settings.qMedium': "មធ្យម",
-  'settings.qLow': 'សន្សំថ្ម',
+  'settings.qLow': "ទាប",
   'settings.controls': 'របៀបបញ្ជា',
   'settings.controlsText':
     'ចុចលើដី · WASD · ព្រួញ ដើម្បីដើរ\nអូសដើម្បីមើលជុំវិញ · រមូរកណ្តុរដើម្បីពង្រីក\n1 · E · Space ក្រាប / ឈប់ · 2 អង្កាំ · 3 សំពះ · 4 រាំ · 5 គោលឈើ · 6 អុជធូប\nនៅទីលានព្រះចន្ទ អ្នកនឹងរាំជំនួសការក្រាប។',

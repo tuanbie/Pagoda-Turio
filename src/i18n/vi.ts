@@ -101,7 +101,7 @@ export const vi: Record<Key, string> = {
   'settings.qAuto': 'Tự động',
   'settings.qHigh': 'Cao',
   'settings.qMedium': "Trung bình",
-  'settings.qLow': 'Tiết kiệm pin',
+  'settings.qLow': "Thấp",
   'settings.controls': 'Cách điều khiển',
   'settings.controlsText':
     'Nhấp xuống đất · WASD · phím mũi tên để đi\nKéo để nhìn quanh · lăn chuột để phóng to\n1 · E · Space lạy / dừng · 2 tràng hạt · 3 chắp tay · 4 nhảy · 5 mõ · 6 dâng hương\nỞ Sân Trăng bạn sẽ nhảy thay vì lạy.',
