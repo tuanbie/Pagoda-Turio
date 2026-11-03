@@ -146,7 +146,7 @@ export const en = {
   'toast.needSound': 'Turn on sound from the top bar.',
   'app.meaning': "Pure Heart Temple",
   'welcome.name': "Your name",
-  'welcome.namePh': "e.g. Minh An (optional)",
+  'welcome.namePh': "e.g. Minh An · optional, no real name needed",
   'settings.name': "Display name",
   'settings.nameSave': "Save",
   'settings.nameSaved': "Name updated",
@@ -267,8 +267,6 @@ export const en = {
   'feedback.kind.other': "Other",
   'feedback.message': "What should be improved?",
   'feedback.placeholder': "e.g. the bridge is hard to find on the map, I would love a meditation timer…",
-  'feedback.name': "Your name (optional)",
-  'feedback.contact': "Email / Zalo / phone (optional, if you want a reply)",
   'feedback.send': "Send privately",
   'feedback.sending': "Sending…",
   'feedback.thanks': "Thank you! Your feedback has been sent 🙏",
@@ -276,6 +274,10 @@ export const en = {
   'feedback.tooShort': "Please write a few words.",
   'feedback.close': "Close",
   'feedback.orContact': "Or reach me directly:",
+  'feedback.privacy': "We don't collect your name, contact details or IP address. Please keep personal information out of the message. Feedback is deleted after 12 months. Want a reply? Reach out directly on Discord or by email below.",
+  'settings.privacy': "Privacy",
+  'settings.privacyText': "No account needed. No cookies, no trackers, no ads.\n• Your display name (optional, no real name needed) and settings stay on your device. While you are in the temple, your name and chat messages go to the people in your room. The server keeps only the last 40 chat messages in memory, never writes them down, and loses them on restart.\n• Feedback stores only the message, its kind, your language and the time. No name, contact or IP address is stored, and feedback is deleted after 12 months.\n• IP addresses are used briefly in memory to stop spam. They are never stored or logged.\n• The server runs on Vercel (Singapore). Fonts load from this site, not from a third party.\nTo delete feedback you sent, email {email} with its text.",
+  'chat.rules': "Keep it kind. No personal information, insults or illegal content.",
 } as const;
 
 export type Key = keyof typeof en;

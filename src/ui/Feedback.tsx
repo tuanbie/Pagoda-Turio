@@ -9,11 +9,8 @@ import { siteConfig } from '../config.ts';
 export function FeedbackPanel() {
   const t = useT();
   const locale = useStore((s) => s.locale);
-  const myName = useStore((s) => s.myName);
   const [kind, setKind] = useState<FeedbackInput['kind']>('idea');
   const [message, setMessage] = useState('');
-  const [name, setName] = useState(myName);
-  const [contact, setContact] = useState('');
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error' | 'short'>('idle');
   const close = () => store.set({ panel: null });
 
@@ -24,7 +21,8 @@ export function FeedbackPanel() {
       const res = await fetch(`${BACKEND}/api/feedback`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ kind, message, name, contact, locale } satisfies FeedbackInput),
+        // no name, contact or other personal data: only what is needed to read the feedback
+        body: JSON.stringify({ kind, message, locale } satisfies FeedbackInput),
       });
       setState(res.ok ? 'done' : 'error');
     } catch {
@@ -75,14 +73,7 @@ export function FeedbackPanel() {
               {message.length} / {FEEDBACK_MAX}
             </small>
           </label>
-          <label>
-            <span>{t('feedback.name')}</span>
-            <input value={name} maxLength={60} onChange={(e) => setName(e.target.value)} />
-          </label>
-          <label>
-            <span>{t('feedback.contact')}</span>
-            <input value={contact} maxLength={120} onChange={(e) => setContact(e.target.value)} />
-          </label>
+          <p className="muted small">{t('feedback.privacy')}</p>
           {state === 'short' && <p className="error">{t('feedback.tooShort')}</p>}
           {state === 'error' && <p className="error">{t('feedback.error')}</p>}
           <button className="primary" type="submit" disabled={state === 'sending'}>

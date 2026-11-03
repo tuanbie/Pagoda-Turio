@@ -68,6 +68,7 @@ export function ChatPanel() {
         </button>
       </header>
       <div className="chat-lines" ref={list} aria-live="polite">
+        <p className="chat-rules">{t('chat.rules')}</p>
         {lines.length === 0 && <p className="muted small">{t('chat.empty')}</p>}
         {lines.map((l) => (
           <p key={l.key} className={`${l.id === me ? 'mine' : ''} ${l.ch === 1 ? 'room' : ''}`}>

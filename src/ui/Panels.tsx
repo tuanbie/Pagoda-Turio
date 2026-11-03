@@ -131,6 +131,10 @@ export function SettingsPanel() {
         <p>{t('settings.creditsText')}</p>
         <p className="muted small">{t('app.disclaimer', { name: siteConfig.developer.name })}</p>
       </details>
+      <details>
+        <summary>{t('settings.privacy')}</summary>
+        <p className="pre">{t('settings.privacyText', { email: siteConfig.contact.email })}</p>
+      </details>
     </Modal>
   );
 }

@@ -306,6 +306,7 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
 .chat-lines p { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--ink-soft); overflow-wrap: anywhere; }
 .chat-lines p b { color: var(--gold); font-weight: 600; margin-right: 6px; }
 .chat-lines p.mine b { color: #9ed8a8; }
+.chat-lines p.chat-rules { font-size: 11.5px; color: var(--muted); }
 .chat form { display: flex; gap: 6px; padding: 8px; border-top: 1px solid var(--line); }
 .chat input { min-height: 38px; font-size: 14px; }
 .chat form button { flex: none; width: 40px; border-radius: 10px; border: 0; background: var(--gold); color: #2a2418; display: grid; place-items: center; }

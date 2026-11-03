@@ -148,7 +148,7 @@ export const vi: Record<Key, string> = {
   'toast.needSound': 'Bật âm thanh ở thanh phía trên.',
   'app.meaning': "Ngôi chùa của tâm thanh tịnh",
   'welcome.name': "Tên của bạn",
-  'welcome.namePh': "VD: Minh An (không bắt buộc)",
+  'welcome.namePh': "VD: Minh An · không bắt buộc, không cần tên thật",
   'settings.name': "Tên hiển thị",
   'settings.nameSave': "Lưu",
   'settings.nameSaved': "Đã đổi tên",
@@ -269,8 +269,6 @@ export const vi: Record<Key, string> = {
   'feedback.kind.other': "Khác",
   'feedback.message': "Bạn muốn cải thiện điều gì?",
   'feedback.placeholder': "VD: khó tìm cây cầu trên bản đồ, mong có thêm đồng hồ thiền…",
-  'feedback.name': "Tên của bạn (không bắt buộc)",
-  'feedback.contact': "Email / Zalo / SĐT (không bắt buộc, nếu muốn được trả lời)",
   'feedback.send': "Gửi riêng",
   'feedback.sending': "Đang gửi…",
   'feedback.thanks': "Cảm ơn bạn! Góp ý đã được gửi 🙏",
@@ -278,6 +276,10 @@ export const vi: Record<Key, string> = {
   'feedback.tooShort': "Bạn viết thêm vài chữ nhé.",
   'feedback.close': "Đóng",
   'feedback.orContact': "Hoặc liên hệ trực tiếp:",
+  'feedback.privacy': "Không thu tên, thông tin liên hệ hay địa chỉ IP. Đừng ghi thông tin cá nhân vào nội dung. Góp ý tự xóa sau 12 tháng. Muốn được trả lời? Hãy liên hệ trực tiếp qua Discord hoặc email bên dưới.",
+  'settings.privacy': "Quyền riêng tư",
+  'settings.privacyText': "Không cần tài khoản. Không cookie, không công cụ theo dõi, không quảng cáo.\n• Tên hiển thị (không bắt buộc, không cần tên thật) và cài đặt chỉ lưu trên thiết bị của bạn. Khi bạn ở trong chùa, tên và tin nhắn được gửi cho những người cùng phòng. Máy chủ chỉ giữ 40 tin nhắn gần nhất trong bộ nhớ, không ghi lại, và xóa hết khi khởi động lại.\n• Góp ý chỉ lưu nội dung, loại góp ý, ngôn ngữ và thời điểm; không lưu tên, liên hệ hay địa chỉ IP; tự xóa sau 12 tháng.\n• Địa chỉ IP chỉ được dùng tạm trong bộ nhớ để chống spam, không lưu và không ghi vào nhật ký.\n• Máy chủ chạy trên Vercel (Singapore). Phông chữ tải từ chính trang này, không qua bên thứ ba.\nMuốn xóa một góp ý đã gửi, hãy email {email} kèm nội dung góp ý đó.",
+  'chat.rules': "Giữ lời tử tế. Không đăng thông tin cá nhân, lời xúc phạm hay nội dung vi phạm pháp luật.",
 };
 
 export const viNames = {
