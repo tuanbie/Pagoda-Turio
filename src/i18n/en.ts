@@ -105,7 +105,7 @@ export const en = {
     'Click ground · WASD · arrows to walk\nDrag to look around · wheel to zoom\n1 · E · Space bow / stop · 2 beads · 3 greet · 4 dance · 5 moktak · 6 incense\nIn the moonlight yard you dance instead of bowing.',
   'settings.credits': 'Credits',
   'settings.creditsText':
-    'All 3D scenery and sounds are generated in your browser (Three.js + Web Audio). Inspired by quiet online temples. Tịnh Tâm Tự is a fictional virtual temple in a personal software project. It is not a real temple and does not represent any temple or religious organisation.',
+    'All 3D scenery and sounds are generated in your browser (Three.js + Web Audio). Inspired by quiet online temples.',
   'settings.language': 'Language',
   'settings.close': 'Close settings',
 
@@ -123,7 +123,7 @@ export const en = {
   'visitors.close': 'Close',
 
   'donate.title': "Support the developer · servers & development",
-  'donate.text': "Tịnh Tâm Tự is personal software built by an independent developer, free and ad-free. Support goes to the developer's personal account and only pays for servers, the domain and development. This is not a temple donation or a religious offering: Tịnh Tâm Tự is a fictional virtual temple, it does not represent any temple, place of worship or Buddhist organisation, and no money goes to any temple or to religious purposes.",
+  'donate.text': "Tịnh Tâm Tự is personal software, free and ad-free. Support goes to the developer's personal account and only pays for servers, the domain and development (new features, bug fixes).",
   'donate.demo': 'Demo build — configure your own payment details in frontend/src/config.ts.',
   'donate.copy': 'Copy',
   'donate.copied': 'Copied',
@@ -203,6 +203,10 @@ export const en = {
   'donate.note': "Entirely voluntary — every feature stays free whether or not you chip in. Thank you!",
   'donate.scan': "Scan with any banking or wallet app (VietQR · NAPAS 247) — the developer's personal account",
   'donate.qrAlt': "VietQR code to support the developer",
+  'app.disclaimer': "A fictional virtual temple — personal software developed by {name}. It is not a real temple and does not represent any temple or religious organisation.",
+  'donate.by': "A community tech project developed by {name}, an independent developer.",
+  'donate.notReligious': "This is not a temple donation or a religious offering. Tịnh Tâm Tự is a fictional virtual temple inside a software product — not a real temple — and it does not represent any temple, place of worship or Buddhist organisation. No money goes to any temple or to religious or spiritual purposes.",
+  'donate.memo': "Suggested transfer note",
   'zone.jizo': "Kṣitigarbha Hall",
   'zone.maitreya': "Maitreya Hall",
   'zone.tea': "Tea house",

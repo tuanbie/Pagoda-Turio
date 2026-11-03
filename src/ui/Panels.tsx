@@ -129,6 +129,7 @@ export function SettingsPanel() {
       <details>
         <summary>{t('settings.credits')}</summary>
         <p>{t('settings.creditsText')}</p>
+        <p className="muted small">{t('app.disclaimer', { name: siteConfig.developer.name })}</p>
       </details>
     </Modal>
   );
@@ -210,47 +211,64 @@ export function VisitorsPanel() {
   );
 }
 
-export function DonatePanel() {
+function CopyRow({ value, copyText, sub }: { value: string; copyText: string; sub: string }) {
   const t = useT();
   const [copied, setCopied] = useState(false);
+  return (
+    <div className="row-card">
+      <div>
+        <strong>{value}</strong>
+        <small>{sub}</small>
+      </div>
+      <button
+        className="toggle"
+        onClick={() =>
+          navigator.clipboard
+            .writeText(copyText)
+            .then(() => {
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1800);
+            })
+            .catch(() => {})
+        }
+      >
+        {copied ? t('donate.copied') : t('donate.copy')}
+      </button>
+    </div>
+  );
+}
+
+/** Voluntary support for the developer — software costs only, never a temple donation. */
+export function DonatePanel() {
+  const t = useT();
   const d = siteConfig.donation;
+  const dev = siteConfig.developer;
   return (
     <Modal title={t('donate.title')} onClose={closePanel} closeLabel={t('donate.close')}>
+      <p>
+        {t('donate.by', { name: dev.name })}{' '}
+        {dev.url && (
+          <a href={dev.url} target="_blank" rel="noreferrer">
+            {dev.url.replace(/^https?:\/\//, '')}
+          </a>
+        )}
+      </p>
       <p>{t('donate.text')}</p>
+      <p className="donate-disclaimer" role="note">
+        {t('donate.notReligious')}
+      </p>
       {d.qr && (
         <figure className="donate-qr">
           <img src={d.qr} alt={t('donate.qrAlt')} width={337} height={371} loading="lazy" />
           <figcaption>{t('donate.scan')}</figcaption>
         </figure>
       )}
-      <p className="donate-note">🙏 {t('donate.note')}</p>
+      {d.memo && <CopyRow value={d.memo} copyText={d.memo} sub={t('donate.memo')} />}
+      {d.accountNumber && <CopyRow value={d.accountNumber} copyText={d.accountNumber.replace(/\s/g, '')} sub={`${d.bank} · ${d.accountName}`} />}
+      <p className="donate-note">☕ {t('donate.note')}</p>
       <button className="link-btn" onClick={() => store.set({ panel: 'feedback' })}>
         💬 {t('feedback.open')}
       </button>
-      {d.accountNumber && (
-        <div className="row-card">
-          <div>
-            <strong>{d.accountNumber}</strong>
-            <small>
-              {d.bank} · {d.accountName}
-            </small>
-          </div>
-          <button
-            className="toggle"
-            onClick={() =>
-              navigator.clipboard
-                .writeText(d.accountNumber.replace(/\s/g, ''))
-                .then(() => {
-                  setCopied(true);
-                  setTimeout(() => setCopied(false), 1800);
-                })
-                .catch(() => {})
-            }
-          >
-            {copied ? t('donate.copied') : t('donate.copy')}
-          </button>
-        </div>
-      )}
       {d.links.map((l) => (
         <a key={l.url} className="link-btn" href={l.url} target="_blank" rel="noreferrer">
           {l.label}

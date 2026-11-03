@@ -390,7 +390,9 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
 .donate-qr { margin: 6px auto 4px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .donate-qr img { width: min(240px, 70vw); height: auto; border-radius: 14px; background: #fff; padding: 8px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
 .donate-qr figcaption { font-size: 12.5px; color: var(--muted); text-align: center; }
-.donate-note { margin: 10px 0 4px; padding: 10px 12px; border-radius: 12px; background: var(--gold-soft); color: #f3e3bd !important; font-size: 13.5px; line-height: 1.5; }
+.donate-disclaimer { margin: 10px 0; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--gold); color: var(--ink-soft); font-size: 13px; line-height: 1.5; }
+.welcome-card .disclaimer { margin: 4px 0 0; max-width: 40ch; font-size: 11.5px; line-height: 1.45; color: var(--muted); text-align: center; }
+.donate-note {margin: 10px 0 4px; padding: 10px 12px; border-radius: 12px; background: var(--gold-soft); color: #f3e3bd !important; font-size: 13.5px; line-height: 1.5; }
 
 /* ---------- minimap ---------- */
 .minimap {

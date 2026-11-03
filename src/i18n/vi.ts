@@ -107,7 +107,7 @@ export const vi: Record<Key, string> = {
     'Nhấp xuống đất · WASD · phím mũi tên để đi\nKéo để nhìn quanh · lăn chuột để phóng to\n1 · E · Space lạy / dừng · 2 tràng hạt · 3 chắp tay · 4 nhảy · 5 mõ · 6 dâng hương\nỞ Sân Trăng bạn sẽ nhảy thay vì lạy.',
   'settings.credits': 'Ghi công',
   'settings.creditsText':
-    'Toàn bộ cảnh 3D và âm thanh được tạo ngay trong trình duyệt (Three.js + Web Audio). Lấy cảm hứng từ những ngôi chùa online tĩnh lặng. Tịnh Tâm Tự là chùa ảo hư cấu trong một sản phẩm phần mềm cá nhân, không phải chùa có thật và không đại diện cho bất kỳ ngôi chùa hay tổ chức tôn giáo nào.',
+    'Toàn bộ cảnh 3D và âm thanh được tạo ngay trong trình duyệt (Three.js + Web Audio). Lấy cảm hứng từ những ngôi chùa online tĩnh lặng.',
   'settings.language': 'Ngôn ngữ',
   'settings.close': 'Đóng cài đặt',
 
@@ -125,7 +125,7 @@ export const vi: Record<Key, string> = {
   'visitors.close': 'Đóng',
 
   'donate.title': "Ủng hộ tác giả · duy trì máy chủ và phát triển",
-  'donate.text': "Tịnh Tâm Tự là phần mềm cá nhân do một lập trình viên độc lập phát triển, miễn phí và không quảng cáo. Khoản ủng hộ được chuyển vào tài khoản cá nhân của lập trình viên và chỉ dùng để trả chi phí máy chủ, tên miền và phát triển phần mềm. Đây không phải công đức hay cúng dường: Tịnh Tâm Tự là chùa ảo hư cấu, không đại diện cho bất kỳ ngôi chùa, cơ sở thờ tự hay tổ chức Phật giáo nào, và không khoản tiền nào được chuyển cho nhà chùa hay dùng cho mục đích tôn giáo.",
+  'donate.text': "Tịnh Tâm Tự là phần mềm cá nhân, miễn phí và không quảng cáo. Khoản ủng hộ được chuyển vào tài khoản cá nhân của lập trình viên và chỉ dùng để trả chi phí máy chủ, tên miền và phát triển phần mềm (thêm tính năng, sửa lỗi).",
   'donate.demo': 'Bản demo — cấu hình thông tin thanh toán của bạn trong frontend/src/config.ts.',
   'donate.copy': 'Sao chép',
   'donate.copied': 'Đã chép',
@@ -205,6 +205,10 @@ export const vi: Record<Key, string> = {
   'donate.note': "Hoàn toàn tự nguyện — mọi tính năng vẫn miễn phí dù bạn có ủng hộ hay không. Cảm ơn bạn!",
   'donate.scan': "Quét bằng ứng dụng ngân hàng / ví bất kỳ (VietQR · NAPAS 247) — tài khoản cá nhân của lập trình viên",
   'donate.qrAlt': "Mã VietQR ủng hộ lập trình viên",
+  'app.disclaimer': "Chùa ảo hư cấu — sản phẩm phần mềm cá nhân do {name} phát triển, không phải chùa có thật và không đại diện cho bất kỳ ngôi chùa hay tổ chức tôn giáo nào.",
+  'donate.by': "Sản phẩm công nghệ phục vụ cộng đồng do {name} (lập trình viên độc lập) phát triển.",
+  'donate.notReligious': "Đây không phải công đức hay cúng dường. Tịnh Tâm Tự là ngôi chùa ảo hư cấu trong một sản phẩm phần mềm, không phải chùa có thật và không đại diện cho bất kỳ ngôi chùa, cơ sở thờ tự hay tổ chức Phật giáo nào. Không khoản tiền nào được chuyển cho nhà chùa hay dùng cho mục đích tôn giáo, tâm linh.",
+  'donate.memo': "Nội dung chuyển khoản gợi ý",
   'zone.jizo': "Địa Tạng Điện",
   'zone.maitreya': "Di Lặc Điện",
   'zone.tea': "Trà Thất",

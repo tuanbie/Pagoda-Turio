@@ -35,5 +35,19 @@ src/
 shared/             protocol + world layout (shared with the backend)
 ```
 
-Before going live, put your own payment details in `src/config.ts`.
+Before going live, put your own name and payment details in `src/config.ts`.
 The Lao and Khmer translations still need review by native speakers.
+
+## Not a real temple · supporting the developer
+
+Tịnh Tâm Tự is a **fictional virtual temple** in a personal software project. It is not a real temple and does not represent any temple, place of worship, the Vietnam Buddhist Sangha or any other religious organisation.
+
+The "Support the developer" button (heart icon in the top bar) works like Buy Me a Coffee / GitHub Sponsors: voluntary support for an independent developer, paid into their **personal account**, used only for servers, the domain and development. It is **not** "công đức" or "cúng dường", and no money goes to any temple or to religious purposes. The panel says this in all four languages.
+
+If you fork or deploy this project, keep it that way:
+
+- Never word the support feature as công đức / cúng dường / an offering / merit, and never suggest that money goes to a temple.
+- Keep money out of the 3D scene. No donation boxes, QR codes or bank details inside the temple.
+- Put the real developer or team name in `siteConfig.developer`. It appears in the disclaimer on the welcome screen, in Settings → Credits and in the support panel.
+- Keep the suggested transfer memo (`siteConfig.donation.memo`) about the software.
+- Raising money on behalf of a real temple needs written authorisation from that temple or the competent Sangha body, and has to follow the Law on Belief and Religion (2016) and Decree 93/2021/NĐ-CP. This project is not set up for that.

@@ -786,7 +786,6 @@ export class Game {
     if (hit && (!ground || hit.distance < ground.distanceTo(this.ray.ray.origin) + 0.5)) {
       const kind = hit.object.userData.kind as string | undefined;
       if (kind === 'censer') return this.offerIncense(hit.object.userData.censer as number);
-      if (kind === 'donation') return store.set({ panel: 'donate' });
       if (kind === 'dj') return store.set({ panel: 'dj' });
       if (kind === 'table') return store.set({ panel: 'game', gameTable: hit.object.userData.table as number });
       if (kind === 'pond') return this.releaseFish();

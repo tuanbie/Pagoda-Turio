@@ -559,7 +559,7 @@ export class World {
 
   private buildCourtyardPieces() {
     // censer on a stone dais
-    const { censer, donation } = WORLD;
+    const { censer } = WORLD;
     this.batch.add(new THREE.CylinderGeometry(1.4, 1.5, 0.35, 20), this.m.stone, mat(censer.x, 0.17, censer.z));
     this.batch.add(new THREE.CylinderGeometry(0.8, 0.58, 0.6, 24), this.m.bronze, mat(censer.x, 0.97, censer.z));
     this.batch.add(new THREE.TorusGeometry(0.8, 0.06, 8, 28).rotateX(Math.PI / 2), this.m.bronze, mat(censer.x, 1.27, censer.z));
@@ -575,21 +575,8 @@ export class World {
     this.scene.add(hit);
     this.clickables.push(hit);
     this.circles.push({ x: censer.x, z: censer.z, r: 1.55 });
-
-    // donate box (supports the app's development)
-    const box = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.95, 0.75), this.m.woodDark);
-    body.position.y = 0.48;
-    body.castShadow = true;
-    const label = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.4), new THREE.MeshBasicMaterial({ map: textures.sign('DONATE', '#f0d28a', '#4b2615', 256, 110, 'bold 54px "Be Vietnam Pro", sans-serif') }));
-    label.position.set(0, 0.55, 0.38);
-    box.add(body, label);
-    box.position.set(donation.x, this.groundHeight(donation.x, donation.z), donation.z);
-    box.rotation.y = -0.3;
-    box.traverse((o) => (o.userData.kind = 'donation'));
-    this.scene.add(box);
-    this.clickables.push(box);
-    this.circles.push({ x: donation.x, z: donation.z, r: 0.9 });
+    // No money box inside the temple: a box next to the censer reads as a real merit-donation
+    // box ("hòm công đức"). Supporting the developer lives only in the HUD, outside the scene.
   }
 
   private buildTower(x: number, z: number, kind: 'bell' | 'drum') {

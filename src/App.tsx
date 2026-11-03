@@ -6,6 +6,7 @@ import { Net } from './net/Net.ts';
 import { Game, webglAvailable } from './game/Game.ts';
 import { runtime } from './runtime.ts';
 import { t as tt } from './i18n/index.ts';
+import { siteConfig } from './config.ts';
 import { Icon, useT } from './ui/common.tsx';
 import { ActionBar, IncenseCard, NetBanner, ServiceBanner, StatusLine, Toast, TopBar } from './ui/Hud.tsx';
 import { DonatePanel, LanguageSelect, ServersPanel, SettingsPanel, VisitorsPanel } from './ui/Panels.tsx';
@@ -189,6 +190,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
           💬 {t('feedback.open')}
         </button>
         {online > 0 && <p className="online">{t('welcome.online', { n: online })}</p>}
+        <p className="disclaimer">{t('app.disclaimer', { name: siteConfig.developer.name })}</p>
       </div>
     </main>
   );
