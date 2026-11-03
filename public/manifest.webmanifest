@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "Tịnh Tâm Tự — chùa online",
+  "name": "Tịnh Tâm Tự — chùa ảo 3D",
   "short_name": "Tịnh Tâm Tự",
-  "description": "Ngôi chùa online 3D để cùng nhau ngồi tĩnh lặng.",
+  "description": "Chùa ảo 3D hư cấu để cùng nhau ngồi tĩnh lặng — phần mềm cá nhân, không đại diện cho bất kỳ ngôi chùa nào.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
