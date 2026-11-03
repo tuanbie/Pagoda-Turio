@@ -4,24 +4,76 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <meta name="theme-color" content="#24251f" />
-    <meta name="description" content="Tịnh Tâm Tự (淨心寺) — chùa ảo 3D hư cấu, một sản phẩm phần mềm cá nhân (không phải chùa có thật, không đại diện cho tổ chức tôn giáo nào): cùng nhau ngồi tĩnh lặng, lạy Phật, lần chuỗi, dâng hương. Tiếng Việt · English · ລາວ · ខ្មែរ" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <title>Tịnh Tâm Tự · Chùa ảo 3D</title>
+    <title>Tịnh Tâm Tự · Chùa ảo 3D – thiền và tĩnh tâm online</title>
+    <meta name="description" content="Chùa ảo 3D miễn phí để thiền và tĩnh tâm cùng mọi người: lạy Phật, lần tràng hạt, gõ mõ, dâng hương, nghe chuông. Không cần tài khoản. Không phải chùa thật." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="https://viengchua.bijancob.io.vn/" />
+
+    <!-- link previews (Facebook, Zalo, Messenger, Discord, X) -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Tịnh Tâm Tự" />
-    <meta property="og:title" content="Tịnh Tâm Tự · Chùa ảo 3D" />
-    <meta property="og:description" content="Chùa ảo 3D hư cấu để cùng nhau ngồi tĩnh lặng — phần mềm cá nhân, không đại diện cho bất kỳ ngôi chùa nào." />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:locale:alternate" content="lo_LA" />
+    <meta property="og:locale:alternate" content="km_KH" />
+    <meta property="og:title" content="Tịnh Tâm Tự · Chùa ảo 3D để thiền và tĩnh tâm online" />
+    <meta property="og:description" content="Vào một ngôi chùa ảo 3D, ngồi tĩnh lặng cùng những người đang online: lạy Phật, lần tràng hạt, gõ mõ, dâng hương. Miễn phí, không cần tài khoản. Phần mềm cá nhân, không phải chùa thật." />
     <meta property="og:url" content="https://viengchua.bijancob.io.vn/" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="https://viengchua.bijancob.io.vn/og-image.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Sân chùa ảo 3D Tịnh Tâm Tự với chánh điện, lư hương và hàng cây lúc chiều" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tịnh Tâm Tự · Chùa ảo 3D để thiền và tĩnh tâm online" />
+    <meta name="twitter:description" content="Ngồi tĩnh lặng cùng mọi người trong một ngôi chùa ảo 3D. Miễn phí, không cần tài khoản." />
+    <meta name="twitter:image" content="https://viengchua.bijancob.io.vn/og-image.jpg" />
+
+    <!-- installed app -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Tịnh Tâm Tự" />
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- structured data for search engines (a data block: not executed, so the CSP is unaffected) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://viengchua.bijancob.io.vn/#website",
+            "name": "Tịnh Tâm Tự",
+            "alternateName": ["淨心寺", "Tinh Tam Tu", "Chùa ảo 3D Tịnh Tâm Tự"],
+            "url": "https://viengchua.bijancob.io.vn/",
+            "inLanguage": ["vi", "en", "lo", "km"]
+          },
+          {
+            "@type": "WebApplication",
+            "name": "Tịnh Tâm Tự",
+            "url": "https://viengchua.bijancob.io.vn/",
+            "description": "Chùa ảo 3D hư cấu trên trình duyệt để thiền, tĩnh tâm và ngồi cùng mọi người: lạy Phật, lần tràng hạt, gõ mõ, dâng hương, nghe chuông, uống trà, chơi cờ. Miễn phí, không cần tài khoản. Phần mềm cá nhân, không phải chùa thật và không đại diện cho tổ chức tôn giáo nào.",
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "Mọi trình duyệt có WebGL 2",
+            "browserRequirements": "Requires JavaScript and WebGL 2",
+            "inLanguage": ["vi", "en", "lo", "km"],
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "VND" },
+            "image": "https://viengchua.bijancob.io.vn/og-image.jpg",
+            "author": { "@type": "Person", "name": "tuanbie", "url": "https://github.com/tuanbie" },
+            "isPartOf": { "@id": "https://viengchua.bijancob.io.vn/#website" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <noscript>Tịnh Tâm Tự cần JavaScript để mở chánh điện. / Please enable JavaScript.</noscript>
+    <noscript>
+      <h1>Tịnh Tâm Tự · Chùa ảo 3D</h1>
+      <p>Chùa ảo 3D miễn phí để thiền và tĩnh tâm cùng mọi người. Cần bật JavaScript và WebGL để vào chùa. / A free virtual 3D temple to sit quietly together. Please enable JavaScript.</p>
+      <p>Phần mềm cá nhân, không phải chùa thật. <a href="/chinh-sach-bao-mat/">Chính sách bảo mật</a> · <a href="/dieu-khoan/">Điều khoản &amp; đính chính</a></p>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

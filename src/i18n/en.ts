@@ -278,6 +278,9 @@ export const en = {
   'settings.privacy': "Privacy",
   'settings.privacyText': "No account needed. No cookies, no trackers, no ads.\n• Your display name (optional, no real name needed) and settings stay on your device. While you are in the temple, your name and chat messages go to the people in your room. The server keeps only the last 40 chat messages in memory, never writes them down, and loses them on restart.\n• Feedback stores only the message, its kind, your language and the time. No name, contact or IP address is stored, and feedback is deleted after 12 months.\n• IP addresses are used briefly in memory to stop spam. They are never stored or logged.\n• The server runs on Vercel (Singapore). Fonts load from this site, not from a third party.\nTo delete feedback you sent, email {email} with its text.",
   'chat.rules': "Keep it kind. No personal information, insults or illegal content.",
+  'app.docTitle': "Tịnh Tâm Tự · Virtual 3D temple – meditate online together",
+  'legal.privacy': "Privacy policy",
+  'legal.terms': "Terms & disclaimer",
 } as const;
 
 export type Key = keyof typeof en;

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FEEDBACK_MAX, type FeedbackInput } from '@sontu/shared';
 import { store, useStore } from '../store.ts';
 import { BACKEND } from '../net/Net.ts';
-import { Modal, useT } from './common.tsx';
+import { LegalLinks, Modal, useT } from './common.tsx';
 import { siteConfig } from '../config.ts';
 
 /** Private message to the developer: what should be improved. */
@@ -74,6 +74,7 @@ export function FeedbackPanel() {
             </small>
           </label>
           <p className="muted small">{t('feedback.privacy')}</p>
+          <LegalLinks />
           {state === 'short' && <p className="error">{t('feedback.tooShort')}</p>}
           {state === 'error' && <p className="error">{t('feedback.error')}</p>}
           <button className="primary" type="submit" disabled={state === 'sending'}>

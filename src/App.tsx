@@ -3,11 +3,12 @@ import { MAX_NAME_CHARS, Pose, serviceStatus } from '@sontu/shared';
 import { store, serverNow, toast, useStore } from './store.ts';
 import { audio } from './audio/AudioEngine.ts';
 import { Net } from './net/Net.ts';
-import { Game, webglAvailable } from './game/Game.ts';
+import { webglAvailable } from './game/webgl.ts';
+import type { Game as GameClass } from './game/Game.ts';
 import { runtime } from './runtime.ts';
 import { t as tt } from './i18n/index.ts';
 import { siteConfig } from './config.ts';
-import { Icon, useT } from './ui/common.tsx';
+import { Icon, LegalLinks, useT } from './ui/common.tsx';
 import { ActionBar, IncenseCard, NetBanner, ServiceBanner, StatusLine, Toast, TopBar } from './ui/Hud.tsx';
 import { DonatePanel, LanguageSelect, ServersPanel, SettingsPanel, VisitorsPanel } from './ui/Panels.tsx';
 import { BeadsOverlay } from './ui/Beads.tsx';
@@ -16,6 +17,14 @@ import { ChatPanel, DjPanel, Minimap, SeatDialogs } from './ui/Social.tsx';
 import { GamePanel } from './ui/GamePanel.tsx';
 import { FeedbackPanel } from './ui/Feedback.tsx';
 
+/**
+ * The 3D engine (three.js + the scene, ~0.5 MB) is not needed for the welcome screen.
+ * It is fetched in the background once the welcome card is up, and awaited on "enter"
+ * before the socket opens, so the game always exists before the server's first message.
+ */
+let Game: typeof GameClass | null = null;
+const loadGame = () => import('./game/Game.ts').then((m) => (Game = m.Game));
+
 export function App() {
   const phase = useStore((s) => s.phase);
   const locale = useStore((s) => s.locale);
@@ -23,7 +32,7 @@ export function App() {
 
   useEffect(() => {
     document.documentElement.lang = locale;
-    document.title = `${tt('app.name')} · ${tt('app.tagline')}`;
+    document.title = tt('app.docTitle');
     runtime.game?.refreshLabels();
   }, [locale]);
 
@@ -33,13 +42,22 @@ export function App() {
     Net.rooms()
       .then((rooms) => store.set({ onlineHint: rooms.reduce((n, r) => n + r.count, 0) }))
       .catch(() => {})
-      .finally(() => store.set({ phase: 'welcome' }));
+      .finally(() => {
+        store.set({ phase: 'welcome' });
+        loadGame().catch(() => {});
+      });
   }, [phase]);
 
   const enter = useCallback(async () => {
     if (!webglAvailable()) return store.set({ phase: 'error' });
     store.set({ myName: store.get().myName.trim() });
+    // audio first: it must start inside the click, before any other await
     if (store.get().soundOn) await audio.unlock();
+    try {
+      await loadGame();
+    } catch {
+      return store.set({ phase: 'error' });
+    }
     const net = new Net({
       onMessage: (m) => {
         runtime.game?.handle(m);
@@ -64,7 +82,7 @@ export function App() {
     // the socket is still resolving the room directory here, so the game exists before 'hi' arrives
     const build = () => {
       runtime.game?.dispose();
-      runtime.game = new Game(host.current!, runtime.net!);
+      runtime.game = new Game!(host.current!, runtime.net!);
     };
     // graphics change: rebuild only the scene, the visitor keeps their place
     runtime.rebuildGame = () => runtime.game?.setQuality();
@@ -191,6 +209,7 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
         </button>
         {online > 0 && <p className="online">{t('welcome.online', { n: online })}</p>}
         <p className="disclaimer">{t('app.disclaimer', { name: siteConfig.developer.name })}</p>
+        <LegalLinks />
       </div>
     </main>
   );

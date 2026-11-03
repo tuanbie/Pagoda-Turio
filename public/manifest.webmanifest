@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Tịnh Tâm Tự — chùa ảo 3D",
   "short_name": "Tịnh Tâm Tự",
-  "description": "Chùa ảo 3D hư cấu để cùng nhau ngồi tĩnh lặng — phần mềm cá nhân, không đại diện cho bất kỳ ngôi chùa nào.",
+  "description": "Chùa ảo 3D miễn phí để thiền và tĩnh tâm cùng mọi người. Phần mềm cá nhân, không phải chùa thật.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -15,5 +15,11 @@
       "type": "image/svg+xml",
       "purpose": "any"
     }
+  ],
+  "lang": "vi",
+  "categories": [
+    "lifestyle",
+    "health",
+    "entertainment"
   ]
 }

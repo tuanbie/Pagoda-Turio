@@ -1,0 +1,237 @@
+<!doctype html>
+<!--
+  Soạn từ mã nguồn Pagoda-Turio + Pagoda-BE ngày 03/11/2026 theo hướng dẫn vn-law-check
+  (references/10-generate-policy.md). Mỗi dòng dữ liệu bên dưới truy được về code:
+  - tên hiển thị, nhân vật, vị trí: Pagoda-BE src/room/RoomManager.ts (join, SESSION_TTL_MS = 3 phút)
+  - chat: Pagoda-BE src/room/Room.ts (chatLog, CHAT_HISTORY = 40, chỉ trong RAM)
+  - góp ý: Pagoda-BE src/feedback/feedback.ts (at, kind, message, locale; RETENTION_DAYS = 365)
+  - IP: Pagoda-BE src/main.ts (connPerIp, RAM), feedback.ts (hash có salt, RAM); log không có IP
+  - localStorage/sessionStorage: Pagoda-Turio src/store.ts, src/net/Net.ts
+  - Vercel vùng sin1: Pagoda-BE vercel.json
+  Căn cứ: Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15; Nghị định 356/2025/NĐ-CP (thời hạn ở mục 6: Điều 5).
+  Đây là bản do công cụ soạn, nên nhờ người có chuyên môn pháp lý xem lại.
+-->
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Chính sách bảo vệ dữ liệu cá nhân · Tịnh Tâm Tự</title>
+    <meta name="description" content="Tịnh Tâm Tự không cần tài khoản, không dùng cookie, không quảng cáo, không theo dõi và không thu họ tên, email hay số điện thoại. Chi tiết dữ liệu được xử lý và quyền của bạn." />
+    <link rel="canonical" href="https://viengchua.bijancob.io.vn/chinh-sach-bao-mat/" />
+    <meta name="theme-color" content="#24251f" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="stylesheet" href="/legal/legal.css" />
+  </head>
+  <body>
+    <main>
+      <a class="back" href="/">← Về Tịnh Tâm Tự</a>
+      <a class="lang" href="#en">English</a>
+      <h1>Chính sách bảo vệ dữ liệu cá nhân</h1>
+      <p class="meta">Cập nhật lần cuối: 03/11/2026 · Phiên bản 1.0</p>
+
+      <div class="box">
+        <strong>Tóm tắt</strong>
+        <ul>
+          <li>Không cần tài khoản. Không cookie, không quảng cáo, không công cụ theo dõi.</li>
+          <li>Không thu họ tên thật, email hay số điện thoại.</li>
+          <li>Tin nhắn chat không được ghi lại. Góp ý tự xóa sau 12 tháng.</li>
+          <li>Không bán và không chia sẻ dữ liệu của bạn.</li>
+        </ul>
+      </div>
+
+      <h2 id="ai">1. Ai chịu trách nhiệm</h2>
+      <p>
+        Tịnh Tâm Tự là phần mềm cá nhân do <strong>tuanbie</strong>, một lập trình viên độc lập, phát triển và vận hành
+        (gọi là "nhà phát triển" hoặc "chúng tôi"). Nhà phát triển là bên kiểm soát dữ liệu được xử lý qua trang
+        <a href="https://viengchua.bijancob.io.vn/">viengchua.bijancob.io.vn</a>.
+      </p>
+      <p>Email tiếp nhận mọi yêu cầu về dữ liệu: <a href="mailto:vantuan201.work@gmail.com">vantuan201.work@gmail.com</a>.</p>
+      <!-- Căn cứ: Điều 9 khoản 2 Luật 91/2025/QH15: người dùng phải biết rõ bên kiểm soát dữ liệu. -->
+
+      <h2 id="du-lieu">2. Dữ liệu được xử lý, để làm gì, lưu bao lâu</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Dữ liệu</th><th>Khi nào</th><th>Để làm gì</th><th>Lưu ở đâu, bao lâu</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Tên hiển thị (không bắt buộc, không cần tên thật)</td>
+              <td>Khi bạn tự nhập</td>
+              <td>Hiện cho những người cùng phòng</td>
+              <td>Trên thiết bị của bạn. Trên máy chủ: chỉ trong bộ nhớ khi bạn đang ở trong chùa và thêm 3 phút sau khi rời, để nối lại nếu rớt mạng.</td>
+            </tr>
+            <tr>
+              <td>Nhân vật (biệt danh ngẫu nhiên, màu áo), vị trí, động tác</td>
+              <td>Khi bạn ở trong chùa</td>
+              <td>Để mọi người trong phòng thấy nhau</td>
+              <td>Chỉ trong bộ nhớ máy chủ, như dòng trên.</td>
+            </tr>
+            <tr>
+              <td>Tin nhắn trò chuyện</td>
+              <td>Khi bạn gửi</td>
+              <td>Chuyển tới những người cùng phòng</td>
+              <td>Chỉ trong bộ nhớ máy chủ, tối đa 40 tin gần nhất mỗi phòng. Không ghi ra đĩa, mất khi máy chủ khởi động lại.</td>
+            </tr>
+            <tr>
+              <td>Góp ý: nội dung, loại góp ý, ngôn ngữ giao diện, thời điểm</td>
+              <td>Khi bạn gửi form góp ý</td>
+              <td>Để nhà phát triển đọc và cải thiện phần mềm</td>
+              <td>Cơ sở dữ liệu của nhà phát triển. Tự xóa sau 12 tháng. Không kèm tên, liên hệ hay địa chỉ IP.</td>
+            </tr>
+            <tr>
+              <td>Địa chỉ IP và thông tin kết nối kỹ thuật</td>
+              <td>Mỗi lần truy cập</td>
+              <td>Giới hạn số kết nối, chống spam và tấn công</td>
+              <td>Chỉ trong bộ nhớ khi đang kết nối. Không lưu lại. Nhật ký máy chủ chỉ ghi loại yêu cầu và đường dẫn, không ghi IP.</td>
+            </tr>
+            <tr>
+              <td>Cài đặt (ngôn ngữ, âm thanh, đồ họa) và mã nối lại</td>
+              <td>Khi bạn dùng ứng dụng</td>
+              <td>Ghi nhớ lựa chọn của bạn, nối lại khi rớt mạng</td>
+              <td>Chỉ trên thiết bị của bạn (localStorage). Mã nối lại nằm trong sessionStorage và mất khi đóng tab.</td>
+            </tr>
+            <tr>
+              <td>Thông tin chuyển khoản ủng hộ: tên tài khoản, số tiền, nội dung chuyển khoản</td>
+              <td>Chỉ khi bạn tự chuyển khoản</td>
+              <td>Ngân hàng hoặc ví điện tử hiển thị cho người nhận; dùng để đối soát</td>
+              <td>Trong ứng dụng ngân hàng/ví của hai bên, theo chính sách của ngân hàng/ví. Không được đưa vào phần mềm, không dùng cho việc khác.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Chúng tôi không dùng dữ liệu cho mục đích nào khác ngoài bảng trên.</p>
+      <!-- Căn cứ: Điều 9 khoản 2 điểm a và khoản 4 điểm a Luật 91/2025; Điều 14 khoản 1 điểm b (xóa khi hết mục đích). -->
+
+      <h2 id="khong-lam">3. Những điều chúng tôi không làm</h2>
+      <ul>
+        <li>Không dùng cookie, không gắn công cụ thống kê, quảng cáo hay theo dõi hành vi.</li>
+        <li>Không yêu cầu và không thu dữ liệu cá nhân nhạy cảm.</li>
+        <li>Không mua bán, không chia sẻ dữ liệu cá nhân cho bên nào để quảng cáo hay kinh doanh.</li>
+        <li>Phông chữ và mọi tài nguyên được tải từ chính trang này, không qua dịch vụ của bên thứ ba.</li>
+      </ul>
+      <p>
+        Xin <strong>đừng ghi thông tin cá nhân</strong> (của bạn hay của người khác) vào tên hiển thị, tin nhắn hay góp ý.
+        Những người cùng phòng đọc được tên và tin nhắn của bạn.
+      </p>
+      <!-- Căn cứ: Điều 7 khoản 6 Luật 91/2025 (cấm mua bán dữ liệu cá nhân). -->
+
+      <h2 id="ben-thu-ba">4. Bên thứ ba và máy chủ ở nước ngoài</h2>
+      <ul>
+        <li>
+          <strong>Vercel Inc.</strong> lưu trữ trang web và chạy máy chủ của Tịnh Tâm Tự. Máy chủ đặt tại Singapore; trang web
+          được phân phối qua mạng máy chủ toàn cầu của Vercel. Vercel có thể xử lý địa chỉ IP để vận hành hạ tầng và chống
+          tấn công, theo chính sách riêng của Vercel.
+        </li>
+        <li><strong>Dịch vụ cơ sở dữ liệu Redis trên đám mây</strong>: lưu các góp ý nêu ở mục 2.</li>
+        <li>
+          <strong>Discord, dịch vụ email, ngân hàng hoặc ví điện tử</strong>: chỉ khi bạn tự liên hệ hay chuyển khoản. Khi đó
+          áp dụng chính sách của các dịch vụ này.
+        </li>
+      </ul>
+      <p>
+        Vì máy chủ đặt ngoài Việt Nam, những dữ liệu ở mục 2 được gửi lên máy chủ (tên hiển thị, nhân vật, tin nhắn, góp ý,
+        thông tin kết nối) được xử lý ở nước ngoài. Đây là chuyển dữ liệu cá nhân ra nước ngoài theo Luật Bảo vệ dữ liệu cá nhân.
+      </p>
+      <!-- Căn cứ: Điều 20 khoản 1 Luật 91/2025. Nhà phát triển còn phải xét hồ sơ đánh giá tác động chuyển dữ liệu
+           xuyên biên giới (khoản 2 Điều 20; checklist 01-D). Chính sách này không thay được hồ sơ đó. -->
+
+      <h2 id="quyen">5. Quyền của bạn</h2>
+      <p>Bạn có quyền:</p>
+      <ul>
+        <li>biết dữ liệu nào của bạn đang được xử lý;</li>
+        <li>đồng ý, không đồng ý hoặc rút lại sự đồng ý;</li>
+        <li>xem, chỉnh sửa hoặc yêu cầu chỉnh sửa dữ liệu;</li>
+        <li>yêu cầu cung cấp, xóa, hạn chế xử lý dữ liệu, hoặc phản đối việc xử lý;</li>
+        <li>khiếu nại, tố cáo, khởi kiện và yêu cầu bồi thường theo quy định của pháp luật.</li>
+      </ul>
+      <p>
+        Bạn tự xóa được phần lưu trên thiết bị bằng cách xóa dữ liệu trang web trong trình duyệt. Tin nhắn và thông tin
+        nhân vật tự mất khi bạn rời phòng hoặc khi máy chủ khởi động lại.
+      </p>
+
+      <h2 id="yeu-cau">6. Cách gửi yêu cầu và thời hạn xử lý</h2>
+      <p>
+        Gửi email tới <a href="mailto:vantuan201.work@gmail.com">vantuan201.work@gmail.com</a>. Vì góp ý không kèm tên hay
+        thông tin liên hệ, hãy ghi lại nội dung và thời điểm gửi để chúng tôi tìm đúng góp ý của bạn. Chúng tôi:
+      </p>
+      <ul>
+        <li>xác nhận đã nhận yêu cầu và hướng dẫn thủ tục trong 2 ngày làm việc;</li>
+        <li>cho xem, chỉnh sửa hoặc cung cấp dữ liệu trong 10 ngày (15 ngày nếu cần bên xử lý dữ liệu hoặc bên thứ ba cùng thực hiện);</li>
+        <li>xử lý yêu cầu rút đồng ý, hạn chế hoặc phản đối xử lý trong 15 ngày (20 ngày nếu cần bên xử lý hoặc bên thứ ba ngừng xử lý);</li>
+        <li>xóa dữ liệu trong 20 ngày (30 ngày nếu cần bên xử lý hoặc bên thứ ba cùng xóa).</li>
+      </ul>
+      <p>Yêu cầu phức tạp có thể được gia hạn một lần. Khi đó chúng tôi báo lý do cho bạn.</p>
+      <!-- Căn cứ: Điều 4 khoản 1, Điều 10 khoản 2 Luật 91/2025; Điều 5 khoản 2, 3, 4 NĐ 356/2025 (gia hạn 1 lần tối đa 15/10/20 ngày). -->
+
+      <h2 id="bao-mat">7. Bảo vệ dữ liệu</h2>
+      <p>
+        Chúng tôi thu ít dữ liệu nhất có thể. Kết nối được mã hóa qua HTTPS. Có giới hạn tốc độ và số kết nối, chính sách
+        bảo mật nội dung (CSP) chặn mã lạ, và khóa riêng để đọc hộp góp ý. Dù vậy, không hệ thống nào an toàn tuyệt đối.
+      </p>
+      <p>
+        Nếu xảy ra sự cố làm lộ hoặc mất dữ liệu cá nhân, chúng tôi sẽ thông báo cho cơ quan chuyên trách bảo vệ dữ liệu cá
+        nhân theo quy định.
+      </p>
+      <!-- Căn cứ: Điều 23 khoản 1 Luật 91/2025 (thông báo chậm nhất 72 giờ). -->
+
+      <h2 id="thay-doi">8. Thay đổi chính sách</h2>
+      <p>
+        Khi thay đổi loại dữ liệu hoặc mục đích xử lý, chúng tôi cập nhật trang này, ghi ngày và phiên bản mới, và báo trong
+        ứng dụng. Nếu cần, chúng tôi sẽ xin lại sự đồng ý của bạn.
+      </p>
+
+      <section id="en" lang="en">
+        <h2>Privacy policy (English)</h2>
+        <p class="meta">Last updated: 3 November 2026 · Version 1.0. If the two versions differ, the Vietnamese one applies.</p>
+        <p>
+          <strong>Summary:</strong> no account, no cookies, no ads, no trackers. We don't collect real names, emails or phone
+          numbers. Chat is not recorded, feedback is deleted after 12 months, and we never sell or share your data.
+        </p>
+        <h3>Who is responsible</h3>
+        <p>
+          Tịnh Tâm Tự is personal software built and run by <strong>tuanbie</strong>, an independent developer, who controls
+          the data processed through viengchua.bijancob.io.vn. Contact:
+          <a href="mailto:vantuan201.work@gmail.com">vantuan201.work@gmail.com</a>.
+        </p>
+        <h3>What is processed</h3>
+        <ul>
+          <li><strong>Display name</strong> (optional, no real name needed): shown to people in your room. It stays on your device; the server holds it in memory while you are inside and for 3 minutes after, so you can reconnect.</li>
+          <li><strong>Avatar, position and actions</strong>: shared with your room. Server memory only.</li>
+          <li><strong>Chat messages</strong>: relayed to your room. The server keeps the last 40 per room in memory, never writes them down, and loses them on restart.</li>
+          <li><strong>Feedback</strong>: only the message, its kind, your UI language and the time. No name, contact or IP. Deleted after 12 months.</li>
+          <li><strong>IP address and connection data</strong>: used in memory to limit connections and stop spam and attacks. Never stored. Server logs record only the request method and path.</li>
+          <li><strong>Settings and reconnect code</strong>: on your device only (localStorage; the reconnect code is in sessionStorage and ends with the tab).</li>
+          <li><strong>Support transfers</strong>: if you choose to send one, your bank or wallet shows the recipient your account name, the amount and the note. These are used only to reconcile and never enter the software.</li>
+        </ul>
+        <h3>Third parties and servers abroad</h3>
+        <p>
+          Vercel Inc. hosts the site and runs the server (Singapore), and may process IP addresses to operate its network and
+          stop attacks, under Vercel's own policy. A cloud Redis database stores feedback. Discord, email providers, banks and
+          wallets are involved only when you contact us or send a transfer yourself. Because the servers are outside Vietnam,
+          the data sent to them is processed abroad.
+        </p>
+        <h3>Your rights</h3>
+        <p>
+          You can ask to know, see, correct, receive or delete your data, restrict or object to processing, and withdraw
+          consent. Email us. Feedback carries no name, so include its text and when you sent it. We confirm within 2 working
+          days. We give access, corrections or copies within 10 days (15 if a processor or third party is involved). We handle
+          restriction, objection or withdrawal within 15 days (20). We delete within 20 days (30). Complex requests may be
+          extended once, and we tell you why. On-device data can be cleared from your browser settings.
+        </p>
+        <h3>Security and changes</h3>
+        <p>
+          We keep as little as possible. Connections use HTTPS, with rate limits, a content security policy and a private key
+          for the feedback inbox. No system is perfectly secure. If personal data is ever exposed, we will notify the
+          competent authority as the law requires. When this policy changes, we update this page with a new date and
+          version.
+        </p>
+      </section>
+
+      <footer>
+        Tịnh Tâm Tự là chùa ảo hư cấu trong một phần mềm cá nhân, không đại diện cho bất kỳ ngôi chùa hay tổ chức tôn giáo
+        nào. Xem <a href="/dieu-khoan/">Điều khoản sử dụng &amp; tuyên bố đính chính</a>.
+      </footer>
+    </main>
+  </body>
+</html>

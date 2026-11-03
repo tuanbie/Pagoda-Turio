@@ -280,6 +280,9 @@ export const vi: Record<Key, string> = {
   'settings.privacy': "Quyền riêng tư",
   'settings.privacyText': "Không cần tài khoản. Không cookie, không công cụ theo dõi, không quảng cáo.\n• Tên hiển thị (không bắt buộc, không cần tên thật) và cài đặt chỉ lưu trên thiết bị của bạn. Khi bạn ở trong chùa, tên và tin nhắn được gửi cho những người cùng phòng. Máy chủ chỉ giữ 40 tin nhắn gần nhất trong bộ nhớ, không ghi lại, và xóa hết khi khởi động lại.\n• Góp ý chỉ lưu nội dung, loại góp ý, ngôn ngữ và thời điểm; không lưu tên, liên hệ hay địa chỉ IP; tự xóa sau 12 tháng.\n• Địa chỉ IP chỉ được dùng tạm trong bộ nhớ để chống spam, không lưu và không ghi vào nhật ký.\n• Máy chủ chạy trên Vercel (Singapore). Phông chữ tải từ chính trang này, không qua bên thứ ba.\nMuốn xóa một góp ý đã gửi, hãy email {email} kèm nội dung góp ý đó.",
   'chat.rules': "Giữ lời tử tế. Không đăng thông tin cá nhân, lời xúc phạm hay nội dung vi phạm pháp luật.",
+  'app.docTitle': "Tịnh Tâm Tự · Chùa ảo 3D – thiền và tĩnh tâm online",
+  'legal.privacy': "Chính sách bảo mật",
+  'legal.terms': "Điều khoản & đính chính",
 };
 
 export const viNames = {

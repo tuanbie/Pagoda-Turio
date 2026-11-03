@@ -7,6 +7,24 @@ export function useT() {
   return (key: Key, params?: Record<string, string | number>) => translate(locale, key, params);
 }
 
+/** Links to the static policy pages (new tab, so the temple stays open). Non-Vietnamese readers land on the English part. */
+export function LegalLinks() {
+  const t = useT();
+  const locale = useStore((s) => s.locale);
+  const hash = locale === 'vi' ? '' : '#en';
+  return (
+    <p className="legal-links">
+      <a href={`/chinh-sach-bao-mat/${hash}`} target="_blank" rel="noopener">
+        {t('legal.privacy')}
+      </a>
+      {' · '}
+      <a href={`/dieu-khoan/${hash}`} target="_blank" rel="noopener">
+        {t('legal.terms')}
+      </a>
+    </p>
+  );
+}
+
 const paths: Record<string, string> = {
   temple: 'M2 11c5-1 8-4 10-7 2 3 5 6 10 7M4 12h16M7 13v7m10-7v7M4 20h16M10 15h4v5',
   soundOn: 'M4 9v6h4l5 4V5L8 9H4zm12.5 3a4 4 0 0 0-2-3.5v7a4 4 0 0 0 2-3.5zM14.5 3.5v2a7 7 0 0 1 0 13v2a9 9 0 0 0 0-17z',

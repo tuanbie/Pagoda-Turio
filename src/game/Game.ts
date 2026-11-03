@@ -1196,13 +1196,7 @@ export function deviceProfile() {
   return { mobile, weak, gpu };
 }
 
-export function webglAvailable() {
-  try {
-    return !!document.createElement('canvas').getContext('webgl2');
-  } catch {
-    return false;
-  }
-}
+export { webglAvailable } from './webgl.ts';
 
 export type JoinHint = { x: number; z: number; a: number; n: number; c: number };
 

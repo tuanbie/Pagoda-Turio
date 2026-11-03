@@ -5,7 +5,7 @@ import { LOCALES, visitorName, type Locale } from '../i18n/index.ts';
 import { Net } from '../net/Net.ts';
 import { runtime } from '../runtime.ts';
 import { siteConfig } from '../config.ts';
-import { Modal, closePanel, useT } from './common.tsx';
+import { LegalLinks, Modal, closePanel, useT } from './common.tsx';
 
 const TINTS = ['#8b7f6c', '#9a8770', '#7d7466', '#a08a6a', '#8a8378', '#97806a'];
 
@@ -134,6 +134,7 @@ export function SettingsPanel() {
       <details>
         <summary>{t('settings.privacy')}</summary>
         <p className="pre">{t('settings.privacyText', { email: siteConfig.contact.email })}</p>
+        <LegalLinks />
       </details>
     </Modal>
   );
@@ -261,6 +262,7 @@ export function DonatePanel() {
       <p className="donate-disclaimer" role="note">
         {t('donate.notReligious')}
       </p>
+      <LegalLinks />
       {d.qr && (
         <figure className="donate-qr">
           <img src={d.qr} alt={t('donate.qrAlt')} width={337} height={371} loading="lazy" />

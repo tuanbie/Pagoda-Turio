@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://viengchua.bijancob.io.vn/sitemap.xml
