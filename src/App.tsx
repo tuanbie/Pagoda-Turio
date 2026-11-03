@@ -29,25 +29,38 @@ const loadGame = () => import('./game/Game.ts').then((m) => (Game = m.Game));
 export function App() {
   const phase = useStore((s) => s.phase);
   const locale = useStore((s) => s.locale);
+  const place = useStore((s) => s.place);
   const host = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.lang = locale;
-    document.title = tt('app.docTitle');
+    // the two places have their own look: warm gold for the temple, cool silver-blue for the church
+    document.documentElement.dataset.place = place;
+    document.title = tt(place === 'church' ? 'church.docTitle' : 'app.docTitle');
     runtime.game?.refreshLabels();
-  }, [locale]);
+  }, [locale, place]);
 
-  // boot: fetch live visitor count for the welcome card, then show it
+  // boot: show the welcome card and preload the 3D engine in the background
   useEffect(() => {
     if (phase !== 'boot') return;
-    Net.rooms()
-      .then((rooms) => store.set({ onlineHint: rooms.reduce((n, r) => n + r.count, 0) }))
-      .catch(() => {})
-      .finally(() => {
-        store.set({ phase: 'welcome' });
-        loadGame().catch(() => {});
-      });
+    store.set({ phase: 'welcome' });
+    loadGame().catch(() => {});
   }, [phase]);
+
+  // welcome card: live visitor count for the place being chosen (refetched when the choice changes)
+  useEffect(() => {
+    if (phase !== 'welcome') return;
+    let dead = false;
+    store.set({ onlineHint: 0 });
+    Net.rooms(place)
+      .then((rooms) => {
+        if (!dead) store.set({ onlineHint: rooms.reduce((n, r) => n + r.count, 0) });
+      })
+      .catch(() => {});
+    return () => {
+      dead = true;
+    };
+  }, [phase, place]);
 
   const enter = useCallback(async () => {
     if (!webglAvailable()) return store.set({ phase: 'error' });
@@ -159,12 +172,13 @@ function InGame({ onLeave }: { onLeave: () => void }) {
 
 function BootScreen() {
   const t = useT();
+  const church = useStore((s) => s.place) === 'church';
   return (
     <main className="screen boot" role="status">
       <span className="mark">
-        <Icon name="temple" size={34} />
+        <Icon name={church ? 'church' : 'temple'} size={34} />
       </span>
-      <h1>{t('app.name')}</h1>
+      <h1>{t(church ? 'church.name' : 'app.name')}</h1>
       <p>{t('boot.opening')}</p>
       <span className="breath" />
     </main>
@@ -175,16 +189,30 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
   const t = useT();
   const online = useStore((s) => s.onlineHint);
   const name = useStore((s) => s.myName);
+  const place = useStore((s) => s.place);
+  const church = place === 'church';
   return (
     <main className="screen welcome">
       <div className="welcome-card">
         <span className="mark">
-          <Icon name="temple" size={34} />
+          <Icon name={church ? 'church' : 'temple'} size={34} />
         </span>
-        <p className="eyebrow">淨心寺</p>
-        <h1>{t('app.name')}</h1>
-        <p className="meaning">{t('app.meaning')}</p>
-        <p className="tagline">{t('app.tagline')}</p>
+        <p className="eyebrow">{church ? t('church.eyebrow') : '淨心寺'}</p>
+        <h1>{t(church ? 'church.name' : 'app.name')}</h1>
+        <p className="meaning">{t(church ? 'church.meaning' : 'app.meaning')}</p>
+        <p className="tagline">{t(church ? 'church.tagline' : 'app.tagline')}</p>
+        <div className="field">
+          <span>{t('place.choose')}</span>
+          <div className="place-pick" role="radiogroup" aria-label={t('place.choose')}>
+            {(['pagoda', 'church'] as const).map((p) => (
+              <button key={p} role="radio" aria-checked={place === p} className={`place-card ${p} ${place === p ? 'active' : ''}`} onClick={() => store.set({ place: p })}>
+                <Icon name={p === 'church' ? 'church' : 'temple'} size={26} />
+                <strong>{t(p === 'church' ? 'place.church' : 'place.pagoda')}</strong>
+                <small>{t(p === 'church' ? 'place.churchSub' : 'place.pagodaSub')}</small>
+              </button>
+            ))}
+          </div>
+        </div>
         <label className="field">
           <span>{t('welcome.name')}</span>
           <input
@@ -203,14 +231,14 @@ function WelcomeScreen({ onEnter }: { onEnter: () => void }) {
           <LanguageSelect />
         </div>
         <button className="primary" onClick={onEnter}>
-          {t('welcome.enter')}
+          {t(church ? 'church.enter' : 'welcome.enter')}
         </button>
         <p className="muted small">{t('welcome.soundHint')}</p>
         <button className="text-btn small-link" onClick={() => store.set({ panel: 'feedback' })}>
           💬 {t('feedback.open')}
         </button>
         {online > 0 && <p className="online">{t('welcome.online', { n: online })}</p>}
-        <p className="disclaimer">{t('app.disclaimer', { name: siteConfig.developer.name })}</p>
+        <p className="disclaimer">{t(church ? 'church.disclaimer' : 'app.disclaimer', { name: siteConfig.developer.name })}</p>
         <LegalLinks />
       </div>
     </main>
@@ -235,7 +263,7 @@ function LeaveScreen({ onAgain }: { onAgain: () => void }) {
   return (
     <main className="screen welcome">
       <div className="welcome-card">
-        <p className="eyebrow">淨心寺</p>
+        <p className="eyebrow">{store.get().place === 'church' ? t('church.eyebrow') : '淨心寺'}</p>
         <h1 className="small-title">{t('leave.title')}</h1>
         <p className="tagline pre">{t('leave.text')}</p>
         <button className="primary" onClick={onAgain}>
@@ -271,16 +299,19 @@ function useAudioSync() {
   const listening = useStore((s) => s.serviceListening);
   const musicOn = useStore((s) => s.musicOn);
   const phase = useStore((s) => s.phase);
+  const place = useStore((s) => s.place);
   useEffect(() => audio.setVolumes(volumes), [volumes]);
   useEffect(() => audio.setMuted(!soundOn), [soundOn]);
   useEffect(() => audio.setMusicEnabled(musicOn && phase === 'in'), [musicOn, phase]);
   useEffect(() => {
     const tick = () => {
+      // chanting and the shared services belong to the temple only; the church stays quiet
+      const temple = place !== 'church';
       const { live } = serviceStatus(serverNow());
-      const service = phase === 'in' && live && listening ? live.startsAt : null;
+      const service = temple && phase === 'in' && live && listening ? live.startsAt : null;
       audio.setService(service);
       // a shared service takes precedence over the private chant
-      const wantChant = phase === 'in' && chantOn && service === null;
+      const wantChant = temple && phase === 'in' && chantOn && service === null;
       if (wantChant !== chantActive) {
         chantActive = wantChant;
         audio.setChant(wantChant);
@@ -289,7 +320,7 @@ function useAudioSync() {
     tick();
     const id = setInterval(tick, 2000);
     return () => clearInterval(id);
-  }, [chantOn, listening, phase]);
+  }, [chantOn, listening, phase, place]);
 }
 let chantActive = false;
 
@@ -318,6 +349,7 @@ function useHotkeys(enabled: boolean) {
           g?.primaryAction();
           break;
         case 'Digit2':
+          if (store.get().place === 'church') break;
           store.set({ panel: panel === 'beads' ? null : 'beads' });
           break;
         case 'Digit3':
@@ -327,6 +359,7 @@ function useHotkeys(enabled: boolean) {
           g?.toggle(Pose.Dance);
           break;
         case 'Digit5':
+          if (store.get().place === 'church') break;
           store.set({ panel: panel === 'moktak' ? null : 'moktak' });
           break;
         case 'Digit6':

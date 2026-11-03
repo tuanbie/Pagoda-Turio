@@ -20,6 +20,45 @@ function rng(seed: number) {
   };
 }
 
+/** Finer door lattice for high / ultra: diamond grid with a carved flower roundel. */
+function latticeCarved() {
+  return canvas(256, (g, s) => {
+    g.fillStyle = '#efe2c4';
+    g.fillRect(0, 0, s, s);
+    g.strokeStyle = '#6e2619';
+    g.lineWidth = 5;
+    for (let i = -8; i <= 16; i++) {
+      g.beginPath();
+      g.moveTo((i * s) / 8, 0);
+      g.lineTo((i * s) / 8 + s, s);
+      g.moveTo((i * s) / 8, 0);
+      g.lineTo((i * s) / 8 - s, s);
+      g.stroke();
+    }
+    // carved roundel in the middle
+    g.fillStyle = '#7a2b1e';
+    g.beginPath();
+    g.arc(s / 2, s / 2, s * 0.2, 0, Math.PI * 2);
+    g.fill();
+    g.fillStyle = '#c99a4a';
+    for (let k = 0; k < 8; k++) {
+      g.save();
+      g.translate(s / 2, s / 2);
+      g.rotate((k / 8) * Math.PI * 2);
+      g.beginPath();
+      g.ellipse(0, -s * 0.1, s * 0.035, s * 0.08, 0, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
+    }
+    g.beginPath();
+    g.arc(s / 2, s / 2, s * 0.04, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = '#4a170f';
+    g.lineWidth = 14;
+    g.strokeRect(0, 0, s, s);
+  });
+}
+
 export const textures = {
   grass: () =>
     canvas(256, (g, s) => {
@@ -106,8 +145,8 @@ export const textures = {
       }
     }),
 
-  lattice: () =>
-    canvas(128, (g, s) => {
+  lattice: (carved = false) =>
+    carved ? latticeCarved() : canvas(128, (g, s) => {
       g.fillStyle = '#efe2c4';
       g.fillRect(0, 0, s, s);
       g.strokeStyle = '#7a2b1e';
@@ -144,6 +183,113 @@ export const textures = {
         grad.addColorStop(1, 'rgba(255,255,255,0)');
         g.fillStyle = grad;
         g.fillRect(0, 0, 64, 64);
+      },
+      false,
+    ),
+
+  /** Vertical couplet panel: Hán characters top-to-bottom, gold on dark lacquer. */
+  couplet(han: string, bg = '#4a1410') {
+    const c = document.createElement('canvas');
+    c.width = 128;
+    c.height = 640;
+    const g = c.getContext('2d')!;
+    g.fillStyle = bg;
+    g.fillRect(0, 0, 128, 640);
+    g.strokeStyle = '#d9b46a';
+    g.lineWidth = 6;
+    g.strokeRect(8, 8, 112, 624);
+    g.lineWidth = 2;
+    g.strokeRect(16, 16, 96, 608);
+    // light paper gets dark ink, dark lacquer gets gold
+    const light = parseInt(bg.slice(1, 3), 16) > 140;
+    g.fillStyle = light ? '#2a1c12' : '#e8c77e';
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    const chars = Array.from(han.replace(/\s/g, ''));
+    g.font = '600 84px "Noto Serif TC", serif';
+    const step = 560 / chars.length;
+    chars.forEach((ch, i) => g.fillText(ch, 64, 40 + step * (i + 0.5)));
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    return tex;
+  },
+
+  /** Tileable ripple normal map for water (procedural sum of waves). */
+  waterNormal: () => {
+    const S = 128;
+    const c = document.createElement('canvas');
+    c.width = c.height = S;
+    const g = c.getContext('2d')!;
+    const img = g.createImageData(S, S);
+    const r = rng(9);
+    const waves = Array.from({ length: 7 }, () => ({ kx: Math.round((r() - 0.5) * 8), ky: Math.round((r() - 0.5) * 8) || 1, ph: r() * 6.28, a: 0.4 + r() * 0.6 }));
+    for (let y = 0; y < S; y++)
+      for (let x = 0; x < S; x++) {
+        let dx = 0;
+        let dy = 0;
+        for (const w of waves) {
+          const c2 = Math.cos(((w.kx * x + w.ky * y) / S) * Math.PI * 2 + w.ph) * w.a;
+          dx += c2 * w.kx * 0.05;
+          dy += c2 * w.ky * 0.05;
+        }
+        const n = Math.hypot(dx, dy, 1);
+        const i = (y * S + x) * 4;
+        img.data[i] = ((-dx / n) * 0.5 + 0.5) * 255;
+        img.data[i + 1] = ((-dy / n) * 0.5 + 0.5) * 255;
+        img.data[i + 2] = ((1 / n) * 0.5 + 0.5) * 255;
+        img.data[i + 3] = 255;
+      }
+    g.putImageData(img, 0, 0);
+    const tex = new THREE.CanvasTexture(c);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    return tex;
+  },
+
+  /** Plain cloth banner (phướn) with a lotus motif — tinted per instance, no text. */
+  banner: () =>
+    canvas(
+      128,
+      (g) => {
+        g.fillStyle = '#ffffff';
+        g.fillRect(0, 0, 128, 128);
+        g.fillStyle = 'rgba(0,0,0,0.16)';
+        g.fillRect(0, 0, 128, 10);
+        g.fillRect(0, 118, 128, 10);
+        g.fillRect(0, 0, 8, 128);
+        g.fillRect(120, 0, 8, 128);
+        // stylised lotus
+        g.fillStyle = 'rgba(120,60,0,0.45)';
+        for (let i = -2; i <= 2; i++) {
+          g.save();
+          g.translate(64, 84);
+          g.rotate(i * 0.38);
+          g.beginPath();
+          g.ellipse(0, -20, 8, 22, 0, 0, Math.PI * 2);
+          g.fill();
+          g.restore();
+        }
+        g.fillRect(40, 86, 48, 5);
+      },
+      false,
+    ),
+
+  /** Soft vertical light shaft (god-ray card): bright core, faded edges and ends. */
+  shaft: () =>
+    canvas(
+      64,
+      (g) => {
+        const img = g.createImageData(64, 64);
+        for (let y = 0; y < 64; y++)
+          for (let x = 0; x < 64; x++) {
+            const u = x / 63;
+            const v = y / 63;
+            const a = Math.sin(Math.PI * u) ** 2 * Math.sin(Math.PI * Math.min(1, v * 1.4)) ** 1.5 * (1 - v * 0.5);
+            const i = (y * 64 + x) * 4;
+            img.data[i] = img.data[i + 1] = img.data[i + 2] = 255;
+            img.data[i + 3] = a * 255;
+          }
+        g.putImageData(img, 0, 0);
       },
       false,
     ),

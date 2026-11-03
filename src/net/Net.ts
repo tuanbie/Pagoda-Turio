@@ -1,4 +1,4 @@
-import type { ClientMsg, Pose, RoomInfo, ServerMsg } from '@sontu/shared';
+import type { ClientMsg, Place, Pose, RoomInfo, ServerMsg } from '@sontu/shared';
 import { store, prefs } from '../store.ts';
 
 export interface NetHandlers {
@@ -35,8 +35,9 @@ export class Net {
 
   constructor(private h: NetHandlers) {}
 
-  static async rooms(): Promise<RoomInfo[]> {
-    const res = await fetch(`${BACKEND}/api/rooms`, { cache: 'no-store' });
+  static async rooms(place: Place = store.get().place): Promise<RoomInfo[]> {
+    // each place has its own rooms; the server lists temple rooms when no place is given
+    const res = await fetch(`${BACKEND}/api/rooms?place=${place}`, { cache: 'no-store' });
     if (!res.ok) throw new Error('rooms ' + res.status);
     return ((await res.json()) as { rooms: RoomInfo[] }).rooms;
   }
@@ -57,6 +58,7 @@ export class Net {
       /* directory down -> let the default node pick */
     }
     const abs = /^wss?:/.test(url) ? new URL(url) : new URL(url, backendBase().replace(/^http/, 'ws'));
+    abs.searchParams.set('place', store.get().place);
     if (roomId) abs.searchParams.set('room', roomId);
     const h = this.h.hint?.();
     if (h) for (const [k, v] of Object.entries(h)) abs.searchParams.set(k, String(Math.round(v * 100) / 100));

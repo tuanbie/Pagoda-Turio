@@ -23,14 +23,18 @@ export class NavGrid {
   private closed = new Uint32Array(N * N);
   private run = 0;
 
-  constructor(circles: Circle[], boxes: Box[], radius = 0.35) {
+  /**
+   * @param heightAt walkable ground height of this place (NaN = blocked): the temple's terrain or the church's
+   * @param bound    radius of the place's boundary (cells beyond it are blocked)
+   */
+  constructor(circles: Circle[], boxes: Box[], heightAt: (x: number, z: number) => number = terrainHeight, bound: number = WORLD.radius, radius = 0.35) {
     const b = this.blocked;
     for (let j = 0; j < N; j++)
       for (let i = 0; i < N; i++) {
         const [x, z] = this.pos(i, j);
-        const h = terrainHeight(x, z);
+        const h = heightAt(x, z);
         this.height[j * N + i] = h;
-        if (Math.hypot(x, z) > WORLD.radius - 0.3 || Number.isNaN(h)) b[j * N + i] = 1;
+        if (Math.hypot(x, z) > bound - 0.3 || Number.isNaN(h)) b[j * N + i] = 1;
       }
     for (const c of circles) {
       const r = c.r + radius;

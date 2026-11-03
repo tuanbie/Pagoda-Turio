@@ -310,12 +310,20 @@ export class Npcs {
       root.rotation.y = n.r;
       this.spots[i].x = n.x;
       this.spots[i].z = n.z;
-      if (n.avatar.currentAction !== n.act) n.avatar.play(n.act);
+      // a gesture held at a station runs on the server clock too, so a strike lands with its sound
+      // (also after joining mid-stay, a graphics rebuild, or frames skipped while far away)
+      const synced = s.kind === 'stay' && n.act !== null;
+      if (!synced && n.avatar.currentAction !== n.act) n.avatar.play(n.act);
       const camD = Math.hypot(cx - n.x, cz - n.z);
       root.visible = camD < 110;
       if (!root.visible) continue;
       // far monks are small on screen: animate them every third frame
-      if (camD < 40 || (frameNo + i) % 3 === 0) n.avatar.animate(camD < 40 ? dt : dt * 3, kneel ? Pose.Sit : Pose.Idle, speed, kneel, 0);
+      if (camD < 40 || (frameNo + i) % 3 === 0) {
+        const adt = camD < 40 ? dt : dt * 3;
+        // (animate() adds adt to the age: start that much earlier)
+        if (synced) n.avatar.syncAction(n.act, Math.max(0, tc - s.t0 - adt));
+        n.avatar.animate(adt, kneel ? Pose.Sit : Pose.Idle, speed, kneel, 0);
+      }
       n.avatar.updateOverlay(performance.now(), camD);
     }
   }

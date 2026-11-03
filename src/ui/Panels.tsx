@@ -62,6 +62,8 @@ export function SettingsPanel() {
   const s = useStore((x) => x);
   const vol = (k: keyof typeof s.volumes) => (v: number) => store.set({ volumes: { ...s.volumes, [k]: v } });
   const [askUltra, setAskUltra] = useState(false);
+  // the church has no chanting, beads or moktak: its settings and help leave them out
+  const church = s.place === 'church';
   return (
     <Modal title={t('settings.title')} onClose={closePanel} closeLabel={t('settings.close')}>
       <h3>{t('settings.name')}</h3>
@@ -71,25 +73,29 @@ export function SettingsPanel() {
 
       <h3>{t('settings.sounds')}</h3>
       <Slider label={t('settings.ambient')} desc={t('settings.ambientDesc')} value={s.volumes.ambient} onChange={vol('ambient')} />
-      <Slider label={t('settings.effects')} desc={t('settings.effectsDesc')} value={s.volumes.effects} onChange={vol('effects')} />
+      <Slider label={t('settings.effects')} desc={t(church ? 'settings.effectsDescChurch' : 'settings.effectsDesc')} value={s.volumes.effects} onChange={vol('effects')} />
       <Slider label={t('settings.music')} value={s.volumes.music} onChange={vol('music')} />
 
-      <div className="row-card">
-        <div>
-          <strong>{t('chant.title')}</strong>
-          <small>{t('chant.desc')}</small>
-        </div>
-        <button
-          className={`toggle ${s.chantOn ? 'on' : ''}`}
-          onClick={async () => {
-            if (!s.chantOn && !s.soundOn) await runtime.toggleSound();
-            store.set({ chantOn: !s.chantOn });
-          }}
-        >
-          {s.chantOn ? t('chant.stop') : t('chant.play')}
-        </button>
-      </div>
-      <Slider label={t('settings.chant')} value={s.volumes.chant} onChange={vol('chant')} />
+      {!church && (
+        <>
+          <div className="row-card">
+            <div>
+              <strong>{t('chant.title')}</strong>
+              <small>{t('chant.desc')}</small>
+            </div>
+            <button
+              className={`toggle ${s.chantOn ? 'on' : ''}`}
+              onClick={async () => {
+                if (!s.chantOn && !s.soundOn) await runtime.toggleSound();
+                store.set({ chantOn: !s.chantOn });
+              }}
+            >
+              {s.chantOn ? t('chant.stop') : t('chant.play')}
+            </button>
+          </div>
+          <Slider label={t('settings.chant')} value={s.volumes.chant} onChange={vol('chant')} />
+        </>
+      )}
 
       <div className="row-card">
         <div>
@@ -150,7 +156,7 @@ export function SettingsPanel() {
       </button>
       <details>
         <summary>{t('settings.controls')}</summary>
-        <p className="pre">{t('settings.controlsText')}</p>
+        <p className="pre">{t(church ? 'settings.controlsTextChurch' : 'settings.controlsText')}</p>
       </details>
       <details>
         <summary>{t('settings.credits')}</summary>

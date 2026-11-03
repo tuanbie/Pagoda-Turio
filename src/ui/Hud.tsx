@@ -11,11 +11,12 @@ export function TopBar({ onLeave }: { onLeave: () => void }) {
   const count = useStore((s) => s.visitors.length + 1);
   const soundOn = useStore((s) => s.soundOn);
   const net = useStore((s) => s.net);
+  const church = useStore((s) => s.place) === 'church';
   return (
     <header className="topbar">
       <button className="brand" onClick={() => store.set({ panel: 'servers' })} aria-label={t('top.chooseServer')}>
-        <Icon name="temple" size={22} />
-        <span className="brand-name">{t('app.name')}</span>
+        <Icon name={church ? 'church' : 'temple'} size={22} />
+        <span className="brand-name">{t(church ? 'church.name' : 'app.name')}</span>
         {room && <small>{t('top.server', { n: room.num })}</small>}
       </button>
       <div className="top-actions">
@@ -51,6 +52,7 @@ export function ActionBar() {
   const pose = useStore((s) => s.pose);
   const panel = useStore((s) => s.panel);
   const seated = useStore((s) => s.seated);
+  const church = useStore((s) => s.place) === 'church';
   const inMoon = zone === 'moon';
   const primaryActive = pose === Pose.Bow || pose === Pose.Dance;
   const g = () => runtime.game;
@@ -63,11 +65,12 @@ export function ActionBar() {
   );
   return (
     <nav className="actionbar" aria-label="actions">
-      {btn('p', inMoon ? 'dance' : 'bow', primaryActive ? t('act.stop') : inMoon ? t('act.dance') : t('act.bow'), '1', () => g()?.primaryAction(), primaryActive)}
-      {btn('b', 'beads', t('act.beads'), '2', () => store.set({ panel: panel === 'beads' ? null : 'beads' }), panel === 'beads')}
+      {btn('p', inMoon ? 'dance' : 'bow', primaryActive ? t('act.stop') : inMoon ? t('act.dance') : t(church ? 'act.bowChurch' : 'act.bow'), '1', () => g()?.primaryAction(), primaryActive)}
+      {!church && btn('b', 'beads', t('act.beads'), '2', () => store.set({ panel: panel === 'beads' ? null : 'beads' }), panel === 'beads')}
       {btn('g', 'greet', t('act.greet'), '3', () => g()?.greet(), pose === Pose.Greet)}
-      {btn('m', 'moktak', t('act.moktak'), '5', () => store.set({ panel: panel === 'moktak' ? null : 'moktak' }), panel === 'moktak')}
-      {btn('i', 'incense', t('act.incense'), '6', () => g()?.offerIncense())}
+      {!church && btn('m', 'moktak', t('act.moktak'), '5', () => store.set({ panel: panel === 'moktak' ? null : 'moktak' }), panel === 'moktak')}
+      {church ? btn('i', 'candle', t('act.candle'), '6', () => g()?.offerIncense()) : btn('i', 'incense', t('act.incense'), '6', () => g()?.offerIncense())}
+      {church && zone === 'cloister' && btn('f', 'dove', t('act.dove'), '', () => g()?.releaseFish())}
       {zone === 'pond' && btn('f', 'fish', t('act.fish'), '', () => g()?.releaseFish())}
       {seated && zone === 'tea' && btn('tp', 'teapot', t('act.pour'), '', () => g()?.tea('pour'), pose === Pose.PourTea)}
       {seated && zone === 'tea' && btn('td', 'cup', t('act.drink'), '', () => g()?.tea('drink'), pose === Pose.DrinkTea)}
@@ -87,6 +90,18 @@ export function StatusLine() {
       <span>
         {seated
           ? t('seat.sitting')
+          : zone === 'nave'
+            ? t('hint.pew')
+            : zone === 'transept'
+              ? t('hint.candle')
+              : zone === 'sanctuary'
+                ? t('hint.sanctuary')
+                : zone === 'cloister'
+                  ? t('hint.cloister')
+                  : zone === 'belltower'
+                    ? t('hint.belltower')
+                    : zone === 'library' || zone === 'refectory' || zone === 'sacristy' || zone === 'dorm' || zone === 'residence' || zone === 'store'
+                      ? t('hint.room')
           : zone === 'main' || zone === 'west' || zone === 'east' || zone === 'jizo' || zone === 'maitreya'
             ? t('hint.cushion')
             : zone === 'tea'
@@ -131,7 +146,10 @@ export function ServiceBanner() {
   const locale = useStore((s) => s.locale);
   const listening = useStore((s) => s.serviceListening);
   const now = useNow(5000);
+  const church = useStore((s) => s.place) === 'church';
   const { live, next } = serviceStatus(now);
+  // the chanting schedule belongs to the temple; the church holds no services
+  if (church) return null;
   if (live) {
     const name = t(`service.${live.kind}`);
     return (
@@ -146,7 +164,7 @@ export function ServiceBanner() {
 }
 
 export function IncenseCard() {
-  const t = useT();
+  const tr = useT();
   const incs = useStore((s) => s.incs);
   const me = useStore((s) => s.selfId);
   const zone = useStore((s) => s.zone);
@@ -158,6 +176,9 @@ export function IncenseCard() {
   const myStickAt = useStore((s) => s.myStickAt);
   const locale = useStore((s) => s.locale);
   const visitors = useStore((s) => s.visitors);
+  const church = useStore((s) => s.place) === 'church';
+  // same queue mechanics; the church lights candles instead of offering incense
+  const t = (key: Parameters<typeof tr>[0], p?: Record<string, string | number>) => tr((church ? key.replace('incense.', 'candle.') : key) as typeof key, p);
   const now = useNow(250);
   const qi = inc.q.indexOf(me);
   let title = '';
@@ -187,7 +208,7 @@ export function IncenseCard() {
   } else return null;
   return (
     <div className="incense-card" role="status">
-      <Icon name="incense" size={26} />
+      <Icon name={church ? 'candle' : 'incense'} size={26} />
       <div>
         <strong>{title}</strong>
         <p>{sub}</p>

@@ -1,17 +1,17 @@
 import * as THREE from 'three';
 import {
-  CENSERS,
+  CHURCH,
   HALLS,
   INCENSE_SLOTS,
   Instrument,
   PAVILIONS,
   Pose,
-  SEATS,
   STUPA,
-  TABLES,
   WORLD,
   djBeat,
   inMoonYard,
+  placeDef,
+  type Place,
   tableSeat,
   type IncenseState,
   type PlayerTuple,
@@ -20,10 +20,13 @@ import {
 } from '@sontu/shared';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { World } from './World.ts';
-import { Avatar, RemotePlayer } from './Avatar.ts';
+import { Avatar, RemotePlayer, setAvatarDetail, type AvatarDetail } from './Avatar.ts';
 import { NavGrid } from './nav.ts';
 import { GROUNDS, RIDDLE, SPOTS, STICKS, WISH, gardenRect, groundsRect, hallRect } from './layout.ts';
 import { Npcs } from './npcs.ts';
+import { ChurchWorld } from './church/ChurchWorld.ts';
+import { createPost, loadSkyEnvironment, loadUltraTextures, sharpenTextures, type Post } from './realism.ts';
+import { PEW_TOP, churchHeight } from './church/layout.ts';
 import { STEP_MAX, terrainHeight } from './terrain.ts';
 import { CUSHION_TOP, STONE_TOP, STOOL_TOP } from './places.ts';
 import { store, serverNow, toast, type Fun, type Zone, type Visitor, type ChatLine } from '../store.ts';
@@ -34,7 +37,17 @@ import type { Net } from '../net/Net.ts';
 const SPEED = 3.3;
 const ACCEL = 9;
 type Activity = null | typeof Pose.Bow | typeof Pose.Dance | typeof Pose.Beads | typeof Pose.Moktak;
-type Then = 'sit' | 'censer' | 'table' | 'fish' | 'fun';
+type Then = 'sit' | 'censer' | 'table' | 'fish' | 'fun' | 'prop';
+/** an interactive object in a room (bed, desk, bookshelf…), see World / ChurchWorld */
+interface PropHit {
+  prop: string;
+  spot: { x: number; z: number; r: number };
+  sit?: boolean;
+  y?: number;
+}
+
+/** room-object seats at least this high are sat on upright (lower ones, like the tea cushion, cross-legged) */
+const BENCH_MIN = 0.3;
 
 const damp = (a: number, b: number, k: number, dt: number) => a + (b - a) * (1 - Math.exp(-k * dt));
 let chatKey = 0;
@@ -49,14 +62,32 @@ export interface MapDot {
 export class Game {
   private renderer: THREE.WebGLRenderer;
   private camera = new THREE.PerspectiveCamera(55, 1, 0.1, 1200);
-  private world!: World;
+  /** which place this game shows (temple or church), fixed for the life of the Game */
+  readonly place: Place = store.get().place;
+  /** seats, censers / candle stands, tables and spawn of this place (same as the server's) */
+  private P = placeDef(this.place);
+  private world!: World | ChurchWorld;
   private nav!: NavGrid;
   /** novice monks doing chores (client-only, driven by the server clock) */
-  private npcs!: Npcs;
+  private npcs: Npcs | null = null;
   private npcsLow = false;
   /** wish-tree plaza activity to open on arrival */
   private fun: Fun = 'wish';
   private me = { x: 0, z: 0 };
+  /** character detail the avatars were built with (follows the graphics tier) */
+  private avatarDetail: AvatarDetail = 'medium';
+  /** post-processing (high: bloom + SMAA; ultra: + ambient occlusion), null on low / medium */
+  private post: Post | null = null;
+  /** ultra: the HDR sky used as image-based light (scaled with daylight) */
+  private skyEnv: THREE.Texture | null = null;
+  /** the PMREM target behind the current world's scene.environment (freed when it is replaced) */
+  private envRT: THREE.WebGLRenderTarget | null = null;
+  /** sittable room objects of the current world (to seat other visitors on them too) */
+  private sitProps: { x: number; z: number; y: number }[] = [];
+  /** room object I'm walking to / using */
+  private prop: PropHit | null = null;
+  /** sitting on a bed edge, desk stool or refectory bench (local only, not a server seat) */
+  private propSit = false;
   private self!: Avatar;
   private remotes = new Map<number, RemotePlayer>();
   private seatOwner = new Map<number, number>(); // seat -> player
@@ -68,8 +99,8 @@ export class Game {
 
   // local player
   private id = 0;
-  private x: number = WORLD.spawn.x;
-  private z: number = WORLD.spawn.z;
+  private x: number = this.P.spawn.x;
+  private z: number = this.P.spawn.z;
   private r = Math.PI;
   private vx = 0;
   private vz = 0;
@@ -109,7 +140,7 @@ export class Game {
   private tYaw = 0;
   private tPitch = 0.42;
   private tDist = 9;
-  private camTarget = new THREE.Vector3(WORLD.spawn.x, 1.3, WORLD.spawn.z);
+  private camTarget = new THREE.Vector3(this.P.spawn.x, 1.3, this.P.spawn.z);
 
   // input
   private pointers = new Map<number, { x: number; y: number }>();
@@ -144,14 +175,20 @@ export class Game {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.renderer.domElement.className = 'game-canvas';
     host.appendChild(this.renderer.domElement);
+    this.avatarDetail = this.tier();
+    setAvatarDetail(this.avatarDetail);
     this.self = new Avatar(0, true);
+    audio.setPlace(this.place);
     this.marker = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 24).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#fff3c9', transparent: true, opacity: 0.85 }));
     this.marker.visible = false;
     this.world = this.buildWorld();
-    this.nav = new NavGrid(this.world.circles, this.world.boxes);
+    this.nav = this.buildNav();
     this.npcsLow = this.low;
-    this.npcs = new Npcs(this.nav, this.low);
-    this.npcs.attach(this.world);
+    // the novice monks belong to the temple
+    if (this.world instanceof World) {
+      this.npcs = new Npcs(this.nav, this.low);
+      this.npcs.attach(this.world);
+    }
 
     const h = new URLSearchParams(location.search).get('hour');
     this.hourOverride = h !== null && !Number.isNaN(+h) ? +h : null;
@@ -168,7 +205,7 @@ export class Game {
    * (me, other visitors, seats taken, burning incense, game boards, released fish).
    * Called at start and again when the quality changes — you stay exactly where you are.
    */
-  private buildWorld(): World {
+  private buildWorld(): World | ChurchWorld {
     const q = store.get().quality;
     const dpr = window.devicePixelRatio || 1;
     const { mobile, weak } = deviceProfile();
@@ -192,33 +229,123 @@ export class Game {
     this.pixelRatio = this.maxPixelRatio;
     this.renderer.setPixelRatio(this.pixelRatio);
 
-    const world = new World({ low, shadows, shadowSize: ultra ? 4096 : q === 'high' ? 2048 : 1024, density: low ? 0.45 : tier === 'medium' ? 0.7 : ultra ? 1.5 : 1, ultra });
+    const wopt = { low, shadows, shadowSize: ultra ? 4096 : q === 'high' ? 2048 : 1024, density: low ? 0.45 : tier === 'medium' ? 0.7 : ultra ? 1.5 : 1, ultra };
+    const world = this.place === 'church' ? new ChurchWorld(wopt) : new World(wopt);
     // image-based lighting makes gold / bronze read as metal (one-off, tiny env map)
+    // (the previous world's env target is freed here: disposing scene.environment alone doesn't free a PMREM target)
+    this.envRT?.dispose();
+    this.envRT = null;
     if (!low) {
       // (ultra: a touch more image-based light for richer gold and lacquer)
       const pmrem = new THREE.PMREMGenerator(this.renderer);
-      world.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+      this.envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+      world.scene.environment = this.envRT.texture;
       world.scene.environmentIntensity = ultra ? 0.45 : 0.35;
       pmrem.dispose();
     }
     world.scene.add(this.self.root, this.marker);
-    // invisible click target for the DJ booth
-    const djHit = new THREE.Mesh(new THREE.BoxGeometry(3, 2.4, 6), new THREE.MeshBasicMaterial({ visible: false }));
-    djHit.position.set(WORLD.djBooth.x + 0.5, 1.2, WORLD.djBooth.z);
-    djHit.userData.kind = 'dj';
-    world.scene.add(djHit);
-    world.clickables.push(djHit);
+    // ---------- realism per tier ----------
+    // high: sharper textures + bloom/SMAA; ultra: photo-scanned CC0 textures, HDR sky light, ambient occlusion
+    this.post?.dispose();
+    this.post = null;
+    this.skyEnv = null;
+    if (tier === 'high' || ultra) {
+      sharpenTextures(this.renderer, Object.values(world.m));
+      this.post = createPost(this.renderer, world.scene, this.camera, { ultra });
+    }
+    if (ultra) {
+      void loadUltraTextures(world.m, this.renderer);
+      void loadSkyEnvironment(this.renderer, world.scene).then((rt) => {
+        if (!rt) return;
+        // the world was replaced while the HDR loaded: nobody will ever free this target
+        if (this.world !== world) return rt.dispose();
+        // the HDR sky replaces the RoomEnvironment light
+        this.envRT?.dispose();
+        this.envRT = rt;
+        this.skyEnv = rt.texture;
+        this.hourClock = 99;
+      });
+    }
+    // invisible click target for the DJ booth (temple only)
+    if (world instanceof World) this.addDjHit(world);
+    // sittable room objects: other visitors seen sitting at one are lifted onto it
+    this.sitProps = [];
+    for (const o of world.clickables) {
+      const u = o.userData as Partial<PropHit> & { kind?: string };
+      if (u.kind === 'prop' && u.sit && u.spot) this.sitProps.push({ x: u.spot.x, z: u.spot.z, y: u.y ?? 0.45 });
+    }
     // restore live state
     for (const rp of this.remotes.values()) {
       rp.riding = false;
+      this.seatStyle(rp.avatar);
       world.scene.add(rp.avatar.root);
     }
+    this.seatStyle(this.self);
     for (const [i, id] of this.seatOwner) world.setSeatTaken(i, id !== this.id);
     for (const [slot, at] of this.stickCache) world.setStick(slot, at);
     for (const snap of store.get().tables) world.gameTables.set(snap);
     for (const f of this.fishLog) world.pond.add(f, null, true);
     this.hourClock = 99;
     return world;
+  }
+
+  /** church pews and benches: sit upright; temple cushions: cross-legged. Bow: temple = prostration, church = a standing bow */
+  private seatStyle(av: Avatar) {
+    av.seatStyle = this.place === 'church' ? 'bench' : 'floor';
+    av.bowStyle = this.place === 'church' ? 'church' : 'prostrate';
+  }
+
+  /** path-finding grid on this place's own ground heights and boundary */
+  private buildNav() {
+    return new NavGrid(this.world.circles, this.world.boxes, (x, z) => this.height(x, z), this.P.radius);
+  }
+
+  /** a sittable room object whose sitting spot is at (x,z), if any */
+  private sitPropAt(x: number, z: number) {
+    for (const p of this.sitProps) if (Math.abs(p.x - x) < 0.3 && Math.abs(p.z - z) < 0.3) return p;
+    return null;
+  }
+
+  private addDjHit(world: World) {
+    const djHit = new THREE.Mesh(new THREE.BoxGeometry(3, 2.4, 6), new THREE.MeshBasicMaterial({ visible: false }));
+    djHit.position.set(WORLD.djBooth.x + 0.5, 1.2, WORLD.djBooth.z);
+    djHit.userData.kind = 'dj';
+    world.scene.add(djHit);
+    world.clickables.push(djHit);
+  }
+
+  /** The graphics tier in effect: the chosen one, or what "auto" picked for this device. */
+  private tier(): 'ultra' | 'high' | 'medium' | 'low' {
+    const q = store.get().quality;
+    if (q !== 'auto') return q;
+    const { mobile, weak } = deviceProfile();
+    return this.autoTier ?? (weak ? 'low' : mobile ? 'medium' : 'high');
+  }
+
+  /**
+   * Characters follow the graphics tier too: when it changes, rebuild my avatar, everyone
+   * else's and the novice monks with the new detail (positions and names are kept).
+   */
+  private rebuildAvatars(detail: AvatarDetail) {
+    if (detail === this.avatarDetail) return;
+    this.avatarDetail = detail;
+    setAvatarDetail(detail);
+    const old = this.self;
+    this.self = new Avatar(0, true);
+    this.self.root.position.copy(old.root.position);
+    this.self.root.rotation.y = old.root.rotation.y;
+    old.root.removeFromParent();
+    old.dispose();
+    for (const rp of this.remotes.values()) {
+      const prev = rp.avatar;
+      rp.avatar = new Avatar(rp.tint, false);
+      rp.avatar.root.position.copy(prev.root.position);
+      rp.avatar.root.rotation.y = prev.root.rotation.y;
+      rp.avatar.setName(this.nameOf(rp.id));
+      prev.root.removeFromParent();
+      prev.dispose();
+    }
+    // (the novice monks are rebuilt by setQuality, once the new world's nav grid exists)
   }
 
   /** Graphics quality changed: swap the scene, keep the visitor in place. */
@@ -229,15 +356,21 @@ export class Game {
       store.set({ arriving: false });
     }
     this.self.root.removeFromParent();
+    this.rebuildAvatars(this.tier());
     this.world = this.buildWorld();
     old.dispose();
-    // the low tier keeps only the essential monks
-    if (this.low !== this.npcsLow) {
+    // some colliders exist only on high / ultra (balustrades, banner poles): re-plan on the new world
+    this.nav = this.buildNav();
+    // the monks' routes come from the nav grid; their avatars follow the character detail;
+    // and the low tier keeps only the essential monks
+    if (this.npcs) {
       for (const n of this.npcs.list) n.avatar.dispose();
       this.npcsLow = this.low;
       this.npcs = new Npcs(this.nav, this.low);
     }
-    this.npcs.attach(this.world);
+    if (this.npcs && this.world instanceof World) this.npcs.attach(this.world);
+    const goal = this.path[this.path.length - 1];
+    if (goal) this.goTo(goal.x, goal.z, this.then);
     this.resize();
   }
 
@@ -252,7 +385,7 @@ export class Game {
   /** Re-render name tags (e.g. after a language change). */
   refreshLabels() {
     for (const r of this.remotes.values()) r.avatar.setName(this.nameOf(r.id));
-    this.npcs.refreshLabels();
+    this.npcs?.refreshLabels();
   }
 
   // ---------------- wish tree plaza ----------------
@@ -281,7 +414,7 @@ export class Game {
         for (const r of this.remotes.values()) r.avatar.dispose();
         this.remotes.clear();
         this.seatOwner.clear();
-        SEATS.forEach((_, i) => this.world.setSeatTaken(i, false));
+        this.P.seats.forEach((_, i) => this.world.setSeatTaken(i, false));
         const reclaim = this.seat >= 0 ? this.seat : this.reclaimSeat;
         for (const p of msg.players) {
           if (p[0] === msg.id) {
@@ -300,12 +433,18 @@ export class Game {
         }
         this.seat = -1;
         this.seated = false;
+        // sitting on a room object is local only: keep it only if I was restored right at its spot
+        const keepProp = this.propSit && !!this.prop && Math.hypot(this.x - this.prop.spot.x, this.z - this.prop.spot.z) < 0.4;
+        if (!keepProp) {
+          this.propSit = false;
+          this.prop = null;
+        }
         this.stop();
         store.set({
           selfId: msg.id,
           room: msg.room,
           incs: msg.inc,
-          seated: false,
+          seated: keepProp,
           dj: msg.dj,
           chat: msg.chat.map(([id, name, adj, noun, text, at, ch]) => ({ key: ++chatKey, id, name, adj, noun, text, at, ch: ch ?? 0 })),
           tables: msg.tables,
@@ -331,7 +470,11 @@ export class Game {
           this.net.send({ t: 'seat', i: reclaim });
         }
         // first arrival: the shuttle drives me to the gate, then I walk in
-        if (this.firstHi && Math.hypot(this.x - WORLD.spawn.x, this.z - WORLD.spawn.z) < 5) this.playArrival();
+        // temple: the shuttle drives me to the gate; church: I simply walk in through the churchyard gate
+        if (this.firstHi && Math.hypot(this.x - this.P.spawn.x, this.z - this.P.spawn.z) < 5) {
+          if (this.place === 'pagoda') this.playArrival();
+          else toast(t('church.welcome'));
+        }
         this.firstHi = false;
         break;
       }
@@ -341,7 +484,7 @@ export class Game {
             if (p[0] !== this.id && !this.remotes.has(p[0])) {
               const rp = this.addRemote(p);
               // newcomers arrive by shuttle too: show them once the cart has stopped
-              if (Math.hypot(p[3] - WORLD.spawn.x, p[4] - WORLD.spawn.z) < 5) {
+              if (this.place === 'pagoda' && Math.hypot(p[3] - WORLD.spawn.x, p[4] - WORLD.spawn.z) < 5) {
                 rp.riding = true;
                 this.world.shuttle.arrive(() => (rp.riding = false), rp.avatar.root);
               }
@@ -362,7 +505,7 @@ export class Game {
         this.setSeat(msg.i, msg.id);
         break;
       case 'seatno':
-        if (!this.silentSeat) toast(t('seat.taken'));
+        if (!this.silentSeat) toast(t(this.place === 'church' ? 'seat.takenPew' : 'seat.taken'));
         this.silentSeat = false;
         break;
       case 'sreq':
@@ -406,11 +549,12 @@ export class Game {
         break;
       }
       case 'fx': {
-        const src = msg.k === Instrument.Bell ? WORLD.bellTower : WORLD.drumTower;
+        const src = this.place === 'church' ? { x: CHURCH.towers.x, z: CHURCH.towers.z } : msg.k === Instrument.Bell ? WORLD.bellTower : WORLD.drumTower;
         const gain = Math.max(0.15, 1 - Math.hypot(this.x - src.x, this.z - src.z) / 90);
         this.world.ring(msg.k === Instrument.Bell ? 'bell' : 'drum');
         if (store.get().soundOn) {
-          if (msg.k === Instrument.Bell) audio.bell('effects', undefined, 110, gain * 1.4);
+          if (this.place === 'church') audio.churchBell(gain * 1.4);
+          else if (msg.k === Instrument.Bell) audio.bell('effects', undefined, 110, gain * 1.4);
           else audio.drum(gain);
         }
         break;
@@ -430,7 +574,7 @@ export class Game {
           this.table = msg.s.i;
           this.tableSide = side as Side;
           this.leaveSeat();
-          const st = tableSeat(TABLES[msg.s.i], this.tableSide);
+          const st = tableSeat(this.P.tables[msg.s.i], this.tableSide);
           this.goTo(st.x, st.z, 'table');
         } else if (side < 0 && this.table === msg.s.i) {
           this.table = -1;
@@ -444,7 +588,7 @@ export class Game {
         this.world.pond.add(msg.f, from);
         this.fishLog.push(msg.f);
         if (this.fishLog.length > 150) this.fishLog.shift();
-        if (msg.id === this.id) toast(t('fish.released'));
+        if (msg.id === this.id) toast(t(this.place === 'church' ? 'dove.released' : 'fish.released'));
         if (store.get().soundOn && from && Math.hypot(this.x - from[0], this.z - from[1]) < 30) audio.splash();
         break;
       }
@@ -468,6 +612,7 @@ export class Game {
     const rp = new RemotePlayer(id, adj, noun, tint, name ?? '', x, z, r, pose);
     this.remotes.set(id, rp);
     rp.avatar.root.position.set(x, this.world.groundHeight(x, z), z);
+    this.seatStyle(rp.avatar);
     rp.avatar.setName(this.nameOf(id));
     this.world.scene.add(rp.avatar.root);
     this.visitorsDirty = true;
@@ -488,7 +633,7 @@ export class Game {
         this.arrive();
         return;
       }
-      this.goTo(SEATS[i].x, SEATS[i].z, 'sit');
+      this.goTo(this.P.seats[i].x, this.P.seats[i].z, 'sit');
     } else if (prev === this.id && this.seat === i) {
       // my cushion went to someone else (I offered it) → stand up and step aside
       const wasSeated = this.seated;
@@ -496,7 +641,7 @@ export class Game {
       this.seated = false;
       store.set({ seated: false });
       if (wasSeated && id !== null) {
-        const s = SEATS[i];
+        const s = this.P.seats[i];
         const [nx, nz] = this.world.resolve(s.x + Math.sin(s.r + Math.PI / 2) * 1.1, s.z + Math.cos(s.r + Math.PI / 2) * 1.1);
         this.goTo(nx, nz);
         toast(t('seat.gave'));
@@ -515,7 +660,7 @@ export class Game {
       this.leaveTable();
       this.activity = null;
       this.censer = c;
-      this.goTo(CENSERS[c].stand.x, CENSERS[c].stand.z, 'censer');
+      this.goTo(this.P.censers[c].stand.x, this.P.censers[c].stand.z, 'censer');
     }
   }
 
@@ -527,11 +672,11 @@ export class Game {
   /** The hall I'm standing in gets the offering; otherwise the nearest censer. */
   censerHere(): number {
     const zone = store.get().zone;
-    const inHall = CENSERS.findIndex((c) => c.hall === zone);
+    const inHall = this.P.censers.findIndex((c) => c.hall !== null && c.hall === zone);
     if (inHall >= 0) return inHall;
     let best = 0;
     let bestD = Infinity;
-    CENSERS.forEach((c, i) => {
+    this.P.censers.forEach((c, i) => {
       const d = Math.hypot(this.x - c.stand.x, this.z - c.stand.z);
       if (d < bestD) {
         bestD = d;
@@ -543,7 +688,7 @@ export class Game {
 
   // ---------------- actions (called by UI / hotkeys) ----------------
   primaryAction() {
-    if (inMoonYard(this.x, this.z)) return this.toggle(Pose.Dance);
+    if (this.place === 'pagoda' && inMoonYard(this.x, this.z)) return this.toggle(Pose.Dance);
     this.toggle(Pose.Bow);
   }
 
@@ -568,7 +713,7 @@ export class Game {
   }
 
   offerIncense(c = this.censerHere()) {
-    if (!this.net.online) return toast(t('incense.offline'));
+    if (!this.net.online) return toast(t(this.place === 'church' ? 'candle.offline' : 'incense.offline'));
     this.net.send({ t: 'inc', c });
   }
 
@@ -579,7 +724,7 @@ export class Game {
 
   requestSeat(i: number) {
     const owner = this.seatOwner.get(i);
-    if (owner === this.id) return this.goTo(SEATS[i].x, SEATS[i].z, 'sit');
+    if (owner === this.id) return this.goTo(this.P.seats[i].x, this.P.seats[i].z, 'sit');
     if (owner !== undefined) return store.set({ seatAsk: { i, owner } });
     this.net.send({ t: 'seat', i });
   }
@@ -624,7 +769,7 @@ export class Game {
   /** Walk to the nearest shore, then release a fish. */
   releaseFish() {
     const [sx, sz] = this.world.pond.shore(this.x, this.z);
-    const { pond } = WORLD;
+    const pond = this.pondCentre();
     const a = Math.atan2(sz - pond.z, sx - pond.x);
     const bx = pond.x + Math.cos(a) * (pond.r + 1.6);
     const bz = pond.z + Math.sin(a) * (pond.r + 1.6);
@@ -634,9 +779,38 @@ export class Game {
     this.goTo(bx, bz, 'fish');
   }
 
+  /** the temple's lotus pond, or the church's cloister fountain */
+  private pondCentre() {
+    return this.place === 'church' ? CHURCH.fountain : WORLD.pond;
+  }
+
   standUp() {
     this.leaveSeat();
+    this.leaveProp();
     this.sendMove();
+  }
+
+  // ---------------- room objects (beds, desks, shelves, benches…) ----------------
+  /** Walk to the object, then sit at it or use it (local only: nothing is sent to the server). */
+  useProp(p: PropHit) {
+    if (this.arriving || !p?.spot) return;
+    if (this.myCenser() >= 0) this.cancelIncense();
+    this.leaveSeat();
+    this.leaveTable();
+    this.leaveProp();
+    this.activity = null;
+    this.prop = p;
+    if (Math.hypot(this.x - p.spot.x, this.z - p.spot.z) < 0.4) {
+      this.then = 'prop';
+      return this.arrive();
+    }
+    this.goTo(p.spot.x, p.spot.z, 'prop');
+  }
+
+  private leaveProp() {
+    if (!this.propSit) return;
+    this.propSit = false;
+    store.set({ seated: false });
   }
 
   rename(name: string) {
@@ -655,7 +829,7 @@ export class Game {
 
   /** Tea house only: pour from the pot, or sip from the cup (short one-shot gestures). */
   tea(kind: 'pour' | 'drink') {
-    if (!this.seated || SEATS[this.seat]?.area !== 'tea') return;
+    if (!this.seated || this.P.seats[this.seat]?.area !== 'tea') return;
     this.teaPose = kind === 'pour' ? Pose.PourTea : Pose.DrinkTea;
     this.teaUntil = performance.now() + (kind === 'pour' ? 3400 : 2800);
     if (store.get().soundOn) (kind === 'pour' ? audio.pour() : audio.sip());
@@ -663,10 +837,11 @@ export class Game {
   }
 
   get atTea() {
-    return this.seated && SEATS[this.seat]?.area === 'tea';
+    return this.seated && this.P.seats[this.seat]?.area === 'tea';
   }
 
   get pose(): Pose {
+    if (this.propSit) return Pose.Sit;
     if (performance.now() < this.teaUntil && this.seated) return this.teaPose;
     if (store.get().incs.some((st) => st && st.cur === this.id && st.ph === 1)) return Pose.Offer;
     if (this.speed > 0.3) return Pose.Idle;
@@ -681,12 +856,18 @@ export class Game {
 
   /** Route to (x,z) with A*; `then` = what to do on arrival. */
   goTo(x: number, z: number, then: Then | null = null) {
+    // every walk except to a room object gets me off the bed / bench / desk first
+    if (then !== 'prop') this.leaveProp();
     const route = this.nav.find(this.x, this.z, x, z);
     this.then = then;
     if (!route) {
       this.path = [];
-      if (then) this.arrive();
-      else toast(t('nav.unreachable'));
+      // a room object behind a wall must never teleport me through it
+      if (then && then !== 'prop') this.arrive();
+      else {
+        this.then = null;
+        toast(t('nav.unreachable'));
+      }
       return;
     }
     // seats and the censer stand lie inside obstacle padding: walk the final leg directly
@@ -710,6 +891,7 @@ export class Game {
     if (this.myCenser() >= 0) this.cancelIncense();
     this.leaveSeat();
     this.leaveTable();
+    this.leaveProp();
     if (this.activity === Pose.Bow || this.activity === Pose.Dance) this.activity = null;
     this.goTo(x, z);
   }
@@ -820,8 +1002,12 @@ export class Game {
     this.ray.setFromCamera(ndc, this.camera);
     const hit = this.ray.intersectObjects(this.world.clickables, true)[0];
     const ground = this.world.pickGround(this.ray.ray);
-    // an object wins only if it is in front of the ground point
-    if (hit && (!ground || hit.distance < ground.distanceTo(this.ray.ray.origin) + 0.5)) {
+    const groundD = ground ? ground.distanceTo(this.ray.ray.origin) : Infinity;
+    // walls and ceilings (the invisible camera occluders; door gaps have none) hide what is behind them
+    const occ = (this.world as { occluders?: THREE.Object3D[] }).occluders;
+    const wall = occ?.length ? this.ray.intersectObjects(occ, false)[0] : undefined;
+    // an object wins only if it is in front of the ground point and of any wall
+    if (hit && hit.distance < groundD + 0.5 && (!wall || hit.distance < wall.distance + 0.05)) {
       const kind = hit.object.userData.kind as string | undefined;
       if (kind === 'censer') return this.offerIncense(hit.object.userData.censer as number);
       if (kind === 'dj') return store.set({ panel: 'dj' });
@@ -829,10 +1015,16 @@ export class Game {
       if (kind === 'pond') return this.releaseFish();
       if (kind === 'wishTree') return this.openFun('wish');
       if (kind === 'sticks' || kind === 'riddle') return this.openFun(kind);
-      if (kind === 'npc') return toast(this.npcs.describe(hit.object.userData.npc as number));
+      if (kind === 'npc' && this.npcs) return toast(this.npcs.describe(hit.object.userData.npc as number));
+      if (kind === 'prop') return this.useProp(hit.object.userData as PropHit);
       if (kind === 'bell' || kind === 'drum') return this.net.send({ t: 'ring', k: kind === 'bell' ? Instrument.Bell : Instrument.Drum });
       const idx = hit.object.userData.seatIdx as number[] | undefined;
       if (idx && hit.instanceId !== undefined) return this.requestSeat(idx[hit.instanceId]);
+    }
+    // tapped a wall or roof: walk to its foot instead of into the room behind it
+    if (wall && wall.distance < groundD) {
+      const [x, z] = this.world.resolve(wall.point.x, wall.point.z);
+      return this.moveTo(x, z);
     }
     if (!ground) return;
     const [x, z] = this.world.resolve(ground.x, ground.z);
@@ -844,6 +1036,7 @@ export class Game {
     const w = this.host.clientWidth;
     const h = this.host.clientHeight;
     this.renderer.setSize(w, h, false);
+    this.post?.setSize(w, h);
     this.camera.aspect = w / Math.max(1, h);
     const portrait = w < h;
     // phones in portrait: wider lens, camera further back and a bit higher so you
@@ -869,18 +1062,20 @@ export class Game {
     const dj = store.get().dj;
     const beat = dj ? djBeat(dj, sNow) : 0;
     this.updateSelf(dt);
-    const selfLift = this.seated && this.seat >= 0 ? seatTop(this.seat) : this.atTable ? STOOL_TOP : 0;
+    const selfLift = this.seated && this.seat >= 0 ? this.seatTop(this.seat) : this.atTable ? STOOL_TOP : this.propSit ? this.prop?.y ?? 0.45 : 0;
     if (!this.arriving) {
       // (while riding, the cart carries the avatar)
       this.self.root.position.set(this.x, damp(this.self.root.position.y, this.world.groundHeight(this.x, this.z) + selfLift, 12, dt), this.z);
       this.self.root.rotation.y = this.r;
     }
-    this.self.animate(dt, this.arriving ? Pose.Sit : this.pose, this.arriving ? 0 : this.speed, this.arriving || this.seated || this.atTable, beat);
+    // upright on pews, benches, stools, bed edges and desk chairs; cross-legged on cushions (incl. the low tea-table cushion)
+    this.self.seatStyle = this.place === 'church' || this.atTable || (this.propSit && (this.prop?.y ?? 0.45) >= BENCH_MIN) ? 'bench' : 'floor';
+    this.self.animate(dt, this.arriving ? Pose.Sit : this.pose, this.arriving ? 0 : this.speed, this.arriving || this.seated || this.atTable || this.propSit, beat);
     this.self.updateOverlay(now, 0);
 
     // where each remote visitor sits: cushion / stone / stool height
     const seatOf = new Map<number, number>();
-    for (const [i, id] of this.seatOwner) seatOf.set(id, seatTop(i));
+    for (const [i, id] of this.seatOwner) seatOf.set(id, this.seatTop(i));
     for (const tb of store.get().tables) for (const id of tb.p) if (id !== null) seatOf.set(id, STOOL_TOP);
     const cam = this.camera.position;
     for (const rp of this.remotes.values()) {
@@ -890,7 +1085,17 @@ export class Game {
         rp.avatar.animate(dt, Pose.Sit, 0, true, beat);
         continue;
       }
-      const lift = rp.speed < 0.2 ? seatOf.get(rp.id) ?? 0 : 0;
+      let lift = rp.speed < 0.2 ? seatOf.get(rp.id) ?? 0 : 0;
+      // sitting on a bed / desk / bench is local to that visitor: find the room object at their spot
+      let onProp = false;
+      if (rp.pose === Pose.Sit && rp.speed < 0.2 && !seatOf.has(rp.id)) {
+        const sp = this.sitPropAt(x, z);
+        if (sp) {
+          lift = sp.y;
+          onProp = true;
+        }
+      }
+      rp.avatar.seatStyle = this.place === 'church' || lift === STOOL_TOP || (onProp && lift >= BENCH_MIN) ? 'bench' : 'floor';
       root.position.set(x, damp(root.position.y, this.world.groundHeight(x, z) + lift, 12, dt), z);
       root.rotation.y = r;
       const d = Math.hypot(cam.x - x, cam.z - z);
@@ -900,7 +1105,7 @@ export class Game {
     }
     this.me.x = this.x;
     this.me.z = this.z;
-    this.npcs.update(dt, sNow, this.world, cam.x, cam.z, this.me, this.frameNo);
+    if (this.npcs && this.world instanceof World) this.npcs.update(dt, sNow, this.world, cam.x, cam.z, this.me, this.frameNo);
     this.world.dj.animate(dt, Pose.Dance, 0, false, beat);
     this.world.update(dt, Date.now(), now / 1000);
     if (this.marker.visible) (this.marker.material as THREE.MeshBasicMaterial).opacity = 0.5 + Math.sin(now / 200) * 0.3;
@@ -923,13 +1128,36 @@ export class Game {
       Math.max(0.6, this.camTarget.y + Math.sin(this.pitch) * this.dist),
       this.camTarget.z + Math.cos(this.yaw) * cp * this.dist,
     );
+    this.avoidCameraClipping();
     this.camera.lookAt(this.camTarget);
     this.world.followShadow(this.x, this.z);
     this.world.cull(this.camera.position, dt);
 
     this.slowUpdates(dt);
-    this.renderer.render(this.world.scene, this.camera);
+    if (this.post) this.post.render();
+    else this.renderer.render(this.world.scene, this.camera);
     this.adaptQuality(dt);
+  }
+
+  /**
+   * Camera collision: keep the camera in front of walls and under ceilings (rooms, the church),
+   * so the inside of a building stays visible instead of its roof. Raycasts only against the
+   * world's few invisible occluder boxes, not the render meshes.
+   */
+  private camRay = new THREE.Raycaster();
+  private camDir = new THREE.Vector3();
+  private avoidCameraClipping() {
+    const occ = (this.world as { occluders?: THREE.Object3D[] }).occluders;
+    if (!occ?.length) return;
+    const cam = this.camera.position;
+    this.camDir.subVectors(cam, this.camTarget);
+    const len = this.camDir.length();
+    if (len < 0.5) return;
+    this.camDir.divideScalar(len);
+    this.camRay.set(this.camTarget, this.camDir);
+    this.camRay.far = len;
+    const hit = this.camRay.intersectObjects(occ, false)[0];
+    if (hit) cam.copy(this.camTarget).addScaledVector(this.camDir, Math.max(0.6, hit.distance - 0.3));
   }
 
   private updateSelf(dt: number) {
@@ -940,11 +1168,12 @@ export class Game {
     const fwd = (k.has('KeyW') || k.has('ArrowUp') ? 1 : 0) - (k.has('KeyS') || k.has('ArrowDown') ? 1 : 0);
     const side = (k.has('KeyD') || k.has('ArrowRight') ? 1 : 0) - (k.has('KeyA') || k.has('ArrowLeft') ? 1 : 0);
     if (fwd || side) {
-      if (this.path.length || this.seated || this.atTable || this.activity === Pose.Bow || this.activity === Pose.Dance) {
+      if (this.path.length || this.seated || this.atTable || this.propSit || this.activity === Pose.Bow || this.activity === Pose.Dance) {
         if (this.then === 'censer') this.cancelIncense();
         this.stop();
         this.leaveSeat();
         this.leaveTable();
+        this.leaveProp();
         if (this.activity === Pose.Bow || this.activity === Pose.Dance) this.activity = null;
       }
       const fx = -Math.sin(this.yaw);
@@ -999,12 +1228,12 @@ export class Game {
       this.z = nz;
     } else this.speed = damp(this.speed, 0, 12, dt);
     // standing still on top of someone (e.g. both arrived at once)? drift apart gently
-    if (this.speed < 0.05 && !this.seated && !this.atTable && !this.path.length && !this.arriving) {
+    if (this.speed < 0.05 && !this.seated && !this.atTable && !this.propSit && !this.path.length && !this.arriving) {
       const [ax, az] = this.avoidPeople(this.x, this.z, 0.6 * dt * 4);
       if (ax !== this.x || az !== this.z) {
         const [rx, rz] = this.world.resolve(ax, az);
-        const h0 = terrainHeight(this.x, this.z);
-        const h1 = terrainHeight(rx, rz);
+        const h0 = this.height(this.x, this.z);
+        const h1 = this.height(rx, rz);
         if (!Number.isNaN(h1) && Math.abs(h1 - h0) <= STEP_MAX) {
           this.x = rx;
           this.z = rz;
@@ -1025,9 +1254,9 @@ export class Game {
   private steer(sx: number, sz: number, direct: boolean): [number, number] {
     const len = Math.hypot(sx, sz);
     if (len < 1e-6) return [this.x, this.z];
-    const h0 = terrainHeight(this.x, this.z);
+    const h0 = this.height(this.x, this.z);
     const okH = (x: number, z: number) => {
-      const h = terrainHeight(x, z);
+      const h = this.height(x, z);
       return !Number.isNaN(h) && (Number.isNaN(h0) || Math.abs(h - h0) <= STEP_MAX);
     };
     let best: [number, number] | null = null;
@@ -1072,7 +1301,7 @@ export class Game {
       px += nx * push + -nz * push * 0.6;
       pz += nz * push + nx * push * 0.6;
     }
-    for (const sp of this.npcs.spots) {
+    for (const sp of this.npcs?.spots ?? []) {
       const dx = x - sp.x;
       const dz = z - sp.z;
       const d2 = dx * dx + dz * dz;
@@ -1102,20 +1331,21 @@ export class Game {
     const then = this.then;
     this.then = null;
     this.marker.visible = false;
+    if (then !== 'prop') this.leaveProp();
     if (then === 'sit' && this.seat >= 0) {
-      const s = SEATS[this.seat];
+      const s = this.P.seats[this.seat];
       this.x = s.x;
       this.z = s.z;
       this.r = s.r;
       this.seated = true;
       store.set({ seated: true });
     } else if (then === 'censer') {
-      const c = CENSERS[this.censer];
+      const c = this.P.censers[this.censer];
       this.x = c.stand.x;
       this.z = c.stand.z;
       this.r = Math.atan2(c.x - c.stand.x, c.z - c.stand.z);
     } else if (then === 'table' && this.table >= 0) {
-      const st = tableSeat(TABLES[this.table], this.tableSide);
+      const st = tableSeat(this.P.tables[this.table], this.tableSide);
       this.x = st.x;
       this.z = st.z;
       this.r = st.r;
@@ -1127,9 +1357,19 @@ export class Game {
       this.activity = null;
       store.set({ panel: 'fun', fun: this.fun });
     } else if (then === 'fish') {
-      const { pond } = WORLD;
+      const pond = this.pondCentre();
       this.r = Math.atan2(pond.x - this.x, pond.z - this.z);
       this.net.send({ t: 'fish' });
+    } else if (then === 'prop' && this.prop) {
+      const p = this.prop;
+      this.x = p.spot.x;
+      this.z = p.spot.z;
+      this.r = p.spot.r;
+      if (p.sit) {
+        this.propSit = true;
+        store.set({ seated: true });
+      } else this.greetUntil = performance.now() + 1800; // a small gesture at the object
+      toast(t(`prop.${p.prop}` as 'prop.bed'));
     }
     this.vx = this.vz = 0;
     this.sendMove();
@@ -1141,7 +1381,7 @@ export class Game {
       this.zoneClock = 0;
       store.set({ zone: this.zone() });
       const m = WORLD.moonYard;
-      const d = Math.hypot(this.x - m.x, this.z - m.z);
+      const d = this.place === 'pagoda' ? Math.hypot(this.x - m.x, this.z - m.z) : Infinity;
       audio.setMusicProximity(Math.min(1, Math.max(0, (m.r + 9 - d) / 9)));
       audio.setHallProximity(this.hallProximity());
       if (this.visitorsDirty) {
@@ -1156,11 +1396,14 @@ export class Game {
       const d = new Date();
       this.world.setHour(this.hourOverride ?? d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600);
       audio.setNight(this.world.night > 0.5);
+      // the HDR sky lights the scene by day, hardly at all at night
+      if (this.skyEnv) this.world.scene.environmentIntensity = THREE.MathUtils.lerp(0.06, 0.7, 1 - this.world.night);
     }
   }
 
   /** 1 inside a hall, fading to 0 about 12 m away from it. */
   private hallProximity() {
+    if (this.world instanceof ChurchWorld) return this.world.inside(this.x, this.z) ? 1 : 0;
     let best = 0;
     for (const h of HALLS) {
       const r = hallRect(h);
@@ -1173,6 +1416,7 @@ export class Game {
 
   private zone(): Zone {
     const { x, z } = this;
+    if (this.world instanceof ChurchWorld) return this.churchZone(this.world);
     for (const h of [...HALLS, ...PAVILIONS]) {
       const r = hallRect(h);
       if (x > r.x0 && x < r.x1 && z > r.z0 && z < r.z1) return h.id;
@@ -1195,6 +1439,36 @@ export class Game {
     if (near(WORLD.courtyard, WORLD.courtyard.r + 1)) return 'courtyard';
     if (Math.abs(x) < 5 && z > -4 && z < WORLD.gate.z) return 'path';
     return 'forest';
+  }
+
+  private churchZone(w: ChurchWorld): Zone {
+    const { x, z } = this;
+    const C = CHURCH;
+    const near = (p: { x: number; z: number }, r: number) => Math.hypot(x - p.x, z - p.z) < r;
+    if (w.inside(x, z)) {
+      if (z < C.transept.z - C.transept.d / 2) return 'sanctuary';
+      if (z < C.nave.z0) return 'transept';
+      return 'nave';
+    }
+    const cl = C.cloister;
+    if (x > cl.x - cl.w / 2 + 3 && x < cl.x + cl.w / 2 - 3 && z > cl.z - cl.d / 2 - 9 && z < cl.z - cl.d / 2) return 'library';
+    if (x > cl.x - cl.w / 2 + 3 && x < cl.x + cl.w / 2 - 3 && z > cl.z + cl.d / 2 && z < cl.z + cl.d / 2 + 9) return 'refectory';
+    if (x > C.transept.w / 2 && x < C.transept.w / 2 + 9.2 && z > C.transept.z - C.transept.d / 2 && z < C.nave.z0 - 2) return 'sacristy';
+    if (Math.abs(x - cl.x) < cl.w / 2 && Math.abs(z - cl.z) < cl.d / 2) return 'cloister';
+    if (near({ x: C.towers.x, z: C.towers.z + 5 }, 5)) return 'belltower';
+    if (Math.abs(x - C.plaza.x) < C.plaza.w / 2 && Math.abs(z - C.plaza.z) < C.plaza.d / 2) return 'plaza';
+    return 'churchyard';
+  }
+
+  /** walkable ground height of this place (NaN = blocked) */
+  private height(x: number, z: number) {
+    return this.place === 'church' ? churchHeight(x, z) : terrainHeight(x, z);
+  }
+
+  /** Height of the top of seat i: cushion, Bodhi stone, pew or garden bench. */
+  private seatTop(i: number) {
+    if (this.place === 'church') return PEW_TOP;
+    return this.P.seats[i]?.area === 'bodhi' ? STONE_TOP : CUSHION_TOP;
   }
 
   /** Dynamic resolution: keep ~50+ fps on weak devices instead of stuttering. */
@@ -1231,6 +1505,9 @@ export class Game {
 
   dispose() {
     this.renderer.setAnimationLoop(null);
+    this.post?.dispose();
+    this.envRT?.dispose();
+    this.envRT = null;
     this.abort.abort();
     this.ro.disconnect();
     this.renderer.dispose();
@@ -1263,7 +1540,3 @@ export { webglAvailable } from './webgl.ts';
 
 export type JoinHint = { x: number; z: number; a: number; n: number; c: number };
 
-/** Height of the top of seat i (cushion or Bodhi stone) so avatars sit on it, not in it. */
-function seatTop(i: number) {
-  return SEATS[i]?.area === 'bodhi' ? STONE_TOP : CUSHION_TOP;
-}

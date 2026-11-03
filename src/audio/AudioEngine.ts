@@ -161,6 +161,45 @@ export class AudioEngine {
     }
   }
 
+  /**
+   * Church bells: a short peal of four tower bells (western bell partials: hum, prime, minor
+   * third "tierce", fifth "quint", octave "nominal") — brighter and more tonal than the temple bell.
+   */
+  churchBell(gain = 1) {
+    if (!this.ctx) return;
+    const t0 = this.ctx.currentTime;
+    const notes = [72, 69, 67, 64]; // a descending peal
+    const partials: [number, number, number][] = [
+      [0.5, 0.25, 6],
+      [1, 0.4, 4.5],
+      [1.2, 0.22, 3.2],
+      [1.5, 0.14, 2.6],
+      [2, 0.28, 2.2],
+      [2.5, 0.08, 1.4],
+      [3, 0.06, 1.0],
+    ];
+    notes.forEach((n, i) => {
+      const t = t0 + i * 0.55;
+      for (const [ratio, amp, dur] of partials) {
+        const o = this.ctx!.createOscillator();
+        const g = this.ctx!.createGain();
+        o.frequency.value = midi(n - 12) * ratio;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(amp * 0.45 * gain, t + 0.006);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g).connect(this.buses.effects);
+        o.start(t);
+        o.stop(t + dur);
+      }
+    });
+  }
+
+  /** which place's music plays in the "hall" bus: temple (bowls, flute) or church (organ) */
+  private place: 'pagoda' | 'church' = 'pagoda';
+  setPlace(p: 'pagoda' | 'church') {
+    this.place = p;
+  }
+
   /** Big temple drum: pitched-down membrane + skin slap. */
   drum(gain = 1) {
     if (!this.ctx) return;
@@ -457,6 +496,7 @@ export class AudioEngine {
   }
 
   private hallStep(k: number, t: number) {
+    if (this.place === 'church') return this.organStep(k, t);
     const ctx = this.ctx!;
     const out = this.buses.hall;
     const bar = Math.floor(k / 8);
@@ -530,6 +570,53 @@ export class AudioEngine {
   }
 
   // ---------------- moonlight yard DJ ----------------
+  /**
+   * Church interior: a quiet pipe-organ improvisation — slow diatonic chords on soft flue
+   * stops (8', 4', 2' as sine/triangle partials) with a pedal note. Generated, not a hymn.
+   */
+  private organStep(k: number, t: number) {
+    const ctx = this.ctx!;
+    const out = this.buses.hall;
+    if (k % 8 !== 0) return;
+    const bar = Math.floor(k / 8);
+    const root = 53; // F3
+    const prog = [0, 3, 5, 4, 0, 5, 1, 4];
+    const degree = prog[bar % prog.length];
+    const dur = HALL_BEAT_S * 8;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(0.045, t + 0.9);
+    g.gain.setValueAtTime(0.045, t + dur - 0.6);
+    g.gain.linearRampToValueAtTime(0, t + dur + 0.6);
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 2400;
+    lp.connect(g).connect(out);
+    const pipe = (freq: number, amp: number, type: OscillatorType) => {
+      const o = ctx.createOscillator();
+      const og = ctx.createGain();
+      o.type = type;
+      o.frequency.value = freq;
+      og.gain.value = amp;
+      o.connect(og).connect(lp);
+      o.start(t);
+      o.stop(t + dur + 0.8);
+    };
+    for (const step of [0, 2, 4]) {
+      const deg = degree + step;
+      const n = root + MAJOR[deg % 7] + 12 * Math.floor(deg / 7);
+      pipe(midi(n), 0.5, 'sine'); // 8'
+      pipe(midi(n + 12), 0.22, 'triangle'); // 4'
+      pipe(midi(n + 24), 0.08, 'sine'); // 2'
+    }
+    pipe(midi(root - 12 + MAJOR[degree % 7]), 0.6, 'sine'); // pedal 16'
+    // an occasional soft upper voice
+    if (hash(bar * 13 + 1) > 0.5) {
+      const n = root + 12 + MAJOR[(degree + 4 + Math.floor(hash(bar * 7) * 3)) % 7];
+      pipe(midi(n + 12), 0.12, 'sine');
+    }
+  }
+
   setDj(d: DjState) {
     const same = this.dj && this.dj.s === d.s && this.dj.at === d.at;
     this.dj = d;
@@ -652,8 +739,11 @@ export class AudioEngine {
   private schedule() {
     if (!this.ctx || this.ctx.state !== 'running') return;
     const horizon = serverNow() + 350;
-    if (this.chantAnchor !== null) this.scheduleChant('chant', this.chantAnchor, horizon);
-    if (this.serviceAnchor !== null) this.scheduleChant('service', this.serviceAnchor, horizon);
+    // chanting (moktak, voices, temple bell) is never heard in the church
+    if (this.place !== 'church') {
+      if (this.chantAnchor !== null) this.scheduleChant('chant', this.chantAnchor, horizon);
+      if (this.serviceAnchor !== null) this.scheduleChant('service', this.serviceAnchor, horizon);
+    }
     if (this.musicLevel > 0.01 && this.musicEnabled && this.dj) this.scheduleParty(horizon);
     else this.nextBeat.delete('party');
     if (this.hallLevel > 0.01) this.scheduleHall(horizon);

@@ -1,11 +1,13 @@
 import { useSyncExternalStore } from 'react';
-import type { DjState, IncenseState, Pose, TableSnap } from '@sontu/shared';
+import type { DjState, IncenseState, Place, Pose, TableSnap } from '@sontu/shared';
 import type { Locale } from './i18n/index.ts';
 
 export type Panel = null | 'settings' | 'servers' | 'visitors' | 'donate' | 'beads' | 'moktak' | 'dj' | 'game' | 'feedback' | 'fun';
 /** the wish tree, the proverb-stick tube, the riddle table */
 export type Fun = 'wish' | 'sticks' | 'riddle';
-export type Zone = 'main' | 'west' | 'east' | 'jizo' | 'maitreya' | 'tea' | 'talk' | 'games' | 'courtyard' | 'bell' | 'drum' | 'garden' | 'pond' | 'stupa' | 'bodhi' | 'moon' | 'gate' | 'path' | 'forest' | 'residence' | 'kitchen' | 'store' | 'dorm' | 'wishTree';
+export type Zone = 'main' | 'west' | 'east' | 'jizo' | 'maitreya' | 'tea' | 'talk' | 'games' | 'courtyard' | 'bell' | 'drum' | 'garden' | 'pond' | 'stupa' | 'bodhi' | 'moon' | 'gate' | 'path' | 'forest' | 'residence' | 'kitchen' | 'store' | 'dorm' | 'wishTree'
+  // the church grounds
+  | 'nave' | 'transept' | 'sanctuary' | 'cloister' | 'belltower' | 'plaza' | 'churchyard' | 'sacristy' | 'library' | 'refectory';
 export type Quality = 'auto' | 'ultra' | 'high' | 'medium' | 'low';
 
 export interface Visitor {
@@ -18,6 +20,8 @@ export interface Visitor {
 
 export interface AppState {
   locale: Locale;
+  /** which place the visitor chose on the welcome screen */
+  place: Place;
   phase: 'boot' | 'welcome' | 'in' | 'left' | 'error';
   net: 'idle' | 'connecting' | 'online' | 'reconnecting' | 'full';
   /** the connection dropped: show the reconnect prompt */
@@ -118,7 +122,7 @@ class Store {
     for (const k in patch) if (patch[k as keyof AppState] !== this.state[k as keyof AppState]) changed = true;
     if (!changed) return;
     this.state = { ...this.state, ...patch };
-    for (const k of ['locale', 'volumes', 'backgroundPlay', 'quality', 'beadsTotal', 'soundOn', 'musicOn', 'chatOpen', 'myName'] as const)
+    for (const k of ['locale', 'volumes', 'backgroundPlay', 'quality', 'place', 'beadsTotal', 'soundOn', 'musicOn', 'chatOpen', 'myName'] as const)
       if (k in patch) ls.set(k, this.state[k]);
     for (const l of this.listeners) l();
   }
@@ -137,6 +141,7 @@ export const store = new Store({
   volumes: ls.get('volumes', { ambient: 0.4, effects: 0.8, chant: 0.7, music: 0.6 }),
   backgroundPlay: ls.get('backgroundPlay', false),
   quality: ls.get<Quality>('quality', 'auto'),
+  place: ls.get<Place>('place', 'pagoda') === 'church' ? 'church' : 'pagoda',
   pose: 0,
   seated: false,
   zone: 'path',

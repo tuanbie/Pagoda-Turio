@@ -1,4 +1,13 @@
 import { HALLS, PAVILIONS, WORLD, stupaHeight, type HallDef, type PavilionDef } from '@sontu/shared';
+import { GROUNDS } from './layout.ts';
+
+/** stone plinth of the service houses (you walk straight in: 0.3 m is a single step) */
+export const HOUSE_FLOOR = 0.3;
+/** the open kitchen's floor sits almost at ground level */
+export const KITCHEN_FLOOR = 0.05;
+/** low stone base of the bell / drum towers (walkable, one step) */
+export const TOWER_BASE = 0.45;
+export const TOWER_HALF = 2.6;
 
 /**
  * One heightfield for everything you can stand on: ground, hall platforms and their
@@ -59,6 +68,9 @@ export function terrainHeight(x: number, z: number): number {
     const h = platformHeight(b, x, z);
     if (h !== null) return h;
   }
+  // service houses: the whole plinth (and the floor inside) is one walkable level
+  for (const g of GROUNDS) if (Math.abs(x - g.x) < g.w / 2 + 0.4 && Math.abs(z - g.z) < g.d / 2 + 0.4) return g.id === 'kitchen' ? KITCHEN_FLOOR : HOUSE_FLOOR;
+  for (const t of [WORLD.bellTower, WORLD.drumTower]) if (Math.abs(x - t.x) < TOWER_HALF && Math.abs(z - t.z) < TOWER_HALF) return TOWER_BASE;
   return 0;
 }
 

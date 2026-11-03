@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { HALLS, MAX_CHAT_CHARS, PAVILIONS, SEAT_REQUEST_MS, SONGS, STUPA, WORLD, songDurationMs } from '@sontu/shared';
+import { CHURCH, HALLS, MAX_CHAT_CHARS, PAVILIONS, SEAT_REQUEST_MS, SONGS, STUPA, WORLD, songDurationMs } from '@sontu/shared';
 import { serverNow, store, toast, useStore } from '../store.ts';
 import { visitorName } from '../i18n/index.ts';
 import { runtime } from '../runtime.ts';
@@ -225,6 +225,54 @@ export function DjPanel() {
 // ---------------------------------------------------------------- minimap
 const MAP_PX = 176;
 
+/** The church grounds: cruciform church, towers, cloister with fountain, plaza and avenue. */
+function drawChurchBase(size: number) {
+  const c = document.createElement('canvas');
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  c.width = c.height = size * dpr;
+  const g = c.getContext('2d')!;
+  g.scale(dpr, dpr);
+  const k = size / (MAP_EXTENT * 2);
+  const P = (x: number) => (x + MAP_EXTENT) * k;
+  const rect = (x0: number, z0: number, x1: number, z1: number, fill: string) => {
+    g.fillStyle = fill;
+    g.fillRect(P(Math.min(x0, x1)), P(Math.min(z0, z1)), Math.abs(x1 - x0) * k, Math.abs(z1 - z0) * k);
+  };
+  g.fillStyle = '#4f6551';
+  g.beginPath();
+  g.arc(P(0), P(0), (CHURCH.radius + 1.5) * k, 0, Math.PI * 2);
+  g.fill();
+  rect(-88, -96, 88, 100, '#5f7a5c'); // churchyard lawn
+  const C = CHURCH;
+  rect(-2.5, C.plaza.z + C.plaza.d / 2, 2.5, C.gate.z, '#c9c0ae'); // avenue
+  rect(C.plaza.x - C.plaza.w / 2, C.plaza.z - C.plaza.d / 2, C.plaza.x + C.plaza.w / 2, C.plaza.z + C.plaza.d / 2, '#cfcac0');
+  const cl = C.cloister;
+  rect(cl.x - cl.w / 2, cl.z - cl.d / 2, cl.x + cl.w / 2, cl.z + cl.d / 2, '#bcb6aa');
+  rect(cl.x - cl.w / 2 + 3, cl.z - cl.d / 2 + 3, cl.x + cl.w / 2 - 3, cl.z + cl.d / 2 - 3, '#6f8c62');
+  rect(cl.x - cl.w / 2 + 3, cl.z - cl.d / 2 - 9, cl.x + cl.w / 2 - 3, cl.z - cl.d / 2, '#5a6170'); // library
+  rect(cl.x - cl.w / 2 + 3, cl.z + cl.d / 2, cl.x + cl.w / 2 - 3, cl.z + cl.d / 2 + 9, '#5a6170'); // refectory
+  rect(C.transept.w / 2 + 1.2, C.transept.z - C.transept.d / 2, C.transept.w / 2 + 9.2, C.nave.z0 - 2, '#5a6170'); // sacristy
+  // church: nave + aisles, transept, choir, apse (slate grey), towers
+  const slate = '#47505e';
+  rect(-16.6, C.nave.z0, 16.6, 0.6, slate);
+  rect(-C.transept.w / 2 - 0.6, C.transept.z - C.transept.d / 2, C.transept.w / 2 + 0.6, C.nave.z0, slate);
+  rect(-11.6, C.apse.z, 11.6, C.transept.z - C.transept.d / 2, slate);
+  g.fillStyle = slate;
+  g.beginPath();
+  g.arc(P(0), P(C.apse.z), (C.apse.r + 0.6) * k, Math.PI, Math.PI * 2);
+  g.fill();
+  for (const sx of [-1, 1]) rect(sx * C.towers.x - C.towers.size / 2, C.towers.z - C.towers.size / 2, sx * C.towers.x + C.towers.size / 2, C.towers.z + C.towers.size / 2, '#39414d');
+  g.fillStyle = '#9ec3d6';
+  g.beginPath();
+  g.arc(P(C.fountain.x), P(C.fountain.z), Math.max(2, C.fountain.r * k), 0, Math.PI * 2);
+  g.fill();
+  g.fillStyle = '#f5f1e6';
+  g.font = '600 10px "Be Vietnam Pro", sans-serif';
+  g.textAlign = 'center';
+  g.fillText('N', size / 2, 10);
+  return c;
+}
+
 /** Pre-rendered layout (drawn once), dots for people redrawn ~8×/s. */
 function drawBase(size: number) {
   const c = document.createElement('canvas');
@@ -309,6 +357,7 @@ export function Minimap() {
   const t = useT();
   const canvas = useRef<HTMLCanvasElement>(null);
   const [big, setBig] = useState(false);
+  const place = useStore((s) => s.place);
   const size = big ? Math.min(340, innerWidth - 32) : innerWidth < 650 ? 124 : MAP_PX;
 
   useEffect(() => {
@@ -316,7 +365,7 @@ export function Minimap() {
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     el.width = el.height = size * dpr;
     const g = el.getContext('2d')!;
-    const base = drawBase(size);
+    const base = place === 'church' ? drawChurchBase(size) : drawBase(size);
     const k = size / (MAP_EXTENT * 2);
     const P = (x: number) => (x + MAP_EXTENT) * k;
     let raf = 0;
@@ -358,7 +407,7 @@ export function Minimap() {
     };
     raf = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(raf);
-  }, [size]);
+  }, [size, place]);
 
   return (
     <div className={`minimap ${big ? 'big' : ''}`}>

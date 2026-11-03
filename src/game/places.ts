@@ -1,7 +1,10 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { STUPA, TABLES, WORLD, pavilion, type FishTuple, type PavilionDef, type TableSnap } from '@sontu/shared';
-import { hipRoof, mat, rng, scaleUV, type World } from './World.ts';
+import { mat, rng, scaleUV, type World } from './World.ts';
+import { columnDetail, stepNose } from './detail/arch.ts';
+import { petalRing, merge } from './detail/geo.ts';
+import { lotusBloom, swim, waterSurface } from './detail/shader.ts';
 import { textures } from './textures.ts';
 import { drawBoard } from './boardDraw.ts';
 import { BRIDGE, bridgeHeight, stairWidth } from './terrain.ts';
@@ -53,9 +56,16 @@ function pavilionShell(w: World, p: PavilionDef) {
   w.plane(p.w + 2, p.d + 2, M.paving, p.x, p.h + 0.005, p.z, 0, 2.2);
   w.plane(p.w - 0.6, p.d - 0.6, M.floor, p.x, top + 0.02, p.z, 0, 2);
   const sw = stairWidth(p);
-  for (let i = 0; i < 2; i++) w.box(sw, (p.h * (2 - i)) / 2, 0.8, M.stone, p.x, (p.h * (2 - i)) / 4, front + 1.3 + i * 0.8);
+  for (let i = 0; i < 2; i++) {
+    w.box(sw, (p.h * (2 - i)) / 2, 0.8, M.stone, p.x, (p.h * (2 - i)) / 4, front + 1.3 + i * 0.8);
+    if (w.hi) stepNose(w, p.x, (p.h * (2 - i)) / 2, front + 1.7 + i * 0.8, sw);
+  }
   // walls with lattice windows on the sides
   w.box(p.w, H, 0.3, M.plaster, p.x, top + H / 2, back + 0.15);
+  // camera occluders: back + side walls, ceiling under the roof
+  w.occluder(p.w, H, 0.35, p.x, top + H / 2, back + 0.15);
+  for (const sx of [-1, 1]) w.occluder(0.35, H, p.d, p.x + sx * (p.w / 2 - 0.15), top + H / 2, p.z);
+  w.occluder(p.w + 0.5, 0.3, p.d, p.x, top + H + 0.3, p.z);
   w.boxes.push({ x0: p.x - p.w / 2, x1: p.x + p.w / 2, z0: back - 1, z1: back + 0.5 });
   for (const sx of [-1, 1]) {
     const wx = p.x + sx * (p.w / 2 - 0.15);
@@ -70,12 +80,16 @@ function pavilionShell(w: World, p: PavilionDef) {
   for (let i = 0; i < 5; i++) {
     const x = p.x - p.w / 2 + 0.4 + (i * (p.w - 0.8)) / 4;
     w.batch.add(colGeo, M.lacquer, mat(x, top + H / 2, front - 0.3));
+    if (w.hi) columnDetail(w, x, top, H, 0.22, front - 0.3);
     w.circles.push({ x, z: front - 0.3, r: 0.4 });
-    if (i < 4 && i !== 1 && i !== 2) w.batch.add(new THREE.SphereGeometry(0.26, 12, 8).scale(1, 1.25, 1), M.lantern, mat(x + (p.w - 0.8) / 8, top + H - 0.6, front + 0.5), false);
+    if (i < 4 && i !== 1 && i !== 2) {
+      w.batch.add(new THREE.SphereGeometry(0.26, 12, 8).scale(1, 1.25, 1), M.lantern, mat(x + (p.w - 0.8) / 8, top + H - 0.6, front + 0.5), false);
+      w.lanternSpots.push(new THREE.Vector3(x + (p.w - 0.8) / 8, top + H - 0.6, front + 0.5));
+    }
   }
   w.box(p.w + 0.5, 0.45, 0.45, M.lacquer, p.x, top + H + 0.05, front - 0.3);
   w.box(p.w + 0.5, 0.3, 0.47, M.trim, p.x, top + H + 0.4, front - 0.3);
-  w.batch.add(hipRoof(p.w + 4, p.d + 4, 3.4, 0.9), M.roof, mat(p.x, top + H + 0.5, p.z));
+  w.roof(p.w + 4, p.d + 4, 3.4, 0.9, p.x, top + H + 0.5, p.z, { topRidge: true, crest: 'phoenix' });
   const [vi, han, glyph] = PAV_NAMES[p.id];
   const board = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 1.2), new THREE.MeshBasicMaterial({ map: textures.signBilingual(vi, han), toneMapped: false }));
   // hang the board just under the front beam so the roof never hides it
@@ -296,7 +310,16 @@ export class Pond {
   constructor(private w: World) {
     const { pond } = WORLD;
     const M = w.m;
-    const water = new THREE.Mesh(new THREE.CircleGeometry(pond.r, 96).rotateX(-Math.PI / 2), M.water);
+    // high / ultra: animated ripple normals + fresnel reflection of the sky
+    let waterMat: THREE.Material = M.water;
+    if (w.hi) {
+      const n = textures.waterNormal();
+      const wm = new THREE.MeshStandardMaterial({ color: '#2f5f66', roughness: 0.12, metalness: 0.2, transparent: true, opacity: 0.93, normalMap: n, normalScale: new THREE.Vector2(0.35, 0.35) });
+      waterMat = waterSurface(wm, 0.75);
+    }
+    const waterGeo = new THREE.CircleGeometry(pond.r, 96).rotateX(-Math.PI / 2);
+    if (w.hi) scaleUV(waterGeo, 7, 7);
+    const water = new THREE.Mesh(waterGeo, waterMat);
     water.position.set(pond.x, 0.06, pond.z);
     water.receiveShadow = true;
     water.userData.kind = 'pond';
@@ -312,12 +335,22 @@ export class Pond {
       const k = 0.6 + r() * 0.8;
       const x = pond.x + Math.cos(a) * (pond.r + 0.4);
       const z = pond.z + Math.sin(a) * (pond.r + 0.4);
-      w.batch.add(rock, M.stoneDark, mat(x, 0.12, z, r() * 3, k, k * 0.6, k, r(), r()));
+      const [ry, rx, rz] = [r() * 3, r(), r()];
+      w.batch.add(rock, M.stoneDark, mat(x, 0.12, z, ry, k, k * 0.6, k, rx, rz));
+      if (w.hi && i % 3 === 0) w.batch.add(rock, M.moss, mat(x, 0.2, z, ry + 0.3, k * 0.8, k * 0.4, k * 0.8, rx * 0.3, rz * 0.3));
       w.circles.push({ x, z, r: 0.45 * k });
     }
     // lily pads & lotus flowers
-    const pads = new THREE.InstancedMesh(new THREE.CircleGeometry(0.6, 14).rotateX(-Math.PI / 2), M.pad, 110);
-    const flowers = new THREE.InstancedMesh(new THREE.ConeGeometry(0.22, 0.38, 8, 1, true), M.lotus, 45);
+    // high / ultra: notched pads + layered lotus blossoms that open by day and close at night
+    const padGeo = w.hi ? new THREE.CircleGeometry(0.6, 24, 0.12, Math.PI * 2 - 0.24).rotateX(-Math.PI / 2) : new THREE.CircleGeometry(0.6, 14).rotateX(-Math.PI / 2);
+    const pads = new THREE.InstancedMesh(padGeo, M.pad, 110);
+    const flowers = w.hi
+      ? new THREE.InstancedMesh(
+          merge([petalRing(8, 0.05, 0, 0.26, 0.13, 1.0, 0, 0.35), petalRing(8, 0.04, 0.01, 0.24, 0.12, 0.55, 0.5, 0.4), petalRing(6, 0.02, 0.02, 0.2, 0.1, 0.2, 0.25, 0.45), new THREE.CylinderGeometry(0.045, 0.035, 0.06, 10).translate(0, 0.05, 0)]),
+          lotusBloom(new THREE.MeshStandardMaterial({ color: '#f5b3c9', emissive: '#3a1622', roughness: 0.6, side: THREE.DoubleSide })),
+          45,
+        )
+      : new THREE.InstancedMesh(new THREE.ConeGeometry(0.22, 0.38, 8, 1, true), M.lotus, 45);
     let fi = 0;
     for (let i = 0; i < 110; i++) {
       let x = 0;
@@ -333,12 +366,13 @@ export class Pond {
       this.dummy.updateMatrix();
       pads.setMatrixAt(i, this.dummy.matrix);
       if (fi < 45 && r() < 0.45) {
-        this.dummy.position.set(x, 0.26, z);
-        this.dummy.scale.setScalar(1);
-        this.dummy.rotation.x = Math.PI;
+        this.dummy.position.set(x, w.hi ? 0.1 : 0.26, z);
+        this.dummy.scale.setScalar(w.hi ? 1.1 + r() * 0.5 : 1);
+        if (w.hi) this.dummy.rotation.set(0, r() * 6.28, 0);
+        else this.dummy.rotation.x = Math.PI;
         this.dummy.updateMatrix();
         flowers.setMatrixAt(fi++, this.dummy.matrix);
-        this.dummy.rotation.x = 0;
+        this.dummy.rotation.set(0, 0, 0);
       }
     }
     flowers.count = fi;
@@ -347,15 +381,19 @@ export class Pond {
     this.buildBridge();
 
     // koi: body + tail merged into one geometry, coloured per instance
-    const body = new THREE.SphereGeometry(0.22, 12, 8).scale(0.55, 0.42, 1.4);
+    const hq = w.hi;
+    const body = new THREE.SphereGeometry(0.22, hq ? 20 : 12, hq ? 12 : 8).scale(0.55, 0.42, 1.4);
     const tail = new THREE.ConeGeometry(0.16, 0.34, 8).scale(0.2, 1, 1).rotateX(Math.PI / 2).translate(0, 0, -0.42);
     const finL = new THREE.ConeGeometry(0.07, 0.18, 6).rotateZ(Math.PI / 2).translate(0.16, -0.03, 0.08);
     const finR = finL.clone().scale(-1, 1, 1);
-    const geo = mergeGeometries([body, tail, finL, finR].map((g) => (g.index ? g.toNonIndexed() : g)).map((g) => {
+    const extra = hq ? [new THREE.ConeGeometry(0.05, 0.3, 4).scale(0.15, 1, 1).rotateX(-Math.PI / 2 - 0.25).translate(0, 0.1, -0.02)] : []; // dorsal fin
+    const geo = mergeGeometries([body, tail, finL, finR, ...extra].map((g) => (g.index ? g.toNonIndexed() : g)).map((g) => {
       for (const k of Object.keys(g.attributes)) if (k !== 'position' && k !== 'normal') g.deleteAttribute(k);
       return g;
     }));
-    this.fishMesh = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({ roughness: 0.35, metalness: 0.1 }), Pond.CAP);
+    const fishMat = new THREE.MeshStandardMaterial({ roughness: 0.35, metalness: 0.1 });
+    // high / ultra: the body undulates and the tail beats (vertex shader)
+    this.fishMesh = new THREE.InstancedMesh(geo, hq ? swim(fishMat) : fishMat, Pond.CAP);
     this.fishMesh.count = 0;
     this.fishMesh.frustumCulled = false;
     w.scene.add(this.fishMesh);
@@ -410,7 +448,7 @@ export class Pond {
       this.w.batch.add(new THREE.CylinderGeometry(0.18, 0.2, 3.2, 10), M.lacquer, mat(x, mh + 1.6, z));
       this.w.circles.push({ x, z, r: 0.35 });
     }
-    this.w.batch.add(hipRoof(b.midW + 2.2, b.midW + 2.2, 2.4, 0.8), M.roof, mat(mx, mh + 3.2, b.z));
+    this.w.roof(b.midW + 2.2, b.midW + 2.2, 2.4, 0.8, mx, mh + 3.2, b.z);
     this.w.batch.add(new THREE.SphereGeometry(0.3, 10, 8), M.gold, mat(mx, mh + 5.7, b.z));
   }
 
@@ -463,7 +501,7 @@ export class Pond {
       }
       const heading = Math.atan2(-Math.sin(ang) * f.rx * Math.sign(f.w), Math.cos(ang) * f.rz * Math.sign(f.w));
       this.dummy.position.set(x, -0.06 + Math.sin(t * 2 + i) * 0.03, z);
-      this.dummy.rotation.set(0, heading, Math.sin(t * 6 + i) * 0.12);
+      this.dummy.rotation.set(0, heading, this.w.hi ? Math.sin(t * 1.3 + i) * 0.05 : Math.sin(t * 6 + i) * 0.12);
       const s = 0.8 + ((f.seed >>> 5) % 50) / 100;
       this.dummy.scale.setScalar(s);
       this.dummy.updateMatrix();

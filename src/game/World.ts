@@ -5,7 +5,12 @@ import { Avatar } from './Avatar.ts';
 import { textures } from './textures.ts';
 import { BUILDINGS, GROUNDS, PATHS, WISH, gardenRect, groundsRect, hallRect } from './layout.ts';
 import { Grounds } from './grounds.ts';
-import { groundY } from './terrain.ts';
+import { TOWER_BASE, groundY } from './terrain.ts';
+import { isHigh, isUltra } from './detail/tier.ts';
+import { LOTUS_OPEN, SKY_HIGH, SKY_LOW, TIME, sizedPoints, wind, windDepth, type WindOpts } from './detail/shader.ts';
+import { balustrade, bracketSet, coiledDragon, columnDetail, couplet, disposeArch, doorFrame, dragonPair, roofDetail, roofCurl, stepNose, type RoofOpts } from './detail/arch.ts';
+import { clump } from './detail/geo.ts';
+import { Life } from './detail/life.ts';
 import { seatedBuddha, standingBodhisattva, type StatueMats } from './statues.ts';
 import { GameTables, Pond, Shuttle, buildPavilions, buildStupa, CUSHION_TOP, STONE_TOP } from './places.ts';
 
@@ -98,7 +103,7 @@ export class Batch {
 }
 
 /** Concave hip roof with upturned corners — the classic East-Asian silhouette. */
-export function hipRoof(w: number, d: number, h: number, lift: number, nx = 22, nz = 14) {
+export function hipRoof(w: number, d: number, h: number, lift: number, nx = 22, nz = 14, curl = 0) {
   const g = new THREE.PlaneGeometry(w, d, nx, nz);
   g.rotateX(-Math.PI / 2);
   const pos = g.attributes.position as THREE.BufferAttribute;
@@ -109,7 +114,9 @@ export function hipRoof(w: number, d: number, h: number, lift: number, nx = 22, 
     const t = Math.min(1, Math.max(Math.max(0, Math.abs(x) - ridge) / (d / 2), Math.abs(z) / (d / 2)));
     const cx = Math.abs(x) / (w / 2);
     const cz = Math.abs(z) / (d / 2);
-    pos.setY(i, h * (1 - t) ** 1.7 + lift * (cx * cz) ** 3);
+    // curl > 0 (high / ultra): a sharper upturn right at the corners — the đầu đao
+    const q = cx * cz;
+    pos.setY(i, h * (1 - t) ** 1.7 + lift * q ** 3 + (curl > 0 ? curl * Math.max(0, (q - 0.55) / 0.45) ** 2.6 : 0));
   }
   g.computeVertexNormals();
   scaleUV(g, w / 4, d / 4);
@@ -125,6 +132,8 @@ export class World {
   readonly bell = new THREE.Group();
   readonly drum = new THREE.Group();
   readonly dj: Avatar;
+  /** the DJ's headphone meshes: built per World (not from the shared avatar kit), freed in dispose */
+  private djPhones: THREE.Mesh[] = [];
   readonly pond: Pond;
   private cullables: { obj: THREE.Object3D; c: THREE.Vector3; r: number }[] = [];
   private cullDist = Infinity;
@@ -158,9 +167,29 @@ export class World {
   private drumHit = 0;
   night = 0;
   readonly m: Record<string, THREE.MeshStandardMaterial>;
+  /** high tier and up / ultra (see detail/tier.ts) */
+  readonly hi: boolean;
+  readonly ul: boolean;
+  /** warm lamps inside the service houses (high / ultra) */
+  readonly roomLights: THREE.PointLight[] = [];
+  /** every lantern in the grounds (the nearest ones get a real flickering light at night) */
+  readonly lanternSpots: THREE.Vector3[] = [];
+  /**
+   * Invisible boxes (never added to the scene) for the camera to collide with: the walls and
+   * ceilings of every room you can walk into, so the third-person camera stays inside.
+   */
+  readonly occluders: THREE.Object3D[] = [];
+  private occluderMat = new THREE.MeshBasicMaterial({ visible: false });
+  /** broadleaf trees in bloom (petals fall around them on ultra) */
+  readonly blossoms: { x: number; z: number; y: number }[] = [];
+  private life: Life | null = null;
+  private coupletMats: THREE.MeshBasicMaterial[] = [];
+  private glowBase = 0.15;
 
   constructor(readonly opt: WorldOptions) {
     const s = this.scene;
+    this.hi = isHigh(opt);
+    this.ul = isUltra(opt);
     // denser fog on lighter tiers matches their shorter draw distance
     s.fog = new THREE.FogExp2('#d9dccb', opt.low ? 0.0105 : opt.density < 1 ? 0.0075 : opt.ultra ? 0.0031 : 0.0042);
 
@@ -182,7 +211,7 @@ export class World {
       woodDark: std({ color: '#47291a', roughness: 0.7 }),
       floor: std({ map: textures.wood(), roughness: 0.6 }),
       plaster: std({ map: textures.plaster() }),
-      lattice: std({ map: textures.lattice(), roughness: 0.8 }),
+      lattice: std({ map: textures.lattice(isHigh(opt)), roughness: 0.8 }),
       roof: std({ map: textures.roof(), roughness: 0.75, side: THREE.DoubleSide }),
       trim: std({ color: '#2d5a52', roughness: 0.6 }),
       gold: std({ color: '#e0b04f', metalness: 0.55, roughness: 0.32, emissive: '#5a3a08', emissiveIntensity: 0.6 }),
@@ -205,8 +234,11 @@ export class World {
       slate: std({ color: '#4c5266', roughness: 0.7 }),
       lotus: std({ color: '#f2a7c3', emissive: '#3a1622' }),
       pad: std({ color: '#4f7d3b' }),
+      moss: std({ color: '#5b7636', roughness: 1 }),
     };
     this.glowMats.push(this.m.lantern, this.m.lanternWarm);
+    if (this.hi)
+      this.coupletMats = ['慈悲喜捨', '心靜身安'].map((t) => new THREE.MeshBasicMaterial({ map: textures.couplet(t), toneMapped: false }));
 
     // ---------- sky ----------
     this.skyMat = new THREE.ShaderMaterial({
@@ -286,6 +318,7 @@ export class World {
     this.grounds = new Grounds(this);
     this.buildForest();
     this.buildMountains();
+    if (this.hi) this.life = new Life(this, (x, z, pad) => this.occupied(x, z, pad));
     for (const mesh of this.batch.flush(s, opt.shadows))
       if (mesh.material !== this.m.mountain && mesh.material !== this.m.mountain2) this.cullable(mesh);
     this.chunkInstances();
@@ -330,13 +363,17 @@ export class World {
     this.sticks.frustumCulled = this.stickTips.frustumCulled = false;
     for (let i = 0; i < total; i++) this.updateStick(i, Date.now());
     s.add(this.sticks, this.stickTips);
-    const smokeCount = opt.low ? 80 : opt.ultra ? 320 : 180;
+    const smokeCount = opt.low ? 80 : opt.ultra ? 460 : this.hi ? 260 : 180;
     const smokeGeo = new THREE.BufferGeometry();
     smokeGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(smokeCount * 3), 3));
-    this.smoke = new THREE.Points(
-      smokeGeo,
-      new THREE.PointsMaterial({ map: textures.softDot(), size: 0.4, transparent: true, opacity: 0.3, depthWrite: false, color: '#e8e4dc' }),
-    );
+    let smokeMat = new THREE.PointsMaterial({ map: textures.softDot(), size: 0.4, transparent: true, opacity: 0.3, depthWrite: false, color: '#e8e4dc' });
+    if (this.hi) {
+      // high / ultra: every puff grows and fades on its own (per-particle size + alpha)
+      smokeGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(smokeCount * 4).fill(1), 4));
+      smokeGeo.setAttribute('aSize', new THREE.BufferAttribute(new Float32Array(smokeCount).fill(1), 1));
+      smokeMat = sizedPoints(new THREE.PointsMaterial({ map: textures.softDot(), size: 0.4, transparent: true, opacity: 0.5, depthWrite: false, color: '#ece8e0', vertexColors: true }));
+    }
+    this.smoke = new THREE.Points(smokeGeo, smokeMat);
     this.smoke.frustumCulled = false;
     for (let i = 0; i < smokeCount; i++) this.smokeData.push({ slot: -1, age: 0, life: 1, vx: 0, vz: 0 });
     s.add(this.smoke);
@@ -349,10 +386,28 @@ export class World {
     this.batch.add(g, material, mat(x, y, z, ry), false);
   }
 
+  /** add a camera-occluder box (centre x,y,z, size w × h × d, rotated ry) */
+  occluder(w: number, h: number, d: number, x: number, y: number, z: number, ry = 0) {
+    const o = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), this.occluderMat);
+    o.position.set(x, y, z);
+    o.rotation.y = ry;
+    o.updateMatrixWorld();
+    this.occluders.push(o);
+    return o;
+  }
+
   box(w: number, h: number, d: number, material: THREE.Material, x: number, y: number, z: number, ry = 0, cast = true) {
     const g = new THREE.BoxGeometry(w, h, d);
     scaleUV(g, Math.max(w, d) / 2, h / 2);
     this.batch.add(g, material, mat(x, y, z, ry), cast);
+  }
+
+  /** Hip roof + (high / ultra) đầu đao corners, hip ridges, tiles and ridge ornaments. */
+  roof(w: number, d: number, h: number, lift: number, x: number, y: number, z: number, o: RoofOpts = {}) {
+    const curl = this.hi ? roofCurl(d) : 0;
+    const g = this.hi ? hipRoof(w, d, h, lift, 44, 28, curl) : hipRoof(w, d, h, lift);
+    this.batch.add(g, this.m.roof, mat(x, y, z));
+    roofDetail(this, w, d, h, lift, x, y, z, o);
   }
 
   private buildGround() {
@@ -390,7 +445,17 @@ export class World {
     this.box(h.w + 2, h.h, h.d + 2, this.m.stone, h.x, h.h / 2, h.z);
     this.plane(h.w + 2, h.d + 2, this.m.paving, h.x, h.h + 0.005, h.z, 0, 2.2);
     const stepW = main ? 10 : 6;
-    for (let i = 0; i < 3; i++) this.box(stepW, (h.h * (3 - i)) / 3, 0.55, this.m.stone, h.x, (h.h * (3 - i)) / 6, front + 1 + 0.27 + i * 0.55);
+    for (let i = 0; i < 3; i++) {
+      this.box(stepW, (h.h * (3 - i)) / 3, 0.55, this.m.stone, h.x, (h.h * (3 - i)) / 6, front + 1 + 0.27 + i * 0.55);
+      if (this.hi) stepNose(this, h.x, (h.h * (3 - i)) / 3, front + 1.545 + i * 0.55, stepW);
+    }
+    // stone balustrades along the platform's front edge, either side of the stair
+    if (this.hi)
+      for (const sx of [-1, 1]) {
+        const a = h.x + sx * (stepW / 2 + 0.65);
+        const b = h.x + sx * (h.w / 2 + 0.75);
+        balustrade(this, Math.min(a, b), Math.max(a, b), front + 0.85, h.h);
+      }
     for (const sx of [-1, 1]) {
       const bx = h.x + sx * (stepW / 2 + 0.25);
       this.box(0.5, h.h + 0.25, 1.75, this.m.stoneDark, bx, (h.h + 0.25) / 2, front + 1.85);
@@ -400,6 +465,10 @@ export class World {
 
     // walls (plaster over a dark wooden dado)
     this.box(h.w, H, 0.35, this.m.plaster, h.x, top + H / 2, back + 0.17);
+    // camera occluders: back + side walls and a ceiling under the roof
+    this.occluder(h.w, H, 0.4, h.x, top + H / 2, back + 0.17);
+    for (const sx of [-1, 1]) this.occluder(0.4, H, h.d, h.x + sx * (h.w / 2 - 0.17), top + H / 2, h.z);
+    this.occluder(h.w + 0.8, 0.3, h.d + 0.6, h.x, top + H + 0.5, h.z);
     this.box(h.w, 1.2, 0.4, this.m.woodDark, h.x, top + 0.6, back + 0.17);
     this.boxes.push({ x0: h.x - h.w / 2, x1: h.x + h.w / 2, z0: back - 1.2, z1: back + 0.55 });
     for (const sx of [-1, 1]) {
@@ -417,11 +486,21 @@ export class World {
     for (let i = 0; i <= bays - 1; i++) colX.push(h.x - h.w / 2 + 0.5 + (i * (h.w - 1)) / (bays - 1));
     const column = (x: number, z: number) => {
       this.batch.add(colGeo, this.m.lacquer, mat(x, top + H / 2, z));
-      this.batch.add(baseGeo, this.m.stone, mat(x, top + 0.17, z));
+      if (this.hi) columnDetail(this, x, top, H, colR, z);
+      else this.batch.add(baseGeo, this.m.stone, mat(x, top + 0.17, z));
       this.batch.add(capGeo, this.m.trim, mat(x, top + H - 0.17, z));
       this.circles.push({ x, z, r: colR + 0.2 });
     };
     for (const x of colX) column(x, front - 0.4);
+    if (this.hi) {
+      // couplet panels on the columns either side of the centre, dragons coiling up the next pair (ultra)
+      const mid = (colX.length - 1) / 2;
+      const cz = front - 0.4 + colR * 1.12 + 0.04;
+      const [pl, pr] = main ? [mid - 2, mid + 2] : [mid - 1, mid + 1];
+      couplet(this, this.coupletMats[0], colX[pl], top + H * 0.5, cz, colR * 1.3, H * 0.55);
+      couplet(this, this.coupletMats[1], colX[pr], top + H * 0.5, cz, colR * 1.3, H * 0.55);
+      if (this.ul && main) for (const i of [mid - 1, mid + 1]) coiledDragon(this, colX[i], top, H, colR, front - 0.4);
+    }
     // inner colonnade along both sides (between the cushions and the walls)
     // inner colonnade hugs the walls so the floor stays open and airy
     const innerX = h.w / 2 - (main ? 3 : 2.6);
@@ -439,7 +518,9 @@ export class World {
       const g = new THREE.BoxGeometry(x1 - x0, dh, 0.12);
       scaleUV(g, (x1 - x0) / 1.5, dh / 1.5);
       this.batch.add(g, this.m.lattice, mat((x0 + x1) / 2, top + dh / 2 + 0.3, front - 0.4));
+      if (this.hi) doorFrame(this, x0, x1, top + 0.3, dh, front - 0.4);
       this.boxes.push({ x0, x1, z0: front - 0.7, z1: front - 0.1 });
+      this.occluder(x1 - x0, dh, 0.2, (x0 + x1) / 2, top + dh / 2 + 0.3, front - 0.4);
     }
     // beams with painted bands (dancheong-like)
     for (const z of [front - 0.4, back + 0.17]) {
@@ -447,23 +528,28 @@ export class World {
       this.box(h.w + 0.8, 0.4, 0.62, this.m.trim, h.x, top + H + 0.6, z);
     }
     for (const sx of [-1, 1]) this.box(0.6, 0.6, h.d + 0.6, this.m.lacquer, h.x + sx * (h.w / 2), top + H + 0.1, h.z);
+    // bracket sets (đấu củng) carrying the deep front eave
+    if (this.hi) for (const x of colX) bracketSet(this, x, top + H + 0.42, front - 0.4, main ? 0.65 : 0.55, 1);
     // hanging lanterns under the eaves, one per bay
     const lanternGeo = new THREE.SphereGeometry(main ? 0.38 : 0.3, 12, 8).scale(1, 1.25, 1);
-    for (let i = 0; i < colX.length - 1; i++) this.batch.add(lanternGeo, this.m.lantern, mat((colX[i] + colX[i + 1]) / 2, top + H - 0.9, front + 0.9), false);
+    for (let i = 0; i < colX.length - 1; i++) {
+      this.batch.add(lanternGeo, this.m.lantern, mat((colX[i] + colX[i + 1]) / 2, top + H - 0.9, front + 0.9), false);
+      this.lanternSpots.push(new THREE.Vector3((colX[i] + colX[i + 1]) / 2, top + H - 0.9, front + 0.9));
+    }
 
     // roof(s): main hall gets the classic double roof
     const y0 = top + H + 0.85;
     if (main) {
-      this.batch.add(hipRoof(h.w + 10, h.d + 10, 4.6, 2), this.m.roof, mat(h.x, y0, h.z));
+      this.roof(h.w + 10, h.d + 10, 4.6, 2, h.x, y0, h.z);
       const bw = h.w * 0.66;
       const bd = h.d * 0.54;
       this.box(bw, 3.6, bd, this.m.plaster, h.x, y0 + 3.8, h.z);
       this.box(bw + 0.3, 0.6, bd + 0.3, this.m.trim, h.x, y0 + 5.6, h.z);
-      this.batch.add(hipRoof(bw + 9, bd + 9, 6.8, 1.8), this.m.roof, mat(h.x, y0 + 5.8, h.z));
-      this.ridge(h.x, y0 + 12.6, h.z, bw - bd, 2.1);
+      this.roof(bw + 9, bd + 9, 6.8, 1.8, h.x, y0 + 5.8, h.z);
+      this.ridge(h.x, y0 + 12.6, h.z, bw - bd, 2.1, true);
     } else {
-      this.batch.add(hipRoof(h.w + 8, h.d + 8, 6.2, 1.5), this.m.roof, mat(h.x, y0, h.z));
-      this.ridge(h.x, y0 + 6.2, h.z, h.w - h.d, 1.6);
+      this.roof(h.w + 8, h.d + 8, 6.2, 1.5, h.x, y0, h.z);
+      this.ridge(h.x, y0 + 6.2, h.z, h.w - h.d, 1.6, false);
     }
     // name board
     const names: Record<HallDef['id'], [string, string]> = {
@@ -547,13 +633,15 @@ export class World {
     }
   }
 
-  private ridge(x: number, y: number, z: number, len: number, k = 1) {
+  private ridge(x: number, y: number, z: number, len: number, k = 1, main = false) {
     const L = Math.max(1.5, len);
     this.box(L, 0.45 * k, 0.5 * k, this.m.trim, x, y, z);
     const curl = new THREE.TorusGeometry(0.4 * k, 0.11 * k, 6, 12, Math.PI * 1.3);
     for (const sx of [-1, 1]) this.batch.add(curl, this.m.trim, mat(x + (sx * L) / 2, y + 0.4 * k, z, 0, sx, 1, 1));
+    // high / ultra: two dragons facing the moon (main hall) or a pearl (other halls)
+    if (this.hi) dragonPair(this, x, y + 0.22 * k, z, L, main);
     // flaming pearl in the middle of the ridge
-    this.batch.add(new THREE.SphereGeometry(0.3 * k, 12, 8), this.m.gold, mat(x, y + 0.5 * k, z));
+    else this.batch.add(new THREE.SphereGeometry(0.3 * k, 12, 8), this.m.gold, mat(x, y + 0.5 * k, z));
   }
 
   private statueMats(body: THREE.Material): StatueMats {
@@ -562,7 +650,8 @@ export class World {
 
   /** Bake a statue (seated Buddha or standing Bodhisattva) into the static batch. */
   private statue(kind: 'buddha' | 'standing', body: THREE.Material, k: number, x: number, y: number, z: number) {
-    const g = kind === 'buddha' ? seatedBuddha(this.statueMats(body), k, Math.round(40 + 70 * this.opt.density)) : standingBodhisattva(this.statueMats(body), k);
+    const hq = this.ul ? 2 : this.hi ? 1 : 0;
+    const g = kind === 'buddha' ? seatedBuddha(this.statueMats(body), k, Math.round(40 + 70 * this.opt.density), hq) : standingBodhisattva(this.statueMats(body), k, hq);
     g.position.set(x, y, z);
     this.batch.addObject(g);
   }
@@ -590,18 +679,25 @@ export class World {
   }
 
   private buildTower(x: number, z: number, kind: 'bell' | 'drum') {
-    this.box(5.2, 0.7, 5.2, this.m.stone, x, 0.35, z);
+    // a low stone base you can step onto (see terrain TOWER_BASE): stand right under the bell / by the drum
+    const B = TOWER_BASE;
+    this.box(5.2, B, 5.2, this.m.stone, x, B / 2, z);
+    this.plane(5.0, 5.0, this.m.paving, x, B + 0.005, z, 0, 2);
+    const colH = 4.6 - B - 0.17;
     for (const [dx, dz] of [
       [-2.1, -2.1],
       [2.1, -2.1],
       [-2.1, 2.1],
       [2.1, 2.1],
-    ])
-      this.batch.add(new THREE.CylinderGeometry(0.2, 0.24, 3.8, 10), this.m.lacquer, mat(x + dx, 0.7 + 1.9, z + dz));
+    ]) {
+      this.batch.add(new THREE.CylinderGeometry(0.2, 0.24, colH, 10), this.m.lacquer, mat(x + dx, B + colH / 2, z + dz));
+      this.circles.push({ x: x + dx, z: z + dz, r: 0.35 });
+      if (this.hi) columnDetail(this, x + dx, B, colH, 0.2, z + dz);
+    }
     this.box(4.8, 0.35, 4.8, this.m.trim, x, 4.6, z);
-    this.batch.add(hipRoof(7, 7, 2.6, 0.8), this.m.roof, mat(x, 4.75, z));
+    this.occluder(5, 0.4, 5, x, 4.6, z);
+    this.roof(7, 7, 2.6, 0.8, x, 4.75, z);
     this.batch.add(new THREE.SphereGeometry(0.3, 10, 8), this.m.gold, mat(x, 7.4, z));
-    this.boxes.push({ x0: x - 2.6, x1: x + 2.6, z0: z - 2.6, z1: z + 2.6 });
     const target = kind === 'bell' ? this.bell : this.drum;
     if (kind === 'bell') {
       const bell = new THREE.Mesh(
@@ -635,8 +731,10 @@ export class World {
       d.rotation.x = Math.PI / 2;
       target.add(d);
       target.position.set(x, 2.1, z);
-      this.box(0.2, 1.3, 1.6, this.m.woodDark, x - 0.9, 1.3, z);
-      this.box(0.2, 1.3, 1.6, this.m.woodDark, x + 0.9, 1.3, z);
+      // cradle for the drum + a collider so nobody walks through it
+      this.box(0.2, 1.3, 1.6, this.m.woodDark, x - 0.9, B + 0.6, z);
+      this.box(0.2, 1.3, 1.6, this.m.woodDark, x + 0.9, B + 0.6, z);
+      this.boxes.push({ x0: x - 1.05, x1: x + 1.05, z0: z - 0.95, z1: z + 0.95 });
     }
     target.traverse((o) => {
       o.userData.kind = kind;
@@ -650,14 +748,20 @@ export class World {
     const { gate } = WORLD;
     for (const x of [-5.4, -2, 2, 5.4]) {
       this.batch.add(new THREE.CylinderGeometry(0.32, 0.36, 4.6, 12), this.m.lacquer, mat(gate.x + x, 2.3, gate.z));
-      this.batch.add(new THREE.CylinderGeometry(0.5, 0.55, 0.4, 10), this.m.stone, mat(gate.x + x, 0.2, gate.z));
+      if (this.hi) columnDetail(this, gate.x + x, 0, 4.6, 0.32, gate.z);
+      else this.batch.add(new THREE.CylinderGeometry(0.5, 0.55, 0.4, 10), this.m.stone, mat(gate.x + x, 0.2, gate.z));
       this.circles.push({ x: gate.x + x, z: gate.z, r: 0.5 });
     }
+    // couplets on the two inner gate columns (both faces)
+    if (this.hi)
+      for (const sz of [1, -1])
+        for (const [i, x] of [-2, 2].entries())
+          couplet(this, this.coupletMats[sz > 0 ? i : 1 - i], gate.x + x, 1.9, gate.z + sz * 0.4, 0.42, 2.2, sz > 0 ? 0 : Math.PI);
     this.box(12, 0.5, 0.6, this.m.lacquer, gate.x, 4.75, gate.z);
     this.box(12, 0.3, 0.62, this.m.trim, gate.x, 5.1, gate.z);
-    this.batch.add(hipRoof(6.6, 3.6, 1.9, 0.6), this.m.roof, mat(gate.x, 5.3, gate.z));
-    this.batch.add(hipRoof(4.6, 3.2, 1.5, 0.5), this.m.roof, mat(gate.x - 4.4, 4.9, gate.z));
-    this.batch.add(hipRoof(4.6, 3.2, 1.5, 0.5), this.m.roof, mat(gate.x + 4.4, 4.9, gate.z));
+    this.roof(6.6, 3.6, 1.9, 0.6, gate.x, 5.3, gate.z, { topRidge: true, crest: 'dragons' });
+    this.roof(4.6, 3.2, 1.5, 0.5, gate.x - 4.4, 4.9, gate.z, { topRidge: true });
+    this.roof(4.6, 3.2, 1.5, 0.5, gate.x + 4.4, 4.9, gate.z, { topRidge: true });
     // the temple's name board: Tịnh Tâm Tự (淨心寺)
     const board = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 1.56), new THREE.MeshBasicMaterial({ map: textures.signBilingual('TỊNH TÂM TỰ', '淨 心 寺'), toneMapped: false }));
     board.position.set(gate.x, 3.85, gate.z + 0.32);
@@ -699,6 +803,7 @@ export class World {
     this.batch.add(new THREE.CylinderGeometry(0.12, 0.16, 0.9, 8), this.m.stone, mat(x, 0.7, z));
     this.batch.add(new THREE.BoxGeometry(0.55, 0.12, 0.55), this.m.stone, mat(x, 1.2, z));
     this.batch.add(new THREE.BoxGeometry(0.36, 0.4, 0.36), this.m.lanternWarm, mat(x, 1.46, z), false);
+    this.lanternSpots.push(new THREE.Vector3(x, 1.46, z));
     this.batch.add(new THREE.ConeGeometry(0.5, 0.42, 4).rotateY(Math.PI / 4), this.m.stoneDark, mat(x, 1.86, z));
     this.circles.push({ x, z, r: 0.4 });
   }
@@ -862,7 +967,12 @@ export class World {
     }
     this.boxes.push({ x0: d.x - 0.8, x1: d.x + 1.8, z0: d.z - 1.5, z1: d.z + 1.5 });
     const dj = new Avatar(3, false);
+    const before = new Set<THREE.Object3D>();
+    dj.root.traverse((o) => void before.add(o));
     dj.setHeadphones();
+    dj.root.traverse((o) => {
+      if (!before.has(o) && (o as THREE.Mesh).isMesh) this.djPhones.push(o as THREE.Mesh);
+    });
     dj.root.position.set(d.x, 0, d.z);
     dj.root.rotation.y = Math.PI / 2;
     this.scene.add(dj.root);
@@ -926,8 +1036,23 @@ export class World {
       return im;
     };
     const trunk = inst(new THREE.CylinderGeometry(0.16, 0.26, 2, 7), this.m.bark, pines.length + broad.length);
-    const layers = [0, 1, 2, 3].map((l) => inst(new THREE.ConeGeometry(1.9 - l * 0.38, 2.1, 8), l % 2 ? this.m.pine2 : this.m.pine, pines.length));
-    const crowns = [0, 1, 2].map((l) => inst(new THREE.IcosahedronGeometry(1, 0), l % 2 ? this.m.leaf : this.m.leaf2, broad.length));
+    // high / ultra: everything leafy sways in the wind (vertex shader; the shadow pass sways too)
+    const swaying = (m: THREE.Material, o: WindOpts) => (this.hi ? wind(m.clone(), o) : m);
+    const sway = (im: THREE.InstancedMesh, o: WindOpts) => {
+      if (this.hi) im.customDepthMaterial = windDepth(o);
+      return im;
+    };
+    const pineWind: WindOpts = { amp: 0.05, y0: 1.5, y1: 7, pow: 1.5, freq: 0.9 };
+    const pineMats = [swaying(this.m.pine, pineWind), swaying(this.m.pine2, pineWind)];
+    const layers = [0, 1, 2, 3].map((l) => sway(inst(new THREE.ConeGeometry(1.9 - l * 0.38, 2.1, this.hi ? 10 : 8), pineMats[l % 2], pines.length), pineWind));
+    // broadleaf crowns: 3 rough blobs (low / medium) or 5 clumpy, two-tone ones tinted per tree (high)
+    const crownWind: WindOpts = { amp: 0.09, y0: 1.5, y1: 6.5, pow: 1.5, freq: 1.1 };
+    const crownN = this.hi ? 5 : 3;
+    const crownGeo = this.hi ? clump(1, 0.17, 3) : new THREE.IcosahedronGeometry(1, 0);
+    const crownMats = this.hi
+      ? [0, 1].map(() => wind(new THREE.MeshStandardMaterial({ color: '#ffffff', flatShading: true, roughness: 0.85 }), crownWind))
+      : [this.m.leaf2, this.m.leaf];
+    const crowns = Array.from({ length: crownN }, (_, l) => sway(inst(crownGeo, crownMats[l % 2], broad.length), crownWind));
     let ti = 0;
     const put = (im: THREE.InstancedMesh, i: number, x: number, y: number, z: number, sx: number, sy = sx, sz = sx, ry = 0) => {
       this.dummy.position.set(x, y, z);
@@ -941,14 +1066,32 @@ export class World {
       layers.forEach((m, l) => put(m, i, x, (2.4 + l * 1.15) * k, z, k, k, k, i));
       this.circles.push({ x, z, r: 0.45 * k });
     });
+    const greens = ['#4f7a3c', '#6b8f45', '#3f6a2f', '#5c8a3e'].map((c) => new THREE.Color(c));
+    const blooms = ['#f2c3d0', '#f7e3e8', '#eab0c2'].map((c) => new THREE.Color(c));
+    const tint = new THREE.Color();
     broad.forEach(([x, z, k], i) => {
       put(trunk, ti++, x, 1 * k, z, k);
-      crowns.forEach((m, l) => put(m, i, x + (l - 1) * 0.7 * k, (3 + (l % 2) * 0.7) * k, z + ((l * 37) % 3 - 1) * 0.5 * k, 1.5 * k, 1.2 * k, 1.5 * k, i + l));
+      if (!this.hi) crowns.forEach((m, l) => put(m, i, x + (l - 1) * 0.7 * k, (3 + (l % 2) * 0.7) * k, z + ((l * 37) % 3 - 1) * 0.5 * k, 1.5 * k, 1.2 * k, 1.5 * k, i + l));
+      else {
+        // about one broadleaf tree in seven is in bloom
+        const bloom = (i * 2654435761) % 997 < 140;
+        if (bloom) this.blossoms.push({ x, z, y: 3.4 * k });
+        crowns.forEach((m, l) => {
+          const a = (l / (crownN - 1)) * Math.PI * 2 + i;
+          const d = l ? 0.95 * k : 0;
+          const s = l ? 1.15 : 1.45;
+          put(m, i, x + Math.cos(a) * d, (l ? 2.9 + (l % 2) * 0.55 : 3.6) * k, z + Math.sin(a) * d, s * k, s * 0.82 * k, s * k, i * 1.3 + l);
+          const pal = bloom && l !== 2 ? blooms : greens;
+          tint.copy(pal[(i + l) % pal.length]).multiplyScalar(l === 0 ? 1.08 : 0.92);
+          m.setColorAt(i, tint);
+        });
+      }
       this.circles.push({ x, z, r: 0.45 * k });
     });
     const stalksPer = 7;
-    const stalks = inst(new THREE.CylinderGeometry(0.06, 0.07, 1, 6), this.m.bamboo, bamboo.length * stalksPer);
-    const tufts = inst(new THREE.ConeGeometry(0.5, 1.2, 5), this.m.leaf2, bamboo.length * stalksPer);
+    const bambooWind: WindOpts = { amp: 0.42, y0: 0.4, y1: 7.5, pow: 2, freq: 1.6 };
+    const stalks = sway(inst(new THREE.CylinderGeometry(0.06, 0.07, 1, 6, this.hi ? 6 : 1), swaying(this.m.bamboo, bambooWind), bamboo.length * stalksPer), bambooWind);
+    const tufts = sway(inst(new THREE.ConeGeometry(0.5, 1.2, 5), swaying(this.m.leaf2, bambooWind), bamboo.length * stalksPer), bambooWind);
     bamboo.forEach(([x, z, k], i) => {
       for (let s = 0; s < stalksPer; s++) {
         const a = (s / stalksPer) * Math.PI * 2;
@@ -986,7 +1129,10 @@ export class World {
       const z = Math.sin(a) * d;
       if (this.occupied(x, z)) continue;
       const k = 0.6 + r() * 1.2;
-      this.batch.add(rock, this.m.stoneDark, mat(x, 0.15 * k, z, r() * 3, k, k * 0.6, k, r(), r()));
+      const [ry, rx, rz] = [r() * 3, r(), r()];
+      this.batch.add(rock, this.m.stoneDark, mat(x, 0.15 * k, z, ry, k, k * 0.6, k, rx, rz));
+      // a cushion of moss on top (high / ultra)
+      if (this.hi) this.batch.add(rock, this.m.moss, mat(x, 0.24 * k, z, ry + 0.4, k * 0.82, k * 0.42, k * 0.82, rx * 0.3, rz * 0.3));
       this.circles.push({ x, z, r: 0.55 * k });
     }
     this.dummy.rotation.set(0, 0, 0);
@@ -1043,6 +1189,18 @@ export class World {
     this.hemi.color.copy(c('#6c7fb8').lerp(c('#fff5e2'), day));
     this.hemi.groundColor.copy(c('#1a2016').lerp(c('#5d6a47'), day));
     this.hemi.intensity = 0.45 + 0.55 * day + (this.opt.low ? 0.35 + 0.3 * night : 0);
+    if (this.hi) {
+      // high / ultra: a warmer, deeper golden hour
+      this.sun.color.lerp(c('#ff9a4e'), golden * 0.4);
+      this.hemi.color.lerp(c('#ffd6a0'), golden * 0.45);
+      this.sun.intensity += golden * 0.5;
+    }
+    SKY_LOW.value.copy(bottom);
+    SKY_HIGH.value.copy(top);
+    // lotus flowers open with the day and fold up at night
+    LOTUS_OPEN.value = Math.min(1, 0.15 + day * 0.85 + golden * 0.3);
+    for (const l of this.roomLights) l.intensity = 0.8 + 7 * Math.max(night, golden * 0.4);
+    this.life?.setHour(day, golden, night);
     // low tier: warm fill (stronger at night, when lanterns would normally light the halls)
     this.fill.intensity = this.opt.low ? 0.5 + 0.35 * night : 0;
 
@@ -1052,7 +1210,8 @@ export class World {
     this.moonDisc.visible = night > 0.3;
     (this.stars.material as THREE.PointsMaterial).opacity = Math.max(0, night * 1.2 - 0.2);
     this.stars.visible = night > 0.15;
-    for (const m of this.glowMats) m.emissiveIntensity = 0.15 + 2.4 * Math.max(night, golden * 0.5);
+    this.glowBase = 0.15 + 2.4 * Math.max(night, golden * 0.5);
+    for (const m of this.glowMats) m.emissiveIntensity = this.glowBase;
     for (const l of this.hallLights) l.intensity = (l.distance > 30 ? 5 : 3) + (l.distance > 30 ? 34 : 22) * Math.max(night, golden * 0.6);
   }
 
@@ -1116,6 +1275,7 @@ export class World {
         });
         part.castShadow = im.castShadow;
         part.receiveShadow = im.receiveShadow;
+        part.customDepthMaterial = im.customDepthMaterial;
         part.computeBoundingSphere();
         this.scene.add(part);
         this.cullable(part);
@@ -1140,7 +1300,17 @@ export class World {
       }
     });
     for (const t of textures) t.dispose();
+    this.life?.dispose();
+    disposeArch();
+    for (const o of this.occluders) (o as THREE.Mesh).geometry.dispose();
+    this.occluderMat.dispose();
     this.scene.environment?.dispose();
+    // avatars are skipped by the traverse above (their kit is shared); the DJ is owned here
+    for (const m of this.djPhones) {
+      m.geometry.dispose();
+      (m.material as THREE.Material).dispose();
+    }
+    this.dj.dispose();
     this.scene.clear();
   }
 
@@ -1196,6 +1366,16 @@ export class World {
   private stickClock = 0;
   update(dt: number, now: number, t: number) {
     const pnow = performance.now();
+    TIME.value = t;
+    if (this.life) {
+      this.life.update(dt, t, this.fx, this.fz);
+      // lanterns breathe a little (a candle behind paper)
+      if (this.glowBase > 0.5) {
+        const f = 1 + 0.06 * Math.sin(t * 9.3) + 0.04 * Math.sin(t * 23.1 + 1.7);
+        this.m.lantern.emissiveIntensity = this.glowBase * f;
+        this.m.lanternWarm.emissiveIntensity = this.glowBase * (2 - f);
+      }
+    }
     this.pond.update(pnow);
     this.shuttle.update(pnow);
     this.grounds.update(dt, t, this.fx, this.fz);
@@ -1215,6 +1395,8 @@ export class World {
     }
     const lit = [...this.stickLitAt.keys()];
     const pos = this.smoke.geometry.attributes.position as THREE.BufferAttribute;
+    const col = this.smoke.geometry.attributes.color as THREE.BufferAttribute | undefined;
+    const size = this.smoke.geometry.attributes.aSize as THREE.BufferAttribute | undefined;
     this.smokeData.forEach((p, i) => {
       p.age += dt;
       if (p.slot < 0 || p.age > p.life) {
@@ -1225,17 +1407,32 @@ export class World {
         }
         p.slot = lit[Math.floor(Math.random() * lit.length)];
         p.age = 0;
-        p.life = 3 + Math.random() * 3;
+        p.life = (3 + Math.random() * 3) * (col ? 1.4 : 1);
         p.vx = (Math.random() - 0.5) * 0.12;
         p.vz = (Math.random() - 0.5) * 0.12;
         const [x, y, z] = this.stickPos(p.slot);
         pos.setXYZ(i, x, y + 0.55, z);
+        if (col) col.setW(i, 0);
+        return;
+      }
+      if (col && size) {
+        // high / ultra: a thin thread that curls, slows, widens and dissolves
+        const f = p.age / p.life;
+        const curl = 0.05 + f * 0.14;
+        const a = p.age * (1.6 + (i % 5) * 0.15) + i;
+        pos.setXYZ(i, pos.getX(i) + (p.vx * 0.5 + Math.cos(a) * curl) * dt, pos.getY(i) + (0.34 - f * 0.16) * dt, pos.getZ(i) + (p.vz * 0.5 + Math.sin(a) * curl) * dt);
+        col.setW(i, Math.sin(Math.PI * Math.min(1, f * 1.15)) * (1 - f * 0.4) * 0.55);
+        size.setX(i, 0.35 + f * 2.4);
         return;
       }
       const sway = Math.sin(p.age * 1.7 + i) * 0.004;
       pos.setXYZ(i, pos.getX(i) + p.vx * dt + sway, pos.getY(i) + 0.32 * dt, pos.getZ(i) + p.vz * dt);
     });
     pos.needsUpdate = true;
+    if (col && size) {
+      col.needsUpdate = true;
+      size.needsUpdate = true;
+    }
   }
 
   // =================================================================== movement helpers

@@ -472,3 +472,34 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
 @keyframes fun-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes tube-shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
 @media (prefers-reduced-motion: reduce) { .fun-text, .stick-tube.shaking { animation: none; } }
+
+/* ---------- place chooser (welcome) ---------- */
+.place-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+.place-card {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px;
+  border-radius: 14px; border: 1px solid var(--line); background: transparent; color: inherit; text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.place-card small { color: var(--muted); font-size: 11.5px; line-height: 1.35; }
+.place-card.active { border-color: var(--gold); background: var(--gold-soft); }
+.place-card.active strong { color: var(--gold); }
+
+/* ---------- the church's own look: cool stone, silver-blue accents (the temple keeps warm gold) ---------- */
+:root[data-place='church'] {
+  --bg: #1b2028;
+  --ink: #eef1f6;
+  --ink-soft: #cdd3dd;
+  --muted: #9aa3b2;
+  --glass: rgba(26, 31, 40, 0.74);
+  --glass-strong: rgba(22, 27, 35, 0.93);
+  --line: rgba(230, 236, 246, 0.14);
+  --gold: #a9c3e8;
+  --gold-soft: rgba(169, 195, 232, 0.17);
+}
+:root[data-place='church'] .primary {
+  background: linear-gradient(180deg, #c9d8ee, #8fa9cf);
+  color: #18202c;
+  box-shadow: 0 8px 24px rgba(143, 169, 207, 0.25);
+}
+:root[data-place='church'] .screen.welcome { background: radial-gradient(1200px 600px at 50% 110%, rgba(169, 195, 232, 0.16), transparent 60%), radial-gradient(ellipse at top, #2c3647 0%, #1b2028 70%); }
+:root[data-place='church'] .eyebrow { letter-spacing: 6px; font-variant: small-caps; }
