@@ -16,6 +16,7 @@ import { MoktakOverlay } from './ui/Moktak.tsx';
 import { ChatPanel, DjPanel, Minimap, SeatDialogs } from './ui/Social.tsx';
 import { GamePanel } from './ui/GamePanel.tsx';
 import { FeedbackPanel } from './ui/Feedback.tsx';
+import { FunPanel } from './ui/Fun.tsx';
 
 /**
  * The 3D engine (three.js + the scene, ~0.5 MB) is not needed for the welcome screen.
@@ -150,6 +151,7 @@ function InGame({ onLeave }: { onLeave: () => void }) {
       {panel === 'moktak' && <MoktakOverlay />}
       {panel === 'dj' && <DjPanel />}
       {panel === 'game' && <GamePanel />}
+      {panel === 'fun' && <FunPanel />}
       {lost && <LostOverlay />}
     </div>
   );

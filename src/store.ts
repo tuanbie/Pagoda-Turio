@@ -2,9 +2,11 @@ import { useSyncExternalStore } from 'react';
 import type { DjState, IncenseState, Pose, TableSnap } from '@sontu/shared';
 import type { Locale } from './i18n/index.ts';
 
-export type Panel = null | 'settings' | 'servers' | 'visitors' | 'donate' | 'beads' | 'moktak' | 'dj' | 'game' | 'feedback';
-export type Zone = 'main' | 'west' | 'east' | 'jizo' | 'maitreya' | 'tea' | 'talk' | 'games' | 'courtyard' | 'bell' | 'drum' | 'garden' | 'pond' | 'stupa' | 'bodhi' | 'moon' | 'gate' | 'path' | 'forest';
-export type Quality = 'auto' | 'high' | 'medium' | 'low';
+export type Panel = null | 'settings' | 'servers' | 'visitors' | 'donate' | 'beads' | 'moktak' | 'dj' | 'game' | 'feedback' | 'fun';
+/** the wish tree, the proverb-stick tube, the riddle table */
+export type Fun = 'wish' | 'sticks' | 'riddle';
+export type Zone = 'main' | 'west' | 'east' | 'jizo' | 'maitreya' | 'tea' | 'talk' | 'games' | 'courtyard' | 'bell' | 'drum' | 'garden' | 'pond' | 'stupa' | 'bodhi' | 'moon' | 'gate' | 'path' | 'forest' | 'residence' | 'kitchen' | 'store' | 'dorm' | 'wishTree';
+export type Quality = 'auto' | 'ultra' | 'high' | 'medium' | 'low';
 
 export interface Visitor {
   id: number;
@@ -31,6 +33,8 @@ export interface AppState {
   seated: boolean;
   zone: Zone;
   panel: Panel;
+  /** which wish-tree plaza activity the 'fun' panel shows */
+  fun: Fun;
   /** incense queue per censer (0 = courtyard, then one per hall) */
   incs: IncenseState[];
   myStickAt: number;
@@ -137,6 +141,7 @@ export const store = new Store({
   seated: false,
   zone: 'path',
   panel: null,
+  fun: 'wish',
   incs: [],
   myStickAt: 0,
   beadsTotal: ls.get('beadsTotal', 0),

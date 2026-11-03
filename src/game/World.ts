@@ -3,7 +3,8 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { CENSERS, HALLS, INCENSE_BURN_MS, INCENSE_SLOTS, SEATS, STUPA, WORLD, altarHeight, incenseSpot, type HallDef } from '@sontu/shared';
 import { Avatar } from './Avatar.ts';
 import { textures } from './textures.ts';
-import { BUILDINGS, PATHS, gardenRect, hallRect } from './layout.ts';
+import { BUILDINGS, GROUNDS, PATHS, WISH, gardenRect, groundsRect, hallRect } from './layout.ts';
+import { Grounds } from './grounds.ts';
 import { groundY } from './terrain.ts';
 import { seatedBuddha, standingBodhisattva, type StatueMats } from './statues.ts';
 import { GameTables, Pond, Shuttle, buildPavilions, buildStupa, CUSHION_TOP, STONE_TOP } from './places.ts';
@@ -22,8 +23,10 @@ export interface WorldOptions {
   low: boolean;
   shadows: boolean;
   shadowSize: number;
-  /** 0..1 amount of vegetation / props */
+  /** amount of vegetation / props: 0.45 low … 1 high … 1.5 ultra */
   density: number;
+  /** maximum-detail tier (chosen explicitly by the visitor, never by auto) */
+  ultra?: boolean;
 }
 
 const V = (x: number, y: number, z: number) => new THREE.Vector3(x, y, z);
@@ -128,6 +131,10 @@ export class World {
   private cullClock = 0;
   readonly shuttle: Shuttle;
   readonly gameTables: GameTables;
+  readonly grounds: Grounds;
+  /** where the visitor is (set every frame by followShadow) */
+  private fx = 0;
+  private fz = 0;
   readonly circles: Circle[] = [];
   readonly boxes: Box[] = [];
   readonly sun: THREE.DirectionalLight;
@@ -155,7 +162,7 @@ export class World {
   constructor(readonly opt: WorldOptions) {
     const s = this.scene;
     // denser fog on lighter tiers matches their shorter draw distance
-    s.fog = new THREE.FogExp2('#d9dccb', opt.low ? 0.0105 : opt.density < 1 ? 0.0075 : 0.0042);
+    s.fog = new THREE.FogExp2('#d9dccb', opt.low ? 0.0105 : opt.density < 1 ? 0.0075 : opt.ultra ? 0.0031 : 0.0042);
 
     // ---------- materials ----------
     // weak GPUs get Lambert (per-vertex-ish, far cheaper) with the same colours / textures
@@ -249,8 +256,10 @@ export class World {
       this.sun.castShadow = true;
       this.sun.shadow.mapSize.set(opt.shadowSize, opt.shadowSize);
       const c = this.sun.shadow.camera;
-      c.left = c.bottom = -30;
-      c.right = c.top = 30;
+      // ultra: a wider (and sharper, 4096²) shadow area around the visitor
+      const ext = opt.ultra ? 48 : 30;
+      c.left = c.bottom = -ext;
+      c.right = c.top = ext;
       c.near = 1;
       c.far = 200;
       this.sun.shadow.bias = -0.0006;
@@ -274,6 +283,7 @@ export class World {
     this.shuttle = new Shuttle(this);
     this.buildBodhi();
     this.dj = this.buildMoonYard();
+    this.grounds = new Grounds(this);
     this.buildForest();
     this.buildMountains();
     for (const mesh of this.batch.flush(s, opt.shadows))
@@ -320,7 +330,7 @@ export class World {
     this.sticks.frustumCulled = this.stickTips.frustumCulled = false;
     for (let i = 0; i < total; i++) this.updateStick(i, Date.now());
     s.add(this.sticks, this.stickTips);
-    const smokeCount = opt.low ? 80 : 180;
+    const smokeCount = opt.low ? 80 : opt.ultra ? 320 : 180;
     const smokeGeo = new THREE.BufferGeometry();
     smokeGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(smokeCount * 3), 3));
     this.smoke = new THREE.Points(
@@ -874,6 +884,11 @@ export class World {
     if (near(WORLD.bellTower, 5) || near(WORLD.drumTower, 5) || near(WORLD.gate, 8)) return true;
     const g = gardenRect();
     if (x > g.x0 - 3 && x < g.x1 + 3 && z > g.z0 - 3 && z < g.z1 + 3) return true;
+    for (const gd of GROUNDS) {
+      const r = groundsRect(gd, 3.5 + pad);
+      if (x > r.x0 && x < r.x1 && z > r.z0 && z < r.z1 + 3) return true;
+    }
+    if (near(WISH, WISH.r + 2)) return true;
     for (const [x1, z1, x2, z2, w] of PATHS) {
       const dx = x2 - x1;
       const dz = z2 - z1;
@@ -1043,6 +1058,8 @@ export class World {
 
   /** Keep the shadow camera centred on the player (snapped to avoid shimmering). */
   followShadow(x: number, z: number) {
+    this.fx = x;
+    this.fz = z;
     const dir = (this.sun.userData.dir as THREE.Vector3 | undefined) ?? new THREE.Vector3(0.4, 1, 0.3);
     const sx = Math.round(x);
     const sz = Math.round(z);
@@ -1181,6 +1198,7 @@ export class World {
     const pnow = performance.now();
     this.pond.update(pnow);
     this.shuttle.update(pnow);
+    this.grounds.update(dt, t, this.fx, this.fz);
     this.stickClock += dt;
     if (this.stickClock > 0.5) {
       this.stickClock = 0;

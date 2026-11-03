@@ -443,3 +443,32 @@ input[type='range'] { width: 100%; accent-color: var(--gold); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
+
+/* ---------- quality: ultra ---------- */
+.seg.seg-quality { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 420px) { .seg.seg-quality { grid-template-columns: repeat(3, 1fr); } }
+.ultra-confirm { margin-top: 10px; padding: 12px 14px; border: 1px solid var(--gold); border-radius: 14px; background: var(--gold-soft); }
+.ultra-confirm p { margin: 6px 0 10px; font-size: 13.5px; }
+
+/* ---------- wish tree plaza ---------- */
+.fun-tabs { margin-bottom: 14px; }
+.fun-card { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.fun-card .primary.sm { align-self: center; }
+.fun-text { font-size: 17px; line-height: 1.55; color: var(--ink); margin: 4px 0; animation: fun-in 0.45s ease both; }
+.fun-text p { margin: 4px 0; }
+.wish-text { text-align: center; padding: 14px 8px; border-radius: 14px; background: var(--gold-soft); }
+.saying { font-size: 18px; font-style: italic; text-align: center; }
+.stick-tube { font-size: 44px; text-align: center; line-height: 1; }
+.stick-tube.shaking { animation: tube-shake 0.18s ease-in-out 5; }
+.riddle-q { font-weight: 500; }
+.riddle-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 420px) { .riddle-options { grid-template-columns: 1fr; } }
+.riddle-opt { min-height: 44px; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--line); background: transparent; font-size: 14.5px; text-align: center; }
+.riddle-opt.right { border-color: #6fbf73; background: rgba(111, 191, 115, 0.16); }
+.riddle-opt.wrong { border-color: #c96b5a; background: rgba(201, 107, 90, 0.14); opacity: 0.8; }
+.riddle-opt:disabled { opacity: 0.45; }
+.riddle-result { min-height: 1.4em; margin: 0; text-align: center; font-weight: 600; }
+.fun-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+@keyframes fun-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes tube-shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
+@media (prefers-reduced-motion: reduce) { .fun-text, .stick-tube.shaking { animation: none; } }

@@ -61,6 +61,7 @@ export function SettingsPanel() {
   const t = useT();
   const s = useStore((x) => x);
   const vol = (k: keyof typeof s.volumes) => (v: number) => store.set({ volumes: { ...s.volumes, [k]: v } });
+  const [askUltra, setAskUltra] = useState(false);
   return (
     <Modal title={t('settings.title')} onClose={closePanel} closeLabel={t('settings.close')}>
       <h3>{t('settings.name')}</h3>
@@ -101,23 +102,48 @@ export function SettingsPanel() {
       </div>
 
       <h3>{t('settings.quality')}</h3>
-      <div className="seg">
-        {(['auto', 'high', 'medium', 'low'] as Quality[]).map((q) => (
+      <div className="seg seg-quality">
+        {(['auto', 'ultra', 'high', 'medium', 'low'] as Quality[]).map((q) => (
           <button
             key={q}
             className={s.quality === q ? 'active' : ''}
             onClick={() => {
+              if (q === s.quality) return;
+              // ultra is heavy: explain first, switch only after the visitor confirms
+              if (q === 'ultra') return setAskUltra(true);
+              setAskUltra(false);
               store.set({ quality: q });
               runtime.rebuildGame?.();
             }}
           >
-            {t(q === 'auto' ? 'settings.qAuto' : q === 'high' ? 'settings.qHigh' : q === 'medium' ? 'settings.qMedium' : 'settings.qLow')}
+            {t(q === 'auto' ? 'settings.qAuto' : q === 'ultra' ? 'settings.qUltra' : q === 'high' ? 'settings.qHigh' : q === 'medium' ? 'settings.qMedium' : 'settings.qLow')}
             {q === 'auto' && s.autoTier && (
               <small className="auto-tier">{t(s.autoTier === 'high' ? 'settings.qHigh' : s.autoTier === 'medium' ? 'settings.qMedium' : 'settings.qLow')}</small>
             )}
           </button>
         ))}
       </div>
+      {askUltra && (
+        <div className="ultra-confirm" role="alertdialog" aria-labelledby="ultra-title">
+          <strong id="ultra-title">{t('ultra.title')}</strong>
+          <p>{t('ultra.text')}</p>
+          <div className="fun-row">
+            <button className="text-btn" onClick={() => setAskUltra(false)}>
+              {t('ultra.cancel')}
+            </button>
+            <button
+              className="primary sm"
+              onClick={() => {
+                setAskUltra(false);
+                store.set({ quality: 'ultra' });
+                runtime.rebuildGame?.();
+              }}
+            >
+              {t('ultra.confirm')}
+            </button>
+          </div>
+        </div>
+      )}
 
       <button className="link-btn" onClick={() => store.set({ panel: 'feedback' })}>
         💬 {t('feedback.open')}

@@ -134,6 +134,127 @@ function textSprite(text: string, bubble: boolean): THREE.Sprite {
   return s;
 }
 
+/** Robes for the computer-controlled novice monks (chú tiểu): brown-grey, darker sash. */
+const novice = (() => {
+  const std = (color: string) => new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
+  return { robe: std('#7c6b55'), sash: std('#4f3f2e') };
+})();
+
+/**
+ * Hand-held props, built once on first use and shared by every avatar that needs them
+ * (geometry + materials); each avatar only adds cheap Mesh instances. Coordinates are
+ * relative to the hand, so a prop turns around the grip, not around the shoulder.
+ */
+type PropName = 'broom' | 'cloth' | 'ladle' | 'mallet' | 'can' | 'sack' | 'incense' | 'tube' | 'bud' | 'card' | 'teapot' | 'cup' | 'stream';
+type Part = [THREE.BufferGeometry, THREE.Material, number, number, number, number?];
+const HAND = new THREE.Vector3(0, -0.48, 0.04);
+let propKit: Record<PropName, Part[]> | null = null;
+function makeProp(name: PropName, onTorso: boolean): THREE.Object3D {
+  if (!propKit) {
+    const m = (color: string, extra: THREE.MeshStandardMaterialParameters = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.75, ...extra });
+    const wood = m('#8a6440');
+    const porcelain = m('#f3efe6', { roughness: 0.35 });
+    const bamboo = m('#b89b5c');
+    const tin = m('#7f8c8a', { metalness: 0.5, roughness: 0.45 });
+    const stick = m('#7a3b22');
+    const glow = new THREE.MeshBasicMaterial({ color: '#ff8a3a' });
+    const stickG = new THREE.CylinderGeometry(0.006, 0.006, 0.34, 4).translate(0, 0.17, 0);
+    const tipG = new THREE.SphereGeometry(0.012, 5, 4);
+    propKit = {
+      // long bamboo broom gripped near the top: bristles end up by the feet
+      broom: [
+        [new THREE.CylinderGeometry(0.014, 0.014, 1.1, 6), wood, 0, -0.42, 0.06, 0.12],
+        [new THREE.ConeGeometry(0.13, 0.36, 8, 1, true), m('#c9a55e', { side: THREE.DoubleSide }), 0, -1.02, 0.13, 0.12],
+      ],
+      cloth: [[new THREE.BoxGeometry(0.12, 0.02, 0.1), m('#d8d2c2'), 0, -0.03, 0.02]],
+      ladle: [
+        [new THREE.CylinderGeometry(0.01, 0.01, 0.62, 5), wood, 0, -0.24, 0.06, 0.45],
+        [new THREE.SphereGeometry(0.05, 8, 5, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), wood, 0, -0.52, 0.19],
+      ],
+      mallet: [
+        [new THREE.CylinderGeometry(0.012, 0.012, 0.26, 5), wood, 0, -0.04, 0.08, 1.2],
+        [new THREE.SphereGeometry(0.036, 8, 6), m('#5a3a22'), 0, -0.09, 0.2],
+      ],
+      can: [
+        [new THREE.CylinderGeometry(0.07, 0.08, 0.16, 10), tin, 0, -0.1, 0.02],
+        [new THREE.CylinderGeometry(0.01, 0.016, 0.22, 5), tin, 0, -0.08, 0.14, 1.0],
+      ],
+      sack: [[new THREE.SphereGeometry(0.2, 10, 8).scale(1.25, 0.75, 0.85), m('#cbb994'), 0.16, 0.5, -0.02]],
+      incense: [
+        [stickG, stick, -0.012, 0, 0.02],
+        [stickG, stick, 0, 0, 0.02],
+        [stickG, stick, 0.012, 0, 0.02],
+        [tipG, glow, -0.012, 0.34, 0.02],
+        [tipG, glow, 0, 0.34, 0.02],
+        [tipG, glow, 0.012, 0.34, 0.02],
+      ],
+      tube: [
+        [new THREE.CylinderGeometry(0.05, 0.05, 0.26, 10, 1, true), m('#b89b5c', { side: THREE.DoubleSide }), 0, 0.02, 0.04],
+        [new THREE.CylinderGeometry(0.035, 0.035, 0.1, 8), m('#c8b38a'), 0, 0.18, 0.04],
+      ],
+      bud: [
+        [new THREE.BoxGeometry(0.07, 0.1, 0.012), m('#b3261e', { emissive: '#3a0805' }), 0, -0.05, 0.02],
+        [new THREE.BoxGeometry(0.05, 0.012, 0.013), m('#d9b26a', { metalness: 0.6, roughness: 0.4 }), 0, -0.02, 0.02],
+      ],
+      card: [[new THREE.BoxGeometry(0.03, 0.24, 0.006), bamboo, 0, 0.06, 0.03]],
+      teapot: [
+        [new THREE.SphereGeometry(0.09, 12, 8).scale(1, 0.8, 1), porcelain, 0, -0.04, 0.01],
+        [new THREE.ConeGeometry(0.022, 0.11, 6), porcelain, 0, -0.03, 0.11, 1.1],
+        [new THREE.SphereGeometry(0.03, 8, 6), porcelain, 0, 0.035, 0.01],
+      ],
+      cup: [[new THREE.CylinderGeometry(0.04, 0.03, 0.06, 10), porcelain, 0, -0.01, 0]],
+      // the tea stream falling into the cup (shown only while pouring)
+      stream: [[new THREE.CylinderGeometry(0.006, 0.004, 0.2, 5), new THREE.MeshStandardMaterial({ color: '#c8a56a', transparent: true, opacity: 0.7, roughness: 0.1 }), 0, 0.13, 0]],
+    };
+  }
+  const grp = new THREE.Group();
+  if (!onTorso) grp.position.copy(HAND);
+  for (const [geo, mat, x, y, z, rx = 0] of propKit[name]) {
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(x, y, z);
+    mesh.rotation.x = rx;
+    mesh.castShadow = true;
+    grp.add(mesh);
+  }
+  return grp;
+}
+
+/**
+ * Local gestures: played only on this client (never sent to the server, whose Pose list
+ * is fixed). NPC chores, and my own short actions at the wish tree / stick tube / riddles.
+ */
+export type Action = 'sweep' | 'wipe' | 'stir' | 'prep' | 'ringBell' | 'moktak' | 'water' | 'carry' | 'pick' | 'shake' | 'think' | 'read';
+const ACTION_PROPS: [Action, PropName, 'L' | 'R' | 'T'][] = [
+  ['sweep', 'broom', 'R'],
+  ['wipe', 'cloth', 'R'],
+  ['stir', 'ladle', 'R'],
+  ['moktak', 'mallet', 'R'],
+  ['water', 'can', 'R'],
+  ['carry', 'sack', 'T'],
+  ['shake', 'tube', 'R'],
+  ['read', 'card', 'R'],
+];
+
+const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+/** 0 → 1 → 0 bump over [a, b] with eased edges of width e */
+const window01 = (x: number, a: number, b: number, e: number) => smooth(clamp01((x - a) / e)) * (1 - smooth(clamp01((x - (b - e)) / e)));
+
+type State = { bodyY: number; bend: number; lx: number; lz: number; rx: number; rz: number; sway: number; squash: number; nod: number; walk: number; look: number; hip: number };
+const KEYS: (keyof State)[] = ['bodyY', 'bend', 'lx', 'lz', 'rx', 'rz', 'sway', 'squash', 'nod', 'walk', 'look', 'hip'];
+/** one scratch target for every avatar: animate() allocates nothing per frame */
+const T: State = { bodyY: 0, bend: 0, lx: 0, lz: 0, rx: 0, rz: 0, sway: 0, squash: 1, nod: 0, walk: 0, look: 0, hip: 0 };
+const arms = (lx: number, lz: number, rx: number, rz: number) => {
+  T.lx = lx;
+  T.lz = lz;
+  T.rx = rx;
+  T.rz = rz;
+};
+
+export interface AvatarOptions {
+  /** a computer-controlled novice monk: brown robe, a little smaller */
+  novice?: boolean;
+}
+
 /** Procedural little monk with pose-driven, critically-damped animation. */
 export class Avatar {
   readonly root = new THREE.Group();
@@ -145,8 +266,9 @@ export class Avatar {
   private armR = new THREE.Group();
   private footL: THREE.Mesh;
   private footR: THREE.Mesh;
+  private eyes: THREE.Mesh[] = [];
   private t = Math.random() * 10;
-  private s = { bodyY: 0, bend: 0, lx: 0, lz: 0, rx: 0, rz: 0, sway: 0, squash: 1, nod: 0, walk: 0 };
+  private s: State = { bodyY: 0, bend: 0, lx: 0, lz: 0, rx: 0, rz: 0, sway: 0, squash: 1, nod: 0, walk: 0, look: 0, hip: 0 };
   /** walk cycle advances with distance travelled → no foot sliding */
   private phase = 0;
   private label: THREE.Sprite | null = null;
@@ -155,11 +277,14 @@ export class Avatar {
   private bubbleUntil = 0;
   poseAge = 0;
   private lastPose: Pose = Pose.Idle;
-  private teapot: THREE.Group | null = null;
-  private cup: THREE.Mesh | null = null;
+  private props = new Map<PropName, THREE.Object3D>();
+  private action: Action | null = null;
+  private actionAge = 0;
+  private actionUntil = Infinity;
+  private nextBlink = 2 + Math.random() * 3;
 
-  constructor(tint: number, isSelf: boolean) {
-    const robe = isSelf ? shared.selfRobe : shared.robes[tint % shared.robes.length];
+  constructor(tint: number, isSelf: boolean, opts: AvatarOptions = {}) {
+    const robe = opts.novice ? novice.robe : isSelf ? shared.selfRobe : shared.robes[tint % shared.robes.length];
     this.lower = new THREE.Mesh(shared.lower, robe);
     const upper = new THREE.Mesh(shared.upper, robe);
     const headMesh = new THREE.Mesh(shared.head, shared.skin);
@@ -174,8 +299,9 @@ export class Avatar {
       const eye = new THREE.Mesh(shared.eye, shared.eyeMat);
       eye.position.set(x, 0.02, 0.158);
       this.head.add(eye);
+      this.eyes.push(eye);
     }
-    const sash = new THREE.Mesh(shared.sash, shared.sashMat);
+    const sash = new THREE.Mesh(shared.sash, opts.novice ? novice.sash : shared.sashMat);
     sash.position.set(0.02, 0.24, 0.21);
     sash.rotation.z = 0.55;
     this.torso.position.y = 0.9;
@@ -195,29 +321,36 @@ export class Avatar {
     this.body.add(this.lower, this.torso, this.footL, this.footR);
     this.root.add(this.body, new THREE.Mesh(shared.shadow, shared.shadowMat));
     if (isSelf) this.root.add(new THREE.Mesh(shared.ring, shared.ringMat));
+    if (opts.novice) this.body.scale.setScalar(0.86);
     this.root.traverse((o) => {
       o.userData.kind = 'avatar';
       if ((o as THREE.Mesh).isMesh && o.parent !== this.root) o.castShadow = true;
     });
   }
 
-  /** lazily created tea props (most avatars never need them) */
-  private teaProps() {
-    if (this.teapot) return;
-    const porcelain = new THREE.MeshStandardMaterial({ color: '#f3efe6', roughness: 0.35 });
-    this.teapot = new THREE.Group();
-    const body = new THREE.Mesh(new THREE.SphereGeometry(0.09, 12, 8).scale(1, 0.8, 1), porcelain);
-    const spout = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.11, 6), porcelain);
-    spout.position.set(0, 0.01, 0.1);
-    spout.rotation.x = 1.1;
-    const lid = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), porcelain);
-    lid.position.y = 0.075;
-    this.teapot.add(body, spout, lid);
-    this.teapot.position.set(0, -0.52, 0.05);
-    this.armR.add(this.teapot);
-    this.cup = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.03, 0.06, 10), porcelain);
-    this.cup.position.set(0, -0.5, 0.04);
-    this.armL.add(this.cup);
+  /** show/hide a prop, creating it the first time */
+  private prop(name: PropName, on: boolean, where: 'L' | 'R' | 'T' = 'R') {
+    let p = this.props.get(name);
+    if (!p) {
+      if (!on) return;
+      p = makeProp(name, where === 'T');
+      p.traverse((o) => (o.userData.kind = 'avatar'));
+      (where === 'L' ? this.armL : where === 'T' ? this.torso : this.armR).add(p);
+      this.props.set(name, p);
+    }
+    p.visible = on;
+    return p;
+  }
+
+  /** Start a local gesture (`seconds` = Infinity keeps it until cleared). */
+  play(action: Action | null, seconds = Infinity) {
+    if (action !== this.action) this.actionAge = 0;
+    this.action = action;
+    this.actionUntil = this.t + seconds;
+  }
+
+  get currentAction() {
+    return this.action;
   }
 
   setHeadphones() {
@@ -293,105 +426,266 @@ export class Avatar {
       this.poseAge = 0;
     }
     this.poseAge += dt;
+    this.actionAge += dt;
+    if (this.action && this.t > this.actionUntil) this.action = null;
     this.phase += speed * dt * 3.1;
     const t = this.t;
+    const age = this.poseAge;
     const moving = speed > 0.15;
-    const tgt = { bodyY: 0, bend: 0.02, lx: -0.1, lz: -0.1, rx: -0.1, rz: 0.1, sway: 0, squash: 1, nod: 0, walk: Math.min(1, speed / 3) };
+    const walk = Math.min(1, speed / 3);
+
+    // ---- base target: relaxed standing ----
+    T.bodyY = 0;
+    T.bend = 0.03;
+    arms(-0.08, -0.12, -0.08, 0.12);
+    T.sway = 0;
+    T.squash = 1;
+    T.nod = 0;
+    T.walk = walk;
+    T.look = 0;
+    T.hip = 0;
     const kneeling = kneel || pose === Pose.Sit || pose === Pose.Bow;
-    if (kneeling) {
-      // fold the legs (shorter robe) but keep the base ON the seat — never sink into it
-      tgt.bodyY = 0;
-      tgt.squash = 0.55;
-    }
+    // fold the legs (shorter robe) but keep the base ON the seat — never sink into it
+    if (kneeling) T.squash = 0.55;
+    let pot = 0; // teapot tilt
+    let pouring = false;
+    let incense = false;
+    let teapot = false;
+    let cup = false;
 
     switch (pose) {
       case Pose.Sit:
-        Object.assign(tgt, { lx: -0.72, lz: -0.48, rx: -0.72, rz: 0.48, bend: 0.06 + Math.sin(t * 0.9) * 0.015, nod: 0.12 });
+        arms(-0.72, -0.48, -0.72, 0.48);
+        T.bend = 0.06 + Math.sin(t * 0.9) * 0.015;
+        T.nod = 0.12 + Math.sin(t * 0.21) * 0.02;
         break;
       case Pose.Bow: {
-        // full prostration (~5 s): palms together → bow down → hold → rise
-        const c = (this.poseAge % 5) / 5;
+        // full prostration (~5 s): palms together at the chest → down, hands to the floor → hold → rise
+        const c = (age % 5) / 5;
         const down = c < 0.18 ? 0 : c < 0.48 ? smooth((c - 0.18) / 0.3) : c < 0.66 ? 1 : 1 - smooth((c - 0.66) / 0.34);
-        Object.assign(tgt, {
-          bend: down * 1.3,
-          lx: -1.3 + down * 0.1,
-          lz: -0.58 + down * 0.38,
-          rx: -1.3 + down * 0.1,
-          rz: 0.58 - down * 0.38,
-          nod: down * 0.3,
-        });
+        T.bend = down * 1.3;
+        arms(-1.3 + down * 0.15, -0.58 + down * 0.42, -1.3 + down * 0.15, 0.58 - down * 0.42);
+        T.nod = down * 0.3;
         break;
       }
       case Pose.Greet: {
-        const a = this.poseAge;
-        const nod = smooth(Math.min(1, a / 0.7)) * (a < 1.7 ? 1 : Math.max(0, 1 - (a - 1.7) / 0.7));
-        Object.assign(tgt, { lx: -1.32, lz: -0.6, rx: -1.32, rz: 0.6, bend: 0.38 * nod, nod: 0.25 * nod });
+        const nod = smooth(Math.min(1, age / 0.7)) * (age < 1.7 ? 1 : Math.max(0, 1 - (age - 1.7) / 0.7));
+        arms(-1.32, -0.6, -1.32, 0.6);
+        T.bend = 0.38 * nod;
+        T.nod = 0.25 * nod;
         break;
       }
       case Pose.Beads:
-        Object.assign(tgt, { lx: -0.95, lz: -0.5, rx: -1.05 + Math.sin(t * 4) * 0.05, rz: 0.4, bend: 0.12, nod: 0.25 });
+        arms(-0.95, -0.5, -1.05 + Math.sin(t * 4) * 0.05, 0.4);
+        T.bend = 0.12;
+        T.nod = 0.25;
         break;
       case Pose.Moktak: {
         const hit = Math.max(0, Math.sin(t * Math.PI * 2 * 1.1)) ** 4;
-        Object.assign(tgt, { lx: -0.8, lz: -0.3, rx: -1.15 + hit * 0.45, rz: 0.25, bend: 0.1, nod: 0.15 });
+        arms(-0.8, -0.3, -1.15 + hit * 0.45, 0.25);
+        T.bend = 0.1 + hit * 0.02;
+        T.nod = 0.15;
         break;
       }
       case Pose.PourTea: {
-        // right hand lifts the pot and tips it over the cup held by the left hand
-        this.teaProps();
-        const tip = Math.min(1, this.poseAge / 0.8) * (this.poseAge < 2.6 ? 1 : Math.max(0, 1 - (this.poseAge - 2.6) / 0.6));
-        Object.assign(tgt, { rx: -1.25, rz: 0.55, lx: -1.05, lz: -0.35, bend: 0.18, nod: 0.3 });
-        if (this.teapot) this.teapot.rotation.z = -0.9 * tip;
+        // lift the pot (0-0.6 s), tip it over the cup in the left hand (0.6-2.3), right it (2.3-2.9), set down
+        teapot = cup = true;
+        const lift = smooth(clamp01(age / 0.6)) * (1 - smooth(clamp01((age - 2.9) / 0.5)));
+        pot = smooth(clamp01((age - 0.6) / 0.5)) * (1 - smooth(clamp01((age - 2.3) / 0.5)));
+        pouring = pot > 0.55;
+        arms(-0.75 - 0.35 * lift, -0.42, -0.85 - 0.45 * lift, 0.5 + 0.08 * pot);
+        T.bend = 0.12 + 0.08 * lift;
+        T.nod = 0.22 + 0.15 * lift; // watch the cup
         break;
       }
       case Pose.DrinkTea: {
-        // left hand brings the cup to the lips, two small sips
-        this.teaProps();
-        const up = Math.min(1, this.poseAge / 0.6) * (this.poseAge < 2.2 ? 1 : Math.max(0, 1 - (this.poseAge - 2.2) / 0.5));
-        Object.assign(tgt, { lx: -0.9 - 1.25 * up, lz: -0.2 - 0.55 * up, rx: -0.7, rz: 0.4, nod: -0.12 * up + Math.sin(this.poseAge * 5) * 0.03 * up, bend: 0.05 });
+        // both hands bring the cup to the lips, two small sips, then lower it
+        cup = true;
+        const up = smooth(clamp01(age / 0.7)) * (1 - smooth(clamp01((age - 2.1) / 0.6)));
+        const sip = up > 0.9 ? Math.max(0, Math.sin((age - 0.7) * 4.2)) : 0;
+        arms(-0.85 - 1.25 * up, -0.25 - 0.45 * up, -0.85 - 1.05 * up, 0.25 + 0.42 * up);
+        T.nod = -0.08 * up - 0.1 * sip;
+        T.bend = 0.04;
         break;
       }
       case Pose.Offer: {
-        const nod = (Math.sin(t * 1.4) + 1) * 0.5;
-        Object.assign(tgt, { lx: -1.45, lz: -0.6, rx: -1.45, rz: 0.6, bend: 0.12 + nod * 0.22, nod: 0.1 + nod * 0.15 });
+        // INCENSE_OFFER_MS (7 s): raise the sticks to the forehead → three bows → lean in and plant them → palms together
+        incense = age < 5.5;
+        const raise = smooth(clamp01(age / 1.0));
+        const bowT = age - 1.0;
+        const bow = bowT > 0 && bowT < 3.6 ? Math.sin(((bowT % 1.2) / 1.2) * Math.PI) : 0;
+        const plant = window01(age, 4.6, 6.1, 0.5);
+        const after = smooth(clamp01((age - 6.0) / 0.6));
+        const up = raise * (1 - plant);
+        arms(-1.2 - 0.6 * up + 0.35 * plant, -0.58 + 0.1 * plant, -1.2 - 0.6 * up + 0.35 * plant, 0.58 - 0.1 * plant);
+        T.bend = 0.06 + bow * 0.42 + plant * 0.5 + after * 0.12;
+        T.nod = 0.1 + bow * 0.25 + plant * 0.25;
+        if (after > 0) {
+          arms(-1.32, -0.6, -1.32, 0.6);
+          T.bend = 0.1 + 0.08 * Math.sin(t * 1.2);
+        }
         break;
       }
       case Pose.Dance: {
         const ph = beat * Math.PI * 2;
         const half = Math.floor(beat / 4) % 2;
-        tgt.bodyY = -Math.abs(Math.sin(ph / 2)) * 0.09;
-        tgt.sway = Math.sin(ph / 2) * 0.2;
-        tgt.nod = Math.abs(Math.sin(ph)) * 0.15;
-        if (half) Object.assign(tgt, { lx: -2.7 + Math.sin(ph) * 0.3, lz: -0.2, rx: -2.7 - Math.sin(ph) * 0.3, rz: 0.2 });
-        else Object.assign(tgt, { lx: -0.6 + Math.sin(ph) * 0.6, lz: 0.5, rx: -0.6 - Math.sin(ph) * 0.6, rz: -0.5 });
-        tgt.bend = 0.05;
+        T.bodyY = -Math.abs(Math.sin(ph / 2)) * 0.09;
+        T.sway = Math.sin(ph / 2) * 0.2;
+        T.nod = Math.abs(Math.sin(ph)) * 0.15;
+        if (half) arms(-2.7 + Math.sin(ph) * 0.3, -0.2, -2.7 - Math.sin(ph) * 0.3, 0.2);
+        else arms(-0.6 + Math.sin(ph) * 0.6, 0.5, -0.6 - Math.sin(ph) * 0.6, -0.5);
+        T.bend = 0.05;
         break;
       }
       default:
         if (moving) {
+          // arms swing opposite to the legs, slightly away from the body; lean a little into the stride
           const sw = Math.sin(this.phase);
-          Object.assign(tgt, { lx: sw * 0.5 * tgt.walk, rx: -sw * 0.5 * tgt.walk, bodyY: Math.abs(Math.cos(this.phase)) * 0.045 * tgt.walk, bend: 0.08 * tgt.walk });
-        } else tgt.bend = 0.02 + Math.sin(t * 1.2) * 0.012; // breathing
+          arms(sw * 0.45 * walk - 0.05, -0.1 - 0.05 * walk, -sw * 0.45 * walk - 0.05, 0.1 + 0.05 * walk);
+          T.bodyY = Math.abs(Math.cos(this.phase)) * 0.05 * walk;
+          T.bend = 0.04 + 0.1 * walk;
+          T.hip = sw * 0.035 * walk;
+          T.nod = -0.05 * walk; // keep the gaze level while leaning
+        } else {
+          // breathing, a slow weight shift and an occasional look around
+          T.bend = 0.03 + Math.sin(t * 1.2) * 0.012;
+          T.sway = Math.sin(t * 0.37) * 0.025;
+          T.look = Math.sin(t * 0.23) * 0.35 + Math.sin(t * 0.61 + 1.3) * 0.15;
+          T.nod = Math.sin(t * 0.17) * 0.04;
+        }
     }
 
-    // dance follows the beat tightly; everything else eases gently
-    const k = pose === Pose.Dance ? 14 : 7;
+    // ---- local gesture on top (chores, wish tree, stick tube, riddles) ----
+    const act = this.action;
+    if (act) {
+      const a = this.actionAge;
+      T.look = 0;
+      switch (act) {
+        case 'sweep': {
+          // long side-to-side strokes, body follows the broom
+          const sw = Math.sin(a * 2.4);
+          arms(-0.55, -0.45 + sw * 0.25, -0.6, 0.15 + sw * 0.35);
+          T.bend = 0.32;
+          T.sway = sw * 0.08;
+          T.nod = 0.2;
+          break;
+        }
+        case 'wipe': {
+          const c = a * 3.2;
+          arms(-0.5, -0.2, -1.05 + Math.sin(c) * 0.18, 0.35 + Math.cos(c) * 0.2);
+          T.bend = 0.42;
+          T.nod = 0.25;
+          break;
+        }
+        case 'stir': {
+          const c = a * 2.2;
+          arms(-0.95, -0.3, -1.25 + Math.sin(c) * 0.12, 0.3 + Math.cos(c) * 0.16);
+          T.bend = 0.22;
+          T.nod = 0.35;
+          T.sway = Math.sin(c) * 0.03;
+          break;
+        }
+        case 'prep': {
+          // picking and sorting vegetables at the table
+          const c = a * 3;
+          arms(-0.95 + Math.sin(c) * 0.08, -0.35, -0.95 + Math.sin(c + 1.7) * 0.1, 0.35);
+          T.bend = 0.35;
+          T.nod = 0.4;
+          break;
+        }
+        case 'ringBell': {
+          // pull the striker log back, let it swing into the bell (one stroke every 4 s)
+          const c = (a % 4) / 4;
+          const pull = c < 0.45 ? smooth(c / 0.45) : c < 0.55 ? 1 - smooth((c - 0.45) / 0.1) : 0;
+          arms(-1.45 + pull * 0.35, -0.42, -1.45 + pull * 0.35, 0.42);
+          T.bend = 0.1 - pull * 0.12;
+          T.nod = 0.05;
+          break;
+        }
+        case 'moktak': {
+          const hit = Math.max(0, Math.sin(a * Math.PI * 2 * 1.1)) ** 4;
+          arms(-0.8, -0.3, -1.1 + hit * 0.45, 0.25);
+          T.bend = 0.1;
+          T.nod = 0.15;
+          break;
+        }
+        case 'water': {
+          const tilt = 0.5 + Math.sin(a * 0.8) * 0.15;
+          arms(-0.3, -0.12, -0.95 - tilt * 0.3, 0.2);
+          T.bend = 0.2;
+          T.nod = 0.3;
+          break;
+        }
+        case 'carry':
+          // a sack on the right shoulder, steadied with both hands
+          arms(-0.55 + Math.sin(this.phase) * 0.25 * walk, -0.1, -2.6, 0.32);
+          T.bend += 0.08;
+          break;
+        case 'pick': {
+          // reach up into the branches, pull the bud down, look at it
+          const reach = window01(a, 0, 1.4, 0.45);
+          arms(-0.9 - 0.2 * reach, -0.3, -1.0 - 1.9 * reach, 0.2 - 0.1 * reach);
+          T.nod = -0.45 * reach + 0.25 * smooth(clamp01((a - 1.2) / 0.4));
+          T.bend = 0.05;
+          break;
+        }
+        case 'shake': {
+          // tube held in both hands, tilted forward, shaken in short bursts
+          const burst = Math.sin(a * 18) * (Math.sin(a * 2.2) > -0.3 ? 1 : 0.2);
+          arms(-1.2 + burst * 0.05, -0.5, -1.25 + burst * 0.07, 0.48);
+          T.bend = 0.15;
+          T.nod = 0.2;
+          break;
+        }
+        case 'think':
+          // hand to the chin
+          arms(-0.35, -0.25, -2.0, 0.85);
+          T.nod = 0.1 + Math.sin(a * 0.8) * 0.04;
+          T.look = Math.sin(a * 0.4) * 0.2;
+          break;
+        case 'read':
+          arms(-0.9, -0.5, -1.1, 0.3);
+          T.nod = 0.3;
+          break;
+      }
+    }
+
+    // ---- ease toward the target ----
+    // dance follows the beat tightly; chores and gestures a bit faster; everything else gently
+    const k = pose === Pose.Dance ? 14 : act ? 9 : 7;
     const s = this.s;
-    for (const key of Object.keys(s) as (keyof typeof s)[]) s[key] = damp(s[key], tgt[key], key === 'walk' ? 8 : k, dt);
+    for (const key of KEYS) s[key] = damp(s[key], T[key], key === 'walk' ? 8 : key === 'look' ? 2.5 : k, dt);
     this.body.position.y = s.bodyY;
+    this.body.rotation.z = s.hip;
     this.lower.scale.set(1 + (1 - s.squash) * 0.5, s.squash, 1 + (1 - s.squash) * 0.7);
     this.torso.position.y = 0.9 * s.squash + (1 - s.squash) * 0.05;
-    this.torso.rotation.set(s.bend, Math.sin(this.phase) * 0.06 * s.walk, s.sway);
-    this.head.rotation.x = s.nod;
+    this.torso.rotation.set(s.bend, Math.sin(this.phase) * 0.07 * s.walk, s.sway);
+    this.head.rotation.set(s.nod, s.look, -s.sway * 0.5);
     this.armL.rotation.set(s.lx, 0, s.lz);
     this.armR.rotation.set(s.rx, 0, s.rz);
-    // feet step forward/back under the robe while walking, tuck in when kneeling
-    const step = Math.sin(this.phase) * 0.14 * s.walk;
-    this.footL.position.set(0.11, 0.04 + Math.max(0, Math.cos(this.phase)) * 0.04 * s.walk, 0.08 + step);
-    this.footR.position.set(-0.11, 0.04 + Math.max(0, -Math.cos(this.phase)) * 0.04 * s.walk, 0.08 - step);
+    // feet step forward/back under the robe while walking (lifted on the forward swing), tuck in when kneeling
+    const step = Math.sin(this.phase) * 0.15 * s.walk;
+    this.footL.position.set(0.11, 0.04 + Math.max(0, Math.cos(this.phase)) * 0.05 * s.walk, 0.08 + step);
+    this.footR.position.set(-0.11, 0.04 + Math.max(0, -Math.cos(this.phase)) * 0.05 * s.walk, 0.08 - step);
     this.footL.visible = this.footR.visible = s.squash > 0.75;
-    if (this.teapot) this.teapot.visible = pose === Pose.PourTea;
-    if (this.cup) this.cup.visible = pose === Pose.PourTea || pose === Pose.DrinkTea;
+
+    // blink every few seconds
+    if (t > this.nextBlink) this.nextBlink = t + 2.5 + Math.random() * 3.5;
+    const eyeY = this.nextBlink - t < 0.12 ? 0.1 : 1;
+    if (this.eyes[0].scale.y !== eyeY) for (const e of this.eyes) e.scale.y = eyeY;
+
+    // ---- props ----
+    // cup, pot and incense stay upright whatever the arm angle (counter-rotate the arm + torso bend)
+    const tp = this.prop('teapot', teapot);
+    if (tp) tp.rotation.set(-s.rx - s.bend, 0, -0.95 * pot);
+    const cp = this.prop('cup', cup, 'L');
+    if (cp) cp.rotation.x = -s.lx - s.bend;
+    const st = this.prop('stream', pouring, 'L');
+    if (st) st.rotation.x = -s.lx - s.bend;
+    const inc = this.prop('incense', incense);
+    if (inc) inc.rotation.x = -s.rx - s.bend;
+    for (const [name, prop, where] of ACTION_PROPS) this.prop(prop, act === name, where);
+    this.prop('bud', act === 'pick' && this.actionAge > 1.0);
   }
 
   dispose() {

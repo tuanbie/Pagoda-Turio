@@ -25,6 +25,14 @@ export const PATHS: [number, number, number, number, number][] = [
   [72, 46, 92, 38.6, 3], // → game hall stairs
   [72, 58, 70, 90.6, 3], // → tea house stairs
   [-1.5, 84, -28.5, 90.5, 2.8], // spirit way → moonlight yard
+  // client-only grounds (see GROUNDS below)
+  [1.5, 88, 20.5, 90, 3], // spirit way → wish tree plaza
+  [-69.5, -12, -69.5, -72, 2.6], // west service lane (behind the halls)
+  [-69.5, -72, -50, -77.4, 2.6], // → kitchen
+  [-69.5, -50, -83, -50.6, 2.6], // → storehouse
+  [69.5, -12, 69.5, -72, 2.6], // east service lane
+  [69.5, -72, 50, -77.4, 2.6], // → residence
+  [69.5, -50, 83, -50.6, 2.6], // → sleeping quarters
 ];
 
 
@@ -51,3 +59,36 @@ export const gardenRect = (): Rect => {
 export const BUILDINGS: readonly (HallDef | PavilionDef)[] = [...HALLS, ...PAVILIONS];
 
 export const MAP_EXTENT = 136;
+
+/**
+ * Buildings that exist only on the client (the server never checks the layout). They are
+ * NOT in shared HALLS / PAVILIONS on purpose: seats and censers are derived from those lists,
+ * and a new entry would shift their indices against the running server.
+ * All face south (+z); `front` = z + d/2.
+ */
+export interface GroundsDef {
+  id: 'kitchen' | 'store' | 'residence' | 'dorm';
+  x: number;
+  z: number;
+  w: number;
+  d: number;
+}
+export const GROUNDS: readonly GroundsDef[] = [
+  { id: 'kitchen', x: -50, z: -82, w: 14, d: 9 },
+  { id: 'store', x: -88, z: -55, w: 10, d: 8 },
+  { id: 'residence', x: 50, z: -82, w: 14, d: 9 },
+  { id: 'dorm', x: 88, z: -55, w: 14, d: 8 },
+];
+export const groundsRect = (g: GroundsDef, pad = 0): Rect => ({ x0: g.x - g.w / 2 - pad, x1: g.x + g.w / 2 + pad, z0: g.z - g.d / 2 - pad, z1: g.z + g.d / 2 + pad });
+export const grounds = (id: GroundsDef['id']) => GROUNDS.find((g) => g.id === id)!;
+
+/** Wish tree plaza with the proverb-stick altar and the riddle table. */
+export const WISH = { x: 28, z: 90, r: 8.5 };
+export const STICKS = { x: 22.6, z: 95.6 };
+export const RIDDLE = { x: 34.2, z: 95.2 };
+/** where a visitor stands for each (south of the thing, facing north) */
+export const SPOTS = {
+  wish: { x: WISH.x, z: WISH.z + 3.1 },
+  sticks: { x: STICKS.x, z: STICKS.z + 1.25 },
+  riddle: { x: RIDDLE.x, z: RIDDLE.z + 1.55 },
+} as const;

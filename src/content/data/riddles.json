@@ -1,0 +1,5307 @@
+{
+  "vi": [
+    {
+      "q": "Cái gì có nhiều răng nhưng không bao giờ cắn?",
+      "options": [
+        "Cái lược",
+        "Con cá sấu",
+        "Cái cưa",
+        "Bánh xe"
+      ]
+    },
+    {
+      "q": "Thân đồng miệng rộng, tiếng ngân sớm chiều. Là cái gì?",
+      "options": [
+        "Cái chuông",
+        "Cái trống",
+        "Cái chiêng",
+        "Cái mõ"
+      ]
+    },
+    {
+      "q": "Cái gì tròn, bằng gỗ, gõ lên nghe cốc cốc ở chùa?",
+      "options": [
+        "Cái mõ",
+        "Cái chuông",
+        "Cái trống",
+        "Cái khánh"
+      ]
+    },
+    {
+      "q": "Thân nhỏ như que, đốt lên thơm ngát, khói bay nghi ngút. Là gì?",
+      "options": [
+        "Nén hương",
+        "Cây nến",
+        "Cây đèn",
+        "Cái bật lửa"
+      ]
+    },
+    {
+      "q": "Hoa gì mọc giữa bùn lầy mà vẫn thơm, vẫn sạch?",
+      "options": [
+        "Hoa sen",
+        "Hoa hồng",
+        "Hoa cúc",
+        "Hoa lài"
+      ]
+    },
+    {
+      "q": "Cái gì càng lau càng ướt?",
+      "options": [
+        "Cái khăn",
+        "Cái bàn",
+        "Cái gương",
+        "Cái sàn nhà"
+      ]
+    },
+    {
+      "q": "Con gì đầu đội mào đỏ, sáng sớm gáy ò ó o?",
+      "options": [
+        "Con gà trống",
+        "Con vịt",
+        "Con ngỗng",
+        "Con chim sẻ"
+      ]
+    },
+    {
+      "q": "Con gì mang nặng cái nhà trên lưng, bò chậm rì rì?",
+      "options": [
+        "Con ốc sên",
+        "Con cua",
+        "Con ếch",
+        "Con sâu"
+      ]
+    },
+    {
+      "q": "Con gì kêu ộp oạp, ngồi bên bờ ao, nhảy xuống nước tõm?",
+      "options": [
+        "Con ếch",
+        "Con cá",
+        "Con rùa",
+        "Con vịt"
+      ]
+    },
+    {
+      "q": "Cây gì không trồng mà mọc, lá nhỏ li ti, nở hoa vàng bên bờ ruộng?",
+      "options": [
+        "Cỏ dại",
+        "Cây lúa",
+        "Cây ngô",
+        "Cây mía"
+      ]
+    },
+    {
+      "q": "Cái gì của bạn nhưng người khác dùng nhiều hơn bạn?",
+      "options": [
+        "Tên của bạn",
+        "Cái bút",
+        "Quyển sách",
+        "Đôi giày"
+      ]
+    },
+    {
+      "q": "Cái gì đi lên mà không bao giờ đi xuống?",
+      "options": [
+        "Tuổi tác",
+        "Quả bóng",
+        "Con diều",
+        "Cầu thang"
+      ]
+    },
+    {
+      "q": "Cái gì có tay mà không có chân, chỉ giờ mà không biết nói?",
+      "options": [
+        "Cái đồng hồ",
+        "Cái quạt",
+        "Cái ghế",
+        "Cái bàn"
+      ]
+    },
+    {
+      "q": "Quả gì vỏ xanh, ruột đỏ, hạt đen, ăn mát ngày hè?",
+      "options": [
+        "Quả dưa hấu",
+        "Quả bí",
+        "Quả ổi",
+        "Quả táo"
+      ]
+    },
+    {
+      "q": "Quả gì vỏ gai, mùi nồng, múi vàng ngọt béo?",
+      "options": [
+        "Quả sầu riêng",
+        "Quả mít",
+        "Quả chôm chôm",
+        "Quả na"
+      ]
+    },
+    {
+      "q": "Quả gì đỏ lông xù, bóc vỏ trắng trong, ngọt lịm?",
+      "options": [
+        "Quả chôm chôm",
+        "Quả vải",
+        "Quả nhãn",
+        "Quả mận"
+      ]
+    },
+    {
+      "q": "Cây gì thân thẳng, lá như kim, mùa đông xanh mãi, dịp Noel trang trí?",
+      "options": [
+        "Cây thông",
+        "Cây tre",
+        "Cây cau",
+        "Cây dừa"
+      ]
+    },
+    {
+      "q": "Cây gì thân rỗng, có đốt, mọc thành bụi, làm cầu làm nhà làng quê?",
+      "options": [
+        "Cây tre",
+        "Cây mít",
+        "Cây xoài",
+        "Cây đa"
+      ]
+    },
+    {
+      "q": "Cây gì cao vút, thân thẳng, lá che nắng, quả ngon nước ngọt?",
+      "options": [
+        "Cây dừa",
+        "Cây ổi",
+        "Cây chanh",
+        "Cây mận"
+      ]
+    },
+    {
+      "q": "Cái gì mỗi ngày đều tròn rồi khuyết, khuyết rồi lại tròn trên bầu trời đêm?",
+      "options": [
+        "Mặt trăng",
+        "Mặt trời",
+        "Ngôi sao",
+        "Đám mây"
+      ]
+    },
+    {
+      "q": "Cái gì mọc đằng đông, lặn đằng tây, ban ngày sưởi ấm muôn loài?",
+      "options": [
+        "Mặt trời",
+        "Mặt trăng",
+        "Ngôi sao",
+        "Cầu vồng"
+      ]
+    },
+    {
+      "q": "Cầu gì bảy sắc rực rỡ, xuất hiện sau cơn mưa mà không ai đi qua được?",
+      "options": [
+        "Cầu vồng",
+        "Cầu treo",
+        "Cầu tre",
+        "Cầu thang"
+      ]
+    },
+    {
+      "q": "Cái gì rơi từ trên trời xuống, làm cây cối tươi tốt?",
+      "options": [
+        "Mưa",
+        "Lá",
+        "Chim",
+        "Tuyết"
+      ]
+    },
+    {
+      "q": "Con gì kêu meo meo, bắt chuột giỏi?",
+      "options": [
+        "Con mèo",
+        "Con chó",
+        "Con thỏ",
+        "Con cáo"
+      ]
+    },
+    {
+      "q": "Con gì trung thành, giữ nhà, sủa gâu gâu?",
+      "options": [
+        "Con chó",
+        "Con mèo",
+        "Con dê",
+        "Con gà"
+      ]
+    },
+    {
+      "q": "Con gì cày ruộng giúp nhà nông, mũi xỏ dây, có hai sừng cong?",
+      "options": [
+        "Con trâu",
+        "Con chó",
+        "Con heo",
+        "Con ngựa"
+      ]
+    },
+    {
+      "q": "Con gì mình dài, bò không chân, lột da qua mùa?",
+      "options": [
+        "Con rắn",
+        "Con sâu",
+        "Con lươn",
+        "Con cua"
+      ]
+    },
+    {
+      "q": "Con gì có vòi dài, tai to, thân hình khổng lồ?",
+      "options": [
+        "Con voi",
+        "Con trâu",
+        "Con hà mã",
+        "Con tê giác"
+      ]
+    },
+    {
+      "q": "Con gì cổ dài, đốm vàng, ăn lá trên cao?",
+      "options": [
+        "Con hươu cao cổ",
+        "Con ngựa vằn",
+        "Con lạc đà",
+        "Con nai"
+      ]
+    },
+    {
+      "q": "Con gì có bướu trên lưng, đi qua sa mạc?",
+      "options": [
+        "Con lạc đà",
+        "Con voi",
+        "Con ngựa",
+        "Con bò"
+      ]
+    },
+    {
+      "q": "Con gì sọc đen trắng, giống con ngựa?",
+      "options": [
+        "Ngựa vằn",
+        "Con gấu trúc",
+        "Con hổ",
+        "Con lừa"
+      ]
+    },
+    {
+      "q": "Con gì đen trắng, thích ăn măng tre, là quốc bảo Trung Hoa?",
+      "options": [
+        "Gấu trúc",
+        "Chó sói",
+        "Con khỉ",
+        "Con hải cẩu"
+      ]
+    },
+    {
+      "q": "Con gì có đôi cánh nhưng cả ngày bơi dưới nước, đi lạch bạch trên băng?",
+      "options": [
+        "Chim cánh cụt",
+        "Con vịt",
+        "Con ngỗng",
+        "Con hải âu"
+      ]
+    },
+    {
+      "q": "Con gì kéo tơ làm kén, tơ dệt thành lụa mềm?",
+      "options": [
+        "Con tằm",
+        "Con nhện",
+        "Con sâu",
+        "Con ong"
+      ]
+    },
+    {
+      "q": "Con gì chăm chỉ làm mật, hoa nào cũng tìm đến?",
+      "options": [
+        "Con ong",
+        "Con bướm",
+        "Con kiến",
+        "Con ruồi"
+      ]
+    },
+    {
+      "q": "Con gì nhỏ xíu, xếp hàng mang thức ăn về tổ?",
+      "options": [
+        "Con kiến",
+        "Con ruồi",
+        "Con muỗi",
+        "Con gián"
+      ]
+    },
+    {
+      "q": "Con gì giăng tơ, dệt lưới giữa vườn?",
+      "options": [
+        "Con nhện",
+        "Con tằm",
+        "Con ong",
+        "Con sâu"
+      ]
+    },
+    {
+      "q": "Con gì đẹp rực rỡ, từ sâu hóa thành, đậu trên hoa?",
+      "options": [
+        "Con bướm",
+        "Con ong",
+        "Con chuồn chuồn",
+        "Con ve"
+      ]
+    },
+    {
+      "q": "Con gì đêm đêm lập lòe ánh sáng nhỏ giữa vườn?",
+      "options": [
+        "Con đom đóm",
+        "Con muỗi",
+        "Con dế",
+        "Con bọ rùa"
+      ]
+    },
+    {
+      "q": "Con gì ngày ngủ, đêm bay, treo ngược mình trên cành?",
+      "options": [
+        "Con dơi",
+        "Con chim",
+        "Con cú",
+        "Con ong"
+      ]
+    },
+    {
+      "q": "Con gì ngày ngủ, đêm thức, mắt tròn, kêu hu hu?",
+      "options": [
+        "Con cú",
+        "Con gà",
+        "Con vịt",
+        "Con quạ"
+      ]
+    },
+    {
+      "q": "Con gì cõng chiếc mai cứng, sống lâu, bò chậm, đi biển hoặc ao hồ?",
+      "options": [
+        "Con rùa",
+        "Con ốc",
+        "Con cua",
+        "Con ba ba nhỏ"
+      ]
+    },
+    {
+      "q": "Con gì tám chân, hai càng, đi ngang?",
+      "options": [
+        "Con cua",
+        "Con tôm",
+        "Con nhện",
+        "Con ốc"
+      ]
+    },
+    {
+      "q": "Con gì râu dài, thân cong, lùi bơi, nấu canh ngon?",
+      "options": [
+        "Con tôm",
+        "Con cua",
+        "Con cá",
+        "Con ốc"
+      ]
+    },
+    {
+      "q": "Con gì không chân nhưng bơi, không tay nhưng mang vây?",
+      "options": [
+        "Con cá",
+        "Con rắn",
+        "Con ếch",
+        "Con rùa"
+      ]
+    },
+    {
+      "q": "Con gì ở dưới biển, tám tay, phun mực đen?",
+      "options": [
+        "Con bạch tuộc",
+        "Con cua",
+        "Con sao biển",
+        "Con cá heo"
+      ]
+    },
+    {
+      "q": "Con gì thông minh, nhảy múa trên sóng, kêu líu lo?",
+      "options": [
+        "Cá heo",
+        "Cá mập",
+        "Cá voi",
+        "Cá sấu"
+      ]
+    },
+    {
+      "q": "Con gì to nhất đại dương, phun nước lên như vòi?",
+      "options": [
+        "Cá voi",
+        "Cá mập",
+        "Cá heo",
+        "Con mực"
+      ]
+    },
+    {
+      "q": "Cái gì nhỏ xíu, đầu nhọn, kéo chỉ qua vải?",
+      "options": [
+        "Cái kim",
+        "Cái dao",
+        "Cái kéo",
+        "Cái đũa"
+      ]
+    },
+    {
+      "q": "Hai chị em cùng sinh một lúc, ăn cùng một bát, bao giờ cũng song hành. Là gì?",
+      "options": [
+        "Đôi đũa",
+        "Đôi dép",
+        "Đôi mắt",
+        "Đôi giày"
+      ]
+    },
+    {
+      "q": "Cái gì dùng để ăn cơm, có hai chiếc, cầm bằng một tay?",
+      "options": [
+        "Đôi đũa",
+        "Cái thìa",
+        "Cái nĩa",
+        "Cái dao"
+      ]
+    },
+    {
+      "q": "Cái gì có lòng sâu, đựng canh đựng cơm, trên bếp lửa hồng?",
+      "options": [
+        "Cái nồi",
+        "Cái đĩa",
+        "Cái thớt",
+        "Cái muỗng"
+      ]
+    },
+    {
+      "q": "Cái gì phẳng, dùng để cắt rau thịt, dao gõ lên cốp cốp?",
+      "options": [
+        "Cái thớt",
+        "Cái đĩa",
+        "Cái khay",
+        "Cái nồi"
+      ]
+    },
+    {
+      "q": "Cái gì cứng, sắc, dùng để chặt, thái, gọt?",
+      "options": [
+        "Con dao",
+        "Cái thìa",
+        "Cái bát",
+        "Cái rổ"
+      ]
+    },
+    {
+      "q": "Cái gì lõm tròn, đựng cơm canh, rửa xong úp lên giá?",
+      "options": [
+        "Cái bát",
+        "Cái nồi",
+        "Cái đũa",
+        "Cái thớt"
+      ]
+    },
+    {
+      "q": "Cái gì đan bằng tre, đựng rau đựng gạo, nước chảy qua được?",
+      "options": [
+        "Cái rổ",
+        "Cái thúng",
+        "Cái nồi",
+        "Cái chậu"
+      ]
+    },
+    {
+      "q": "Cái gì lợp trên đầu, che mưa che nắng, sờ được mà không đội được?",
+      "options": [
+        "Mái nhà",
+        "Cái nón",
+        "Cái ô",
+        "Cái mũ"
+      ]
+    },
+    {
+      "q": "Cái gì tròn, đội đầu, lá cọ khâu tay, che nắng cho người đi đồng?",
+      "options": [
+        "Cái nón lá",
+        "Cái mũ len",
+        "Cái mũ bảo hiểm",
+        "Cái khăn"
+      ]
+    },
+    {
+      "q": "Cái gì khi mở thì rộng, khi cụp thì gọn, mưa nắng đều dùng?",
+      "options": [
+        "Cái ô",
+        "Cái quạt",
+        "Cái nón",
+        "Cái bạt"
+      ]
+    },
+    {
+      "q": "Cái gì có hai bánh, chân đạp thì đi, không cần xăng?",
+      "options": [
+        "Xe đạp",
+        "Xe máy",
+        "Xe hơi",
+        "Xe lôi"
+      ]
+    },
+    {
+      "q": "Cái gì chạy trên đường ray, kéo nhiều toa, kêu tu tu?",
+      "options": [
+        "Tàu hỏa",
+        "Xe buýt",
+        "Máy bay",
+        "Thuyền"
+      ]
+    },
+    {
+      "q": "Con gì không phải chim mà bay cao, chở người qua các châu lục?",
+      "options": [
+        "Máy bay",
+        "Khinh khí cầu",
+        "Con diều",
+        "Con dơi"
+      ]
+    },
+    {
+      "q": "Cái gì có cánh nhưng không phải chim, thả lên trời có dây giữ?",
+      "options": [
+        "Con diều",
+        "Máy bay",
+        "Cái quạt",
+        "Cái cối xay"
+      ]
+    },
+    {
+      "q": "Thuyền gì không biển không sông, mà chở người lên trời cao?",
+      "options": [
+        "Khinh khí cầu",
+        "Tàu thủy",
+        "Thuyền thúng",
+        "Xuồng"
+      ]
+    },
+    {
+      "q": "Cái gì có bốn chân mà không biết đi, có mặt phẳng để ăn cơm học bài?",
+      "options": [
+        "Cái bàn",
+        "Con chó",
+        "Cái ghế",
+        "Cái võng"
+      ]
+    },
+    {
+      "q": "Cái gì có tựa lưng, có bốn chân, mời khách ngồi?",
+      "options": [
+        "Cái ghế",
+        "Cái giường",
+        "Cái tủ",
+        "Cái bàn"
+      ]
+    },
+    {
+      "q": "Cái gì nằm ngang, đêm nào cũng mời ta nghỉ?",
+      "options": [
+        "Cái giường",
+        "Cái ghế",
+        "Cái tủ",
+        "Cái bàn"
+      ]
+    },
+    {
+      "q": "Cái gì soi rõ mặt người mà không biết nói?",
+      "options": [
+        "Cái gương",
+        "Cái cửa sổ",
+        "Bức tranh",
+        "Cái đèn"
+      ]
+    },
+    {
+      "q": "Cái gì ban đêm cháy sáng, ban ngày tắt, xua tan bóng tối trong nhà?",
+      "options": [
+        "Cái đèn",
+        "Mặt trời",
+        "Cái quạt",
+        "Cái tủ"
+      ]
+    },
+    {
+      "q": "Cái gì càng cháy càng ngắn, nến thơm tỏa sáng dịu hiền?",
+      "options": [
+        "Cây nến",
+        "Cây đèn pin",
+        "Cái bóng đèn",
+        "Que diêm"
+      ]
+    },
+    {
+      "q": "Cái gì tròn tròn, đỏ thắm, treo ngày tết, đêm rằm thắp sáng?",
+      "options": [
+        "Đèn lồng",
+        "Quả bóng",
+        "Quả cà chua",
+        "Quả táo"
+      ]
+    },
+    {
+      "q": "Cái gì vừa mềm vừa thơm, ngày tết gói bằng lá dong, nhân đậu thịt?",
+      "options": [
+        "Bánh chưng",
+        "Bánh mì",
+        "Bánh bao",
+        "Bánh tráng"
+      ]
+    },
+    {
+      "q": "Bánh gì tròn trắng, mỏng, phơi nắng, dùng cuốn rau thịt?",
+      "options": [
+        "Bánh tráng",
+        "Bánh chưng",
+        "Bánh bao",
+        "Bánh mì"
+      ]
+    },
+    {
+      "q": "Cái gì giòn, vàng, nướng nóng, kẹp thịt rau ở Sài Gòn?",
+      "options": [
+        "Bánh mì",
+        "Bánh bao",
+        "Bánh tét",
+        "Bánh cuốn"
+      ]
+    },
+    {
+      "q": "Cái gì làm từ gạo, trắng dẻo, ăn mỗi ngày với canh với cá?",
+      "options": [
+        "Cơm",
+        "Phở",
+        "Bún",
+        "Xôi"
+      ]
+    },
+    {
+      "q": "Cây gì hạt thành hạt gạo, cấy ngoài ruộng nước?",
+      "options": [
+        "Cây lúa",
+        "Cây ngô",
+        "Cây mía",
+        "Cây khoai"
+      ]
+    },
+    {
+      "q": "Cây gì ngọt nước, thân đốt, ép lấy nước uống giải khát?",
+      "options": [
+        "Cây mía",
+        "Cây tre",
+        "Cây lúa",
+        "Cây sả"
+      ]
+    },
+    {
+      "q": "Củ gì có màu cam, thỏ rất thích, bổ mắt?",
+      "options": [
+        "Cà rốt",
+        "Khoai lang",
+        "Củ cải",
+        "Củ dền"
+      ]
+    },
+    {
+      "q": "Củ gì mọc dưới đất, bóc từng lớp làm cay mắt?",
+      "options": [
+        "Hành tây",
+        "Khoai tây",
+        "Cà rốt",
+        "Củ gừng"
+      ]
+    },
+    {
+      "q": "Củ gì cay nồng, dùng nấu canh và pha trà gừng ấm bụng?",
+      "options": [
+        "Củ gừng",
+        "Củ tỏi",
+        "Củ nghệ",
+        "Củ riềng"
+      ]
+    },
+    {
+      "q": "Quả gì xanh, dài, ruột trắng hạt nhỏ, ăn sống giòn mát?",
+      "options": [
+        "Quả dưa chuột",
+        "Quả mướp",
+        "Quả bầu",
+        "Quả khổ qua"
+      ]
+    },
+    {
+      "q": "Quả gì đỏ tươi mọng nước, chua chua, nấu canh làm sốt?",
+      "options": [
+        "Quả cà chua",
+        "Quả ớt",
+        "Quả dâu",
+        "Quả lựu"
+      ]
+    },
+    {
+      "q": "Quả gì nhỏ, đỏ, ăn vào cay xé lưỡi?",
+      "options": [
+        "Quả ớt",
+        "Quả cà chua",
+        "Quả dâu",
+        "Quả táo"
+      ]
+    },
+    {
+      "q": "Quả gì vàng, cong cong, bóc vỏ ăn, khỉ rất thích?",
+      "options": [
+        "Quả chuối",
+        "Quả xoài",
+        "Quả cam",
+        "Quả đu đủ"
+      ]
+    },
+    {
+      "q": "Quả gì vỏ vàng, múi mọng, vắt lấy nước uống bổ vitamin C?",
+      "options": [
+        "Quả cam",
+        "Quả bưởi",
+        "Quả mận",
+        "Quả lê"
+      ]
+    },
+    {
+      "q": "Quả gì to tròn, vỏ dày, múi trắng hoặc hồng, Trung thu bày mâm cỗ?",
+      "options": [
+        "Quả bưởi",
+        "Quả cam",
+        "Quả chanh",
+        "Quả quýt"
+      ]
+    },
+    {
+      "q": "Quả gì chín vàng, thơm lừng, cắt thành hạt lựu, có mắt ngoài vỏ?",
+      "options": [
+        "Quả dứa",
+        "Quả mít",
+        "Quả xoài",
+        "Quả đu đủ"
+      ]
+    },
+    {
+      "q": "Quả gì múi vàng, vỏ gai to, mùi thơm khắp xóm?",
+      "options": [
+        "Quả mít",
+        "Quả sầu riêng",
+        "Quả na",
+        "Quả dứa"
+      ]
+    },
+    {
+      "q": "Cây gì lá to che mưa, quả thành buồng, hoa thành bắp?",
+      "options": [
+        "Cây chuối",
+        "Cây dừa",
+        "Cây cau",
+        "Cây đu đủ"
+      ]
+    },
+    {
+      "q": "Hoa gì nở vào tết, màu vàng rực, mùa xuân miền Nam?",
+      "options": [
+        "Hoa mai",
+        "Hoa đào",
+        "Hoa sen",
+        "Hoa cúc"
+      ]
+    },
+    {
+      "q": "Hoa gì hồng thắm, nở tết, mùa xuân miền Bắc?",
+      "options": [
+        "Hoa đào",
+        "Hoa mai",
+        "Hoa lan",
+        "Hoa cúc"
+      ]
+    },
+    {
+      "q": "Hoa gì luôn hướng về phía mặt trời?",
+      "options": [
+        "Hoa hướng dương",
+        "Hoa hồng",
+        "Hoa sen",
+        "Hoa nhài"
+      ]
+    },
+    {
+      "q": "Hoa gì có gai, màu đỏ, tượng trưng tình yêu?",
+      "options": [
+        "Hoa hồng",
+        "Hoa mai",
+        "Hoa cúc",
+        "Hoa sen"
+      ]
+    },
+    {
+      "q": "Hoa gì trắng nhỏ, thơm dịu, người ta ướp trà?",
+      "options": [
+        "Hoa nhài",
+        "Hoa hồng",
+        "Hoa cúc",
+        "Hoa mai"
+      ]
+    },
+    {
+      "q": "Cái gì tuy bé nhưng đi khắp thế gian, nằm trên phong bì?",
+      "options": [
+        "Con tem",
+        "Con dấu",
+        "Cái kim",
+        "Cái cúc"
+      ]
+    },
+    {
+      "q": "Cái gì có nhiều trang, nhiều chữ, mở ra thấy cả thế giới?",
+      "options": [
+        "Quyển sách",
+        "Cái hộp",
+        "Tờ báo",
+        "Cái cửa"
+      ]
+    },
+    {
+      "q": "Cái gì viết được chữ, vẽ được hình, hết mực thì thôi?",
+      "options": [
+        "Cái bút",
+        "Cái thước",
+        "Cái tẩy",
+        "Cái cặp"
+      ]
+    },
+    {
+      "q": "Cái gì xóa được nét bút chì sai?",
+      "options": [
+        "Cục tẩy",
+        "Cái bút",
+        "Cái thước",
+        "Cái gọt"
+      ]
+    },
+    {
+      "q": "Cái gì đo độ dài, có vạch chia đều?",
+      "options": [
+        "Cái thước",
+        "Cái cân",
+        "Cái bút",
+        "Cái compa"
+      ]
+    },
+    {
+      "q": "Cái gì dùng để cân đồ, có kim chỉ số?",
+      "options": [
+        "Cái cân",
+        "Cái thước",
+        "Cái đồng hồ",
+        "Cái bình"
+      ]
+    },
+    {
+      "q": "Cái gì có lá không cây, có gáy không đầu, có trang không phải nhà?",
+      "options": [
+        "Quyển sách",
+        "Cái quạt",
+        "Cái nón",
+        "Cái ô"
+      ]
+    },
+    {
+      "q": "Cái gì ở trên mặt, có hai, nhìn thấy cả thế giới?",
+      "options": [
+        "Đôi mắt",
+        "Đôi tai",
+        "Cái mũi",
+        "Cái miệng"
+      ]
+    },
+    {
+      "q": "Cái gì để ngửi hương thơm, nằm giữa mặt?",
+      "options": [
+        "Cái mũi",
+        "Đôi mắt",
+        "Cái miệng",
+        "Đôi tai"
+      ]
+    },
+    {
+      "q": "Năm anh em, không ai giống ai, cùng làm việc trên một bàn tay. Là gì?",
+      "options": [
+        "Năm ngón tay",
+        "Năm cây bút",
+        "Năm cái bát",
+        "Năm con cá"
+      ]
+    },
+    {
+      "q": "Cái gì bạn có thể nghe nhưng không thấy, đáp lại khi bạn gọi trong hang núi?",
+      "options": [
+        "Tiếng vang",
+        "Cơn gió",
+        "Cái bóng",
+        "Làn khói"
+      ]
+    },
+    {
+      "q": "Cái gì luôn theo bạn dưới nắng, đi đâu theo đó, nhưng đêm tối thì biến mất?",
+      "options": [
+        "Cái bóng",
+        "Con chó",
+        "Tiếng vang",
+        "Chiếc giày"
+      ]
+    },
+    {
+      "q": "Cái gì bay không cánh, thổi mát, nhưng không ai nhìn thấy?",
+      "options": [
+        "Gió",
+        "Con diều",
+        "Con chim",
+        "Đám mây"
+      ]
+    },
+    {
+      "q": "Cái gì trắng như bông, bay lơ lửng, đôi khi che mặt trời?",
+      "options": [
+        "Đám mây",
+        "Làn khói",
+        "Con bướm",
+        "Tờ giấy"
+      ]
+    },
+    {
+      "q": "Cái gì chảy mãi, không bao giờ ngừng, ra biển cả?",
+      "options": [
+        "Dòng sông",
+        "Ngọn gió",
+        "Con đường",
+        "Cây cầu"
+      ]
+    },
+    {
+      "q": "Cái gì nối hai bờ, người qua kẻ lại, không biết mỏi?",
+      "options": [
+        "Cây cầu",
+        "Con thuyền",
+        "Con đường",
+        "Cái bè"
+      ]
+    },
+    {
+      "q": "Núi gì không có đá, không có cây, mà mọc ở giữa mặt?",
+      "options": [
+        "Sống mũi",
+        "Cái cằm",
+        "Đôi má",
+        "Vầng trán"
+      ]
+    },
+    {
+      "q": "Cái gì luôn ở phía trước nhưng bạn không bao giờ thấy được?",
+      "options": [
+        "Tương lai",
+        "Cái bóng",
+        "Cái gương",
+        "Con đường"
+      ]
+    },
+    {
+      "q": "Cái gì càng chia sẻ càng nhiều?",
+      "options": [
+        "Niềm vui",
+        "Cái bánh",
+        "Tiền bạc",
+        "Quả táo"
+      ]
+    },
+    {
+      "q": "Cái gì bạn có thể giữ sau khi đã trao cho người khác?",
+      "options": [
+        "Lời hứa",
+        "Quả táo",
+        "Cái bút",
+        "Cái áo"
+      ]
+    },
+    {
+      "q": "Cái gì vỡ khi bạn nói ra tên nó?",
+      "options": [
+        "Sự im lặng",
+        "Cái ly",
+        "Quả trứng",
+        "Cái gương"
+      ]
+    },
+    {
+      "q": "Cái gì có thể đầy phòng mà không chiếm chỗ?",
+      "options": [
+        "Ánh sáng",
+        "Cái tủ",
+        "Nước",
+        "Khói"
+      ]
+    },
+    {
+      "q": "Cái gì có một mắt mà không nhìn thấy?",
+      "options": [
+        "Cái kim",
+        "Con mèo",
+        "Cái đèn",
+        "Cái máy ảnh"
+      ]
+    },
+    {
+      "q": "Có 12 tháng, tháng nào có 28 ngày?",
+      "options": [
+        "Tất cả các tháng",
+        "Tháng Hai",
+        "Tháng Tư",
+        "Tháng Mười"
+      ]
+    },
+    {
+      "q": "Một tuần có bảy ngày, ngày nào đứng giữa tuần nếu bắt đầu từ thứ Hai?",
+      "options": [
+        "Thứ Năm",
+        "Thứ Tư",
+        "Thứ Ba",
+        "Thứ Sáu"
+      ]
+    },
+    {
+      "q": "Một đàn gà có 5 con, bán đi 2 con, còn mấy con?",
+      "options": [
+        "3 con",
+        "2 con",
+        "5 con",
+        "7 con"
+      ]
+    },
+    {
+      "q": "Nửa cái bánh nhân đôi lên thì được mấy cái bánh?",
+      "options": [
+        "Một cái",
+        "Hai cái",
+        "Nửa cái",
+        "Ba cái"
+      ]
+    },
+    {
+      "q": "Một con gà đẻ trứng trên mái nhà nghiêng, trứng rơi về hướng nào?",
+      "options": [
+        "Gà không đẻ trứng gà trống",
+        "Rơi xuống đất",
+        "Rơi về bên trái",
+        "Rơi về bên phải"
+      ]
+    },
+    {
+      "q": "Con gì buổi sáng bốn chân, buổi trưa hai chân, buổi tối ba chân?",
+      "options": [
+        "Con người",
+        "Con mèo",
+        "Con khỉ",
+        "Con ngựa"
+      ]
+    },
+    {
+      "q": "Cái gì có thể đi vòng quanh thế giới mà vẫn ở yên một góc?",
+      "options": [
+        "Con tem",
+        "Con tàu",
+        "Chiếc máy bay",
+        "Con chim"
+      ]
+    },
+    {
+      "q": "Cái gì của chùa, khi đánh lên thì ngân vang, nhắc người tỉnh thức?",
+      "options": [
+        "Tiếng chuông chùa",
+        "Tiếng trống cơm",
+        "Tiếng sáo",
+        "Tiếng còi"
+      ]
+    },
+    {
+      "q": "Cái gì to, tròn, căng da, đánh lên thùng thùng, báo canh giờ lễ?",
+      "options": [
+        "Cái trống",
+        "Cái chuông",
+        "Cái mõ",
+        "Cái sáo"
+      ]
+    },
+    {
+      "q": "Cái gì có khói nhẹ nhàng bay lên từ lư đồng đặt trên bàn thờ?",
+      "options": [
+        "Khói hương",
+        "Khói bếp",
+        "Khói xe",
+        "Hơi nước"
+      ]
+    },
+    {
+      "q": "Trái gì tròn đầy, đỏ thắm, ngày rằm Trung thu trẻ con cầm đèn?",
+      "options": [
+        "Đèn ông sao",
+        "Đèn pin",
+        "Đèn dầu",
+        "Đèn bàn"
+      ]
+    },
+    {
+      "q": "Hoa gì tím nhạt, nở lềnh bềnh trên sông, trôi theo dòng nước?",
+      "options": [
+        "Hoa lục bình",
+        "Hoa sen",
+        "Hoa súng",
+        "Hoa lài"
+      ]
+    },
+    {
+      "q": "Cái gì làm từ đất sét nung, đựng nước, đựng hương, để trong nhà?",
+      "options": [
+        "Cái bình gốm",
+        "Cái nồi nhôm",
+        "Cái chai nhựa",
+        "Cái thùng sắt"
+      ]
+    },
+    {
+      "q": "Cái gì dệt từ tơ, mềm mại, sáng bóng, áo dài thường may bằng?",
+      "options": [
+        "Lụa",
+        "Len",
+        "Da",
+        "Giấy"
+      ]
+    },
+    {
+      "q": "Áo gì dài, thướt tha, tà bay trong gió, phụ nữ Việt mặc ngày lễ?",
+      "options": [
+        "Áo dài",
+        "Áo bà ba",
+        "Áo thun",
+        "Áo len"
+      ]
+    },
+    {
+      "q": "Cái gì có tám cạnh, bằng gỗ, treo ở đình chùa để tụng thơ?",
+      "options": [
+        "Hoành phi",
+        "Cái ghế",
+        "Cái giường",
+        "Cái mâm"
+      ]
+    },
+    {
+      "q": "Con vật nào năm xưa kéo xe, vật thiêng ở ruộng đồng, hai sừng cong?",
+      "options": [
+        "Con trâu",
+        "Con voi",
+        "Con bò tót",
+        "Con dê"
+      ]
+    },
+    {
+      "q": "Con gì có mỏ dẹt, chân màu cam, bơi trên ao?",
+      "options": [
+        "Con vịt",
+        "Con gà",
+        "Con cò",
+        "Con chim sẻ"
+      ]
+    },
+    {
+      "q": "Con gì cánh trắng, chân dài, bay thẳng cánh trên đồng lúa?",
+      "options": [
+        "Con cò",
+        "Con vịt",
+        "Con quạ",
+        "Con gà"
+      ]
+    },
+    {
+      "q": "Con gì đen, kêu quạ quạ, đậu trên cành khô?",
+      "options": [
+        "Con quạ",
+        "Con cò",
+        "Con sáo",
+        "Con chim sẻ"
+      ]
+    },
+    {
+      "q": "Con gì nói được tiếng người, lông xanh rực rỡ?",
+      "options": [
+        "Con vẹt",
+        "Con cò",
+        "Con chim sẻ",
+        "Con đại bàng"
+      ]
+    },
+    {
+      "q": "Con gì xòe đuôi đẹp như quạt, múa giữa vườn?",
+      "options": [
+        "Con công",
+        "Con gà",
+        "Con chim sẻ",
+        "Con vịt"
+      ]
+    },
+    {
+      "q": "Con gì bay cao nhất, mắt tinh, cánh rộng, vua của bầu trời?",
+      "options": [
+        "Con đại bàng",
+        "Con gà",
+        "Con chim sẻ",
+        "Con chim bồ câu"
+      ]
+    },
+    {
+      "q": "Con gì là biểu tượng hòa bình, trắng muốt, ngậm cành ô liu?",
+      "options": [
+        "Chim bồ câu",
+        "Con quạ",
+        "Con cú",
+        "Con vịt"
+      ]
+    },
+    {
+      "q": "Con gì hót líu lo buổi sáng, đứng trên cành chào ngày mới?",
+      "options": [
+        "Con chim sơn ca",
+        "Con quạ",
+        "Con cú",
+        "Con gà trống"
+      ]
+    },
+    {
+      "q": "Con gì đẻ trứng mà không biết bay, chạy nhanh trên thảo nguyên châu Phi?",
+      "options": [
+        "Đà điểu",
+        "Con công",
+        "Con vẹt",
+        "Con vịt"
+      ]
+    },
+    {
+      "q": "Con gì nhảy trong túi, sống ở nước Úc?",
+      "options": [
+        "Chuột túi",
+        "Con thỏ",
+        "Con khỉ",
+        "Con gấu"
+      ]
+    },
+    {
+      "q": "Con gì ăn lá bạch đàn, ngủ cả ngày trên cây, ở Úc?",
+      "options": [
+        "Gấu koala",
+        "Con khỉ",
+        "Con lười",
+        "Con sóc"
+      ]
+    },
+    {
+      "q": "Con gì tai dài, đuôi ngắn, nhảy nhanh, thích ăn cà rốt?",
+      "options": [
+        "Con thỏ",
+        "Con chuột",
+        "Con sóc",
+        "Con dê"
+      ]
+    },
+    {
+      "q": "Con gì nhỏ, đuôi dài, thích phô mai, sợ mèo?",
+      "options": [
+        "Con chuột",
+        "Con thỏ",
+        "Con sóc",
+        "Con nhím"
+      ]
+    },
+    {
+      "q": "Con gì đuôi xù, leo cây, giấu hạt dẻ cho mùa đông?",
+      "options": [
+        "Con sóc",
+        "Con chuột",
+        "Con thỏ",
+        "Con khỉ"
+      ]
+    },
+    {
+      "q": "Con gì mình đầy gai, cuộn tròn khi sợ?",
+      "options": [
+        "Con nhím",
+        "Con rùa",
+        "Con mèo",
+        "Con chuột"
+      ]
+    },
+    {
+      "q": "Con gì nhanh nhẹn, đu cành, thích chuối?",
+      "options": [
+        "Con khỉ",
+        "Con sóc",
+        "Con mèo",
+        "Con gấu"
+      ]
+    },
+    {
+      "q": "Con gì chúa sơn lâm, bờm xù, gầm vang?",
+      "options": [
+        "Con sư tử",
+        "Con hổ",
+        "Con gấu",
+        "Con báo"
+      ]
+    },
+    {
+      "q": "Con gì vằn vện, sống trong rừng, được gọi là chúa sơn lâm ở Việt Nam xưa?",
+      "options": [
+        "Con hổ",
+        "Con sư tử",
+        "Con báo",
+        "Con gấu"
+      ]
+    },
+    {
+      "q": "Con gì ngủ đông cả mùa lạnh, thích ăn mật ong?",
+      "options": [
+        "Con gấu",
+        "Con hổ",
+        "Con sói",
+        "Con cáo"
+      ]
+    },
+    {
+      "q": "Con gì mắt xanh biếc, đuôi dài, nhanh nhẹn, ngoài vườn bắt chuột?",
+      "options": [
+        "Con mèo",
+        "Con cáo",
+        "Con chó",
+        "Con thỏ"
+      ]
+    },
+    {
+      "q": "Con gì kêu bê bê, ăn cỏ, râu dưới cằm?",
+      "options": [
+        "Con dê",
+        "Con cừu",
+        "Con bò",
+        "Con ngựa"
+      ]
+    },
+    {
+      "q": "Con gì lông xoăn, cho len ấm, ăn cỏ đồng?",
+      "options": [
+        "Con cừu",
+        "Con dê",
+        "Con heo",
+        "Con bò"
+      ]
+    },
+    {
+      "q": "Con gì cho sữa, kêu ò ò?",
+      "options": [
+        "Con bò",
+        "Con dê",
+        "Con gà",
+        "Con vịt"
+      ]
+    },
+    {
+      "q": "Con gì phi nước đại, bờm dài, kéo xe, chạy đua?",
+      "options": [
+        "Con ngựa",
+        "Con trâu",
+        "Con lừa",
+        "Con voi"
+      ]
+    },
+    {
+      "q": "Con gì ăn no ngủ kỹ, mình tròn, kêu ụt ịt?",
+      "options": [
+        "Con heo",
+        "Con bò",
+        "Con dê",
+        "Con chó"
+      ]
+    },
+    {
+      "q": "Cái gì ở trong nhà bếp, có lửa đỏ, nấu chín cơm canh mỗi ngày?",
+      "options": [
+        "Cái bếp",
+        "Cái tủ lạnh",
+        "Cái bàn",
+        "Cái chậu"
+      ]
+    },
+    {
+      "q": "Cái gì giữ đồ ăn mát lạnh, mở cửa thấy đèn sáng?",
+      "options": [
+        "Tủ lạnh",
+        "Cái nồi",
+        "Cái quạt",
+        "Cái tủ quần áo"
+      ]
+    },
+    {
+      "q": "Cái gì quay vù vù, thổi gió mát ngày hè?",
+      "options": [
+        "Cái quạt máy",
+        "Cái lò",
+        "Cái bàn",
+        "Cái đèn"
+      ]
+    },
+    {
+      "q": "Cái gì có miệng, có vòi, rót nước trà thơm?",
+      "options": [
+        "Ấm trà",
+        "Cái bát",
+        "Cái thìa",
+        "Cái rổ"
+      ]
+    },
+    {
+      "q": "Cái gì cầm tay, quét sạch lá sân, cán dài chổi tre?",
+      "options": [
+        "Cái chổi",
+        "Cái xẻng",
+        "Cái cào",
+        "Cái rổ"
+      ]
+    },
+    {
+      "q": "Cái gì dùng xúc đất, có cán dài, đào hố trồng cây?",
+      "options": [
+        "Cái xẻng",
+        "Cái chổi",
+        "Cái kéo",
+        "Cái búa"
+      ]
+    },
+    {
+      "q": "Cái gì dùng để cày ruộng, kéo sau con trâu?",
+      "options": [
+        "Cái cày",
+        "Cái cuốc",
+        "Cái liềm",
+        "Cái bừa nhỏ"
+      ]
+    },
+    {
+      "q": "Cái gì cong như vầng trăng khuyết, dùng gặt lúa?",
+      "options": [
+        "Cái liềm",
+        "Cái dao",
+        "Cái cuốc",
+        "Cái kéo"
+      ]
+    },
+    {
+      "q": "Cái gì để đập, đóng đinh, tay cầm gỗ, đầu sắt nặng?",
+      "options": [
+        "Cái búa",
+        "Cái cưa",
+        "Cái kìm",
+        "Cái bào"
+      ]
+    },
+    {
+      "q": "Cái gì kéo qua kéo lại, cắt gỗ thành tấm, ken két?",
+      "options": [
+        "Cái cưa",
+        "Cái búa",
+        "Cái bào",
+        "Cái đục"
+      ]
+    },
+    {
+      "q": "Cái gì hai lưỡi, cắt giấy cắt vải, mở ra đóng vào?",
+      "options": [
+        "Cái kéo",
+        "Con dao",
+        "Cái cưa",
+        "Cái kìm"
+      ]
+    },
+    {
+      "q": "Cái gì có răng, chải tóc gọn gàng?",
+      "options": [
+        "Cái lược",
+        "Cái cưa",
+        "Cái bàn chải",
+        "Cái cào"
+      ]
+    },
+    {
+      "q": "Cái gì có lông, đánh sạch hàm răng mỗi sáng?",
+      "options": [
+        "Bàn chải đánh răng",
+        "Cái lược",
+        "Cái chổi",
+        "Cái bút lông"
+      ]
+    },
+    {
+      "q": "Cái gì rửa sạch tay, nổi bọt thơm, trơn tuột?",
+      "options": [
+        "Xà phòng",
+        "Cái khăn",
+        "Nước mắm",
+        "Cái bát"
+      ]
+    },
+    {
+      "q": "Cái gì có nút, cài vào khuyết, gắn trên áo?",
+      "options": [
+        "Cái cúc áo",
+        "Cái kim",
+        "Sợi chỉ",
+        "Cái kéo"
+      ]
+    },
+    {
+      "q": "Cái gì đi hai chân, che đôi bàn chân bạn?",
+      "options": [
+        "Đôi giày",
+        "Đôi găng tay",
+        "Cái nón",
+        "Cái áo"
+      ]
+    },
+    {
+      "q": "Cái gì giữ ấm cổ mùa đông, quấn nhiều vòng?",
+      "options": [
+        "Cái khăn quàng",
+        "Cái nón",
+        "Đôi tất",
+        "Cái áo mưa"
+      ]
+    },
+    {
+      "q": "Cái gì có năm ngón nhưng không phải tay thật, đeo vào mùa đông?",
+      "options": [
+        "Găng tay",
+        "Đôi giày",
+        "Cái nón",
+        "Cái áo"
+      ]
+    },
+    {
+      "q": "Cái gì khép lại như cánh cửa, mở ra thấy chữ?",
+      "options": [
+        "Quyển sách",
+        "Cái tủ",
+        "Cái hộp",
+        "Cái cổng"
+      ]
+    },
+    {
+      "q": "Cái gì có cửa mà không có nhà, mở ra là thấy trời?",
+      "options": [
+        "Cửa sổ",
+        "Cái hộp",
+        "Cái tủ",
+        "Cái cổng"
+      ]
+    },
+    {
+      "q": "Cái gì có chìa mới mở được, đứng giữ nhà?",
+      "options": [
+        "Ổ khóa",
+        "Cái cổng",
+        "Cái cửa",
+        "Cái bàn"
+      ]
+    },
+    {
+      "q": "Cái gì bơi trên sông, có mái chèo, chở khách sang bờ?",
+      "options": [
+        "Con thuyền",
+        "Con tàu hỏa",
+        "Cái xe",
+        "Chiếc diều"
+      ]
+    },
+    {
+      "q": "Cái gì cắm xuống nước giữ thuyền khỏi trôi?",
+      "options": [
+        "Cái neo",
+        "Mái chèo",
+        "Cánh buồm",
+        "Cái lái"
+      ]
+    },
+    {
+      "q": "Cái gì căng gió, đẩy thuyền đi, màu trắng hoặc nâu?",
+      "options": [
+        "Cánh buồm",
+        "Mái chèo",
+        "Cái neo",
+        "Cái bè"
+      ]
+    },
+    {
+      "q": "Cái gì chỉ đường cho tàu thuyền ban đêm, đứng trên cao bờ biển?",
+      "options": [
+        "Ngọn hải đăng",
+        "Cái cột điện",
+        "Ngôi chùa",
+        "Cái cầu"
+      ]
+    },
+    {
+      "q": "Cái gì nằm nghiêng nghiêng cuối trời, bảy sắc sau mưa, mà không chạm tới?",
+      "options": [
+        "Cầu vồng",
+        "Con đường",
+        "Ngọn núi",
+        "Đám mây"
+      ]
+    },
+    {
+      "q": "Cái gì có trăm ngàn ngôi, đêm đến mới thấy lấp lánh?",
+      "options": [
+        "Các vì sao",
+        "Con đom đóm",
+        "Hạt cát",
+        "Hạt sương"
+      ]
+    },
+    {
+      "q": "Cái gì lăn trên cỏ, long lanh buổi sớm, nắng lên thì tan?",
+      "options": [
+        "Giọt sương",
+        "Hạt mưa",
+        "Hạt cát",
+        "Viên bi"
+      ]
+    },
+    {
+      "q": "Cái gì vang rền trên trời, tiếng ầm ầm sau tia chớp?",
+      "options": [
+        "Sấm",
+        "Gió",
+        "Mưa",
+        "Sương"
+      ]
+    },
+    {
+      "q": "Cái gì lạnh trắng, rơi từ trời ở xứ lạnh, tan khi ấm?",
+      "options": [
+        "Tuyết",
+        "Mưa",
+        "Sương",
+        "Cát"
+      ]
+    },
+    {
+      "q": "Cái gì là nước mà không chảy, trắng giá buốt, ở cực Bắc?",
+      "options": [
+        "Băng",
+        "Hơi nước",
+        "Sương mù",
+        "Cơn mưa"
+      ]
+    },
+    {
+      "q": "Cái gì to nhất, xanh thẳm, mênh mông, có sóng?",
+      "options": [
+        "Biển cả",
+        "Cái ao",
+        "Dòng suối",
+        "Cái giếng"
+      ]
+    },
+    {
+      "q": "Cái gì nhỏ, trong veo, chảy róc rách từ núi xuống?",
+      "options": [
+        "Dòng suối",
+        "Biển cả",
+        "Cái ao",
+        "Cái giếng"
+      ]
+    },
+    {
+      "q": "Cái gì sâu hoắm, múc nước lên bằng gầu, ở sân nhà quê?",
+      "options": [
+        "Cái giếng",
+        "Cái ao",
+        "Dòng sông",
+        "Cái bể"
+      ]
+    },
+    {
+      "q": "Cái gì rộng, cát vàng, nóng như lửa, ít nước?",
+      "options": [
+        "Sa mạc",
+        "Bãi biển",
+        "Cánh đồng lúa",
+        "Khu rừng"
+      ]
+    },
+    {
+      "q": "Cái gì cao ngút, đỉnh phủ mây, người leo mới tới?",
+      "options": [
+        "Ngọn núi",
+        "Cái cây",
+        "Cái tháp nhỏ",
+        "Cái đồi thấp"
+      ]
+    },
+    {
+      "q": "Cái gì phun lửa, khói và nham thạch từ miệng núi?",
+      "options": [
+        "Núi lửa",
+        "Cái bếp",
+        "Ngọn nến",
+        "Cái lò gốm"
+      ]
+    },
+    {
+      "q": "Cái gì rộng xanh, cây cao che nắng, nhiều thú sống?",
+      "options": [
+        "Khu rừng",
+        "Cái vườn nhỏ",
+        "Cánh đồng",
+        "Hồ nước"
+      ]
+    },
+    {
+      "q": "Cá gì đỏ cam, nhỏ, nuôi trong bể kính làm cảnh?",
+      "options": [
+        "Cá vàng",
+        "Cá chép đen",
+        "Cá trê",
+        "Cá lóc"
+      ]
+    },
+    {
+      "q": "Cá gì răng sắc, bơi nhanh, vây lưng nhô trên mặt nước biển?",
+      "options": [
+        "Cá mập",
+        "Cá heo",
+        "Cá vàng",
+        "Cá chép"
+      ]
+    },
+    {
+      "q": "Con gì có hai càng to, nhả bọt ở bãi biển, chạy ngang?",
+      "options": [
+        "Con cua",
+        "Con tôm",
+        "Con ốc",
+        "Con sò"
+      ]
+    },
+    {
+      "q": "Con gì có năm cánh hình sao, nằm dưới biển?",
+      "options": [
+        "Sao biển",
+        "Con cua",
+        "Con sứa",
+        "Con ốc"
+      ]
+    },
+    {
+      "q": "Con gì trong suốt, mềm, trôi trong biển, chạm vào có thể ngứa?",
+      "options": [
+        "Con sứa",
+        "Con cua",
+        "Con cá",
+        "Con ốc"
+      ]
+    },
+    {
+      "q": "Con gì giấu ngọc trai trong vỏ, nằm dưới đáy biển?",
+      "options": [
+        "Con trai",
+        "Con cua",
+        "Con tôm",
+        "Con mực"
+      ]
+    },
+    {
+      "q": "Con gì đào hang dưới đất, mắt nhỏ, ăn giun?",
+      "options": [
+        "Con chuột chũi",
+        "Con thỏ",
+        "Con chim",
+        "Con sóc"
+      ]
+    },
+    {
+      "q": "Con gì nhả tơ, chui vào kén, rồi hóa thành bướm đêm?",
+      "options": [
+        "Con sâu bướm",
+        "Con kiến",
+        "Con ruồi",
+        "Con dế"
+      ]
+    },
+    {
+      "q": "Con gì kêu rả rích đêm hè, nhảy trong bụi cỏ?",
+      "options": [
+        "Con dế",
+        "Con ve",
+        "Con ếch",
+        "Con muỗi"
+      ]
+    },
+    {
+      "q": "Con gì mùa hè kêu ra rả trên cây phượng?",
+      "options": [
+        "Con ve sầu",
+        "Con dế",
+        "Con ếch",
+        "Con chim"
+      ]
+    },
+    {
+      "q": "Cây gì lá khép lại khi chạm vào, như biết xấu hổ?",
+      "options": [
+        "Cây trinh nữ",
+        "Cây đa",
+        "Cây tre",
+        "Cây cọ"
+      ]
+    },
+    {
+      "q": "Cây gì mùa hè hoa đỏ rực như lửa, học trò chia tay?",
+      "options": [
+        "Cây phượng",
+        "Cây tre",
+        "Cây đa",
+        "Cây cau"
+      ]
+    },
+    {
+      "q": "Rau gì nhỏ xanh, thả bơi trên mặt ao, nuôi cá và vịt?",
+      "options": [
+        "Bèo",
+        "Rau muống",
+        "Rau cải",
+        "Rau dền"
+      ]
+    },
+    {
+      "q": "Rau gì thân rỗng, mọc dưới nước, luộc chấm nước mắm?",
+      "options": [
+        "Rau muống",
+        "Rau cải",
+        "Rau dền",
+        "Rau ngót"
+      ]
+    },
+    {
+      "q": "Hạt gì trắng, nảy mầm ra giá, ăn với phở?",
+      "options": [
+        "Hạt đậu xanh",
+        "Hạt ngô",
+        "Hạt lúa",
+        "Hạt vừng"
+      ]
+    },
+    {
+      "q": "Cái gì làm từ đậu nành, trắng mềm, chiên vàng ăn với mắm tôm?",
+      "options": [
+        "Đậu phụ",
+        "Thịt",
+        "Cá",
+        "Trứng"
+      ]
+    },
+    {
+      "q": "Món gì sợi trắng, nước dùng thơm, ăn sáng ở Hà Nội với bò hoặc gà?",
+      "options": [
+        "Phở",
+        "Cơm",
+        "Xôi",
+        "Bánh mì"
+      ]
+    },
+    {
+      "q": "Cái gì từ nhà bếp, ngọt, đặc, làm từ mía?",
+      "options": [
+        "Đường",
+        "Muối",
+        "Giấm",
+        "Tiêu"
+      ]
+    },
+    {
+      "q": "Cái gì mặn, trắng, lấy từ biển, ướp thịt cá?",
+      "options": [
+        "Muối",
+        "Đường",
+        "Bột mì",
+        "Giấm"
+      ]
+    },
+    {
+      "q": "Nước gì màu nâu, mặn, làm từ cá ủ muối, chấm cuốn?",
+      "options": [
+        "Nước mắm",
+        "Nước chanh",
+        "Nước trà",
+        "Nước dừa"
+      ]
+    },
+    {
+      "q": "Nước gì ngọt mát, đựng trong quả cây cao ở miền Tây?",
+      "options": [
+        "Nước dừa",
+        "Nước mía",
+        "Nước chanh",
+        "Nước ép cam"
+      ]
+    },
+    {
+      "q": "Cái gì từ lá, hãm nước sôi, uống buổi sáng ở chùa?",
+      "options": [
+        "Trà",
+        "Cà phê",
+        "Sữa",
+        "Nước ngọt"
+      ]
+    },
+    {
+      "q": "Cái gì đen, thơm, đắng, pha phin nhỏ giọt?",
+      "options": [
+        "Cà phê",
+        "Trà",
+        "Sữa",
+        "Nước mía"
+      ]
+    },
+    {
+      "q": "Cái gì từ bò, trắng, uống bổ xương?",
+      "options": [
+        "Sữa",
+        "Nước",
+        "Trà",
+        "Cà phê"
+      ]
+    },
+    {
+      "q": "Cái gì có vỏ trắng, ruột vàng, luộc chín cho bữa sáng?",
+      "options": [
+        "Quả trứng",
+        "Quả bóng",
+        "Cục đá",
+        "Củ khoai"
+      ]
+    },
+    {
+      "q": "Cái gì ngọt, vàng, ong làm trong tổ?",
+      "options": [
+        "Mật ong",
+        "Nước đường",
+        "Sữa",
+        "Dầu ăn"
+      ]
+    },
+    {
+      "q": "Cái gì mềm, trắng, mịn, rắc lên bánh, xay từ lúa mì?",
+      "options": [
+        "Bột mì",
+        "Đường",
+        "Muối",
+        "Gạo"
+      ]
+    },
+    {
+      "q": "Cái gì tròn, đá lên bay xa, cả đội cùng chơi?",
+      "options": [
+        "Quả bóng",
+        "Cái vòng",
+        "Cái bát",
+        "Quả trứng"
+      ]
+    },
+    {
+      "q": "Cái gì có quân đen quân trắng, hai người ngồi suy nghĩ?",
+      "options": [
+        "Bàn cờ",
+        "Cái bàn học",
+        "Cái khay",
+        "Cái bảng"
+      ]
+    },
+    {
+      "q": "Cái gì có sáu mặt, chấm từ một đến sáu, tung lên để chơi?",
+      "options": [
+        "Con xúc xắc",
+        "Quả bóng",
+        "Cái hộp",
+        "Con quay"
+      ]
+    },
+    {
+      "q": "Cái gì quay tròn khi quất dây, đứng trên mũi nhọn?",
+      "options": [
+        "Con quay",
+        "Quả bóng",
+        "Con diều",
+        "Cái vòng"
+      ]
+    },
+    {
+      "q": "Cái gì phát ra tiếng, có sáu dây, người gảy bằng ngón tay?",
+      "options": [
+        "Cây đàn guitar",
+        "Cái trống",
+        "Cái sáo",
+        "Cái kèn"
+      ]
+    },
+    {
+      "q": "Cái gì bằng ống tre, thổi vào có tiếng lảnh lót như chim?",
+      "options": [
+        "Cây sáo",
+        "Cái trống",
+        "Cái đàn",
+        "Cái chuông"
+      ]
+    },
+    {
+      "q": "Cái gì có phím đen phím trắng, bấm vào là có nhạc?",
+      "options": [
+        "Cây đàn piano",
+        "Cây đàn bầu",
+        "Cái trống",
+        "Cái sáo"
+      ]
+    },
+    {
+      "q": "Đàn gì chỉ có một dây, tiếng ngân như lời ru?",
+      "options": [
+        "Đàn bầu",
+        "Đàn tranh",
+        "Đàn nguyệt",
+        "Đàn nhị"
+      ]
+    },
+    {
+      "q": "Cái gì múa giữa phố đêm trung thu, đầu to, miệng rộng, nhảy theo trống?",
+      "options": [
+        "Múa sư tử",
+        "Múa ô",
+        "Múa quạt",
+        "Múa nón"
+      ]
+    },
+    {
+      "q": "Cái gì có hai cánh cửa, ra vào ban ngày, đóng lại ban đêm?",
+      "options": [
+        "Cái cổng",
+        "Cái bàn",
+        "Cái ghế",
+        "Cái nón"
+      ]
+    },
+    {
+      "q": "Cái gì dẫn đường từ làng đến phố, người qua xe lại?",
+      "options": [
+        "Con đường",
+        "Dòng sông",
+        "Cái cầu",
+        "Cái giếng"
+      ]
+    },
+    {
+      "q": "Cái gì xanh vàng đỏ, đứng ở ngã tư, báo xe đi hay dừng?",
+      "options": [
+        "Đèn giao thông",
+        "Cột điện",
+        "Cái biển",
+        "Con đường"
+      ]
+    },
+    {
+      "q": "Cái gì đo thời gian bằng cát chảy trong hai bầu thủy tinh?",
+      "options": [
+        "Đồng hồ cát",
+        "Đồng hồ treo tường",
+        "Cái cân",
+        "Cái thước"
+      ]
+    },
+    {
+      "q": "Cái gì chỉ hướng Bắc Nam, kim luôn quay một phía?",
+      "options": [
+        "La bàn",
+        "Cái đồng hồ",
+        "Cái thước",
+        "Bản đồ"
+      ]
+    },
+    {
+      "q": "Cái gì vẽ cả núi sông trên giấy, giúp tìm đường?",
+      "options": [
+        "Bản đồ",
+        "Quyển truyện",
+        "Tờ báo",
+        "Cái gương"
+      ]
+    },
+    {
+      "q": "Cái gì gửi thư đến người xa, mang tem, bỏ vào hòm?",
+      "options": [
+        "Bức thư",
+        "Quả bóng",
+        "Cái bát",
+        "Con diều"
+      ]
+    },
+    {
+      "q": "Cái gì lúc nào cũng thức, đếm giờ phút, kim quay vòng tròn?",
+      "options": [
+        "Đồng hồ",
+        "Con mèo",
+        "Cái đèn",
+        "Cái quạt"
+      ]
+    },
+    {
+      "q": "Cái gì chiếu sáng cả bầu trời đêm rằm, tròn vành vạnh?",
+      "options": [
+        "Trăng rằm",
+        "Mặt trời",
+        "Ngôi sao",
+        "Cái đèn"
+      ]
+    },
+    {
+      "q": "Cái gì to tròn, màu cam, nướng lên thơm ngọt, mùa đông ăn ấm bụng?",
+      "options": [
+        "Khoai lang nướng",
+        "Cà rốt",
+        "Quả cam",
+        "Quả bí"
+      ]
+    },
+    {
+      "q": "Chim gì nhỏ xíu, vỗ cánh nhanh, hút mật hoa, bay lùi được?",
+      "options": [
+        "Chim ruồi",
+        "Chim sẻ",
+        "Chim bồ câu",
+        "Chim én"
+      ]
+    },
+    {
+      "q": "Con gì bò trên tường, bắt muỗi ban đêm, đuôi đứt vẫn mọc?",
+      "options": [
+        "Con thạch sùng",
+        "Con rắn",
+        "Con chuột",
+        "Con nhện"
+      ]
+    },
+    {
+      "q": "Con gì đổi màu theo cây lá, đứng im, lưỡi bắn ra?",
+      "options": [
+        "Con tắc kè hoa",
+        "Con rắn",
+        "Con ếch",
+        "Con rùa"
+      ]
+    },
+    {
+      "q": "Con gì sống ở sông, vảy cứng, mõm dài, miệng đầy răng?",
+      "options": [
+        "Cá sấu",
+        "Cá chép",
+        "Cá heo",
+        "Con rùa"
+      ]
+    },
+    {
+      "q": "Con gì chui trong bùn, trơn trượt, nấu cháo lươn?",
+      "options": [
+        "Con lươn",
+        "Con rắn",
+        "Con cá trê",
+        "Con ốc"
+      ]
+    },
+    {
+      "q": "Con gì ăn lá dâu, nhả tơ vàng, hóa nhộng?",
+      "options": [
+        "Con tằm",
+        "Con sâu róm",
+        "Con bướm",
+        "Con ong"
+      ]
+    },
+    {
+      "q": "Mùa nào lá vàng rơi, trời mát, trăng sáng, có tết Trung thu?",
+      "options": [
+        "Mùa thu",
+        "Mùa xuân",
+        "Mùa hạ",
+        "Mùa đông"
+      ]
+    },
+    {
+      "q": "Mùa nào hoa nở, chim hót, tết đến, lòng vui?",
+      "options": [
+        "Mùa xuân",
+        "Mùa thu",
+        "Mùa hạ",
+        "Mùa đông"
+      ]
+    },
+    {
+      "q": "Mùa nào nắng chang chang, ve kêu, trẻ con nghỉ hè?",
+      "options": [
+        "Mùa hạ",
+        "Mùa xuân",
+        "Mùa thu",
+        "Mùa đông"
+      ]
+    },
+    {
+      "q": "Một chục có bao nhiêu quả trứng?",
+      "options": [
+        "Mười quả",
+        "Chín quả",
+        "Mười hai quả",
+        "Hai mươi quả"
+      ]
+    },
+    {
+      "q": "Ba con gà con ba con vịt, tổng cộng có mấy cái mỏ?",
+      "options": [
+        "Sáu cái",
+        "Ba cái",
+        "Chín cái",
+        "Mười hai cái"
+      ]
+    },
+    {
+      "q": "Ba người chia hai quả táo cho đều, mỗi người được bao nhiêu phần táo?",
+      "options": [
+        "Hai phần ba quả",
+        "Một quả",
+        "Nửa quả",
+        "Một phần ba quả"
+      ]
+    },
+    {
+      "q": "Một cây nến thắp từ đầu đến cuối, đo được 10 cm, sau một giờ còn 8 cm, hết sau mấy giờ?",
+      "options": [
+        "Năm giờ",
+        "Mười giờ",
+        "Bốn giờ",
+        "Tám giờ"
+      ]
+    },
+    {
+      "q": "Một con mèo có bốn chân, hai con mèo có mấy chân?",
+      "options": [
+        "Tám chân",
+        "Sáu chân",
+        "Bốn chân",
+        "Mười chân"
+      ]
+    },
+    {
+      "q": "Gấp tờ giấy đôi liên tục, càng gấp càng thế nào?",
+      "options": [
+        "Càng dày",
+        "Càng mỏng",
+        "Càng dài",
+        "Càng rộng"
+      ]
+    },
+    {
+      "q": "Cái gì ngày thường nhỏ, lúc cười thì nở rộng, ở trên khuôn mặt?",
+      "options": [
+        "Cái miệng",
+        "Cái mũi",
+        "Đôi mắt",
+        "Cái tai"
+      ]
+    },
+    {
+      "q": "Nếu bạn có nó, bạn muốn chia sẻ nó. Nếu bạn chia sẻ, bạn không còn nó. Là gì?",
+      "options": [
+        "Một bí mật",
+        "Một quả táo",
+        "Một bài hát",
+        "Một nụ cười"
+      ]
+    },
+    {
+      "q": "Cái gì giống như thế giới nhỏ trong ao, có lá tròn xanh và hoa trắng hồng, hương thanh khiết?",
+      "options": [
+        "Hồ sen",
+        "Vườn rau",
+        "Ruộng lúa",
+        "Đồi chè"
+      ]
+    },
+    {
+      "q": "Cái gì mọc ở hồ nước, lá tròn to nổi trên mặt, hoa nhỏ nhọn cánh?",
+      "options": [
+        "Hoa súng",
+        "Hoa sen",
+        "Hoa lục bình",
+        "Hoa cúc"
+      ]
+    },
+    {
+      "q": "Cái gì làm ra từ cây trà, vườn ở Thái Nguyên nổi tiếng?",
+      "options": [
+        "Chè xanh",
+        "Cà phê",
+        "Hồ tiêu",
+        "Cao su"
+      ]
+    },
+    {
+      "q": "Vùng Tây Nguyên trồng cây gì tạo nên hạt thơm nâu đen?",
+      "options": [
+        "Cà phê",
+        "Lúa nước",
+        "Dừa",
+        "Mía"
+      ]
+    },
+    {
+      "q": "Đồng bằng sông Cửu Long nổi tiếng với loại cây nào cho nước ngọt trong quả?",
+      "options": [
+        "Dừa",
+        "Chè",
+        "Cà phê",
+        "Tiêu"
+      ]
+    },
+    {
+      "q": "Vịnh nào có hàng nghìn đảo đá vôi xanh, là di sản thế giới?",
+      "options": [
+        "Vịnh Hạ Long",
+        "Vịnh Nha Trang",
+        "Vịnh Cam Ranh",
+        "Vịnh Vân Phong"
+      ]
+    },
+    {
+      "q": "Sông nào chảy qua Huế, nên thơ, thuyền rồng trôi trên dòng?",
+      "options": [
+        "Sông Hương",
+        "Sông Hồng",
+        "Sông Cửu Long",
+        "Sông Đà"
+      ]
+    },
+    {
+      "q": "Hồ nào ở giữa Hà Nội, có Tháp Rùa nằm trên đảo nhỏ?",
+      "options": [
+        "Hồ Gươm",
+        "Hồ Tây",
+        "Hồ Ba Bể",
+        "Hồ Xuân Hương"
+      ]
+    },
+    {
+      "q": "Tết Trung thu trẻ em thường rước đèn hình gì?",
+      "options": [
+        "Đèn ông sao",
+        "Đèn nến thường",
+        "Đèn pin",
+        "Đèn xe"
+      ]
+    },
+    {
+      "q": "Bánh gì tròn hoặc vuông, nhân đậu trứng muối, ăn vào Trung thu?",
+      "options": [
+        "Bánh nướng",
+        "Bánh bao",
+        "Bánh giò",
+        "Bánh đa"
+      ]
+    },
+    {
+      "q": "Cái gì đỏ, dán hoặc treo, viết chữ thư pháp ở tết?",
+      "options": [
+        "Câu đối đỏ",
+        "Cái nón",
+        "Cái đèn pin",
+        "Cái bàn"
+      ]
+    },
+    {
+      "q": "Cây gì nêu ở sân ngày tết, trên ngọn treo chuông gió?",
+      "options": [
+        "Cây nêu",
+        "Cây tre bình thường",
+        "Cây dừa",
+        "Cây đa"
+      ]
+    },
+    {
+      "q": "Cái gì đem thả trên sông đêm rằm, hình hoa sen, có nến sáng?",
+      "options": [
+        "Đèn hoa đăng",
+        "Cái diều",
+        "Cái nón",
+        "Cái trống"
+      ]
+    },
+    {
+      "q": "Nơi nào bán rau, cá, trái cây buổi sáng, nhiều tiếng người mặc cả?",
+      "options": [
+        "Cái chợ",
+        "Ngôi chùa",
+        "Thư viện",
+        "Bệnh viện"
+      ]
+    },
+    {
+      "q": "Nơi nào có nhiều sách để mượn và đọc, yên tĩnh?",
+      "options": [
+        "Thư viện",
+        "Cái chợ",
+        "Sân bay",
+        "Bến cảng"
+      ]
+    },
+    {
+      "q": "Nơi nào các bác sĩ khám bệnh cho mọi người?",
+      "options": [
+        "Bệnh viện",
+        "Trường học",
+        "Cái chợ",
+        "Cái sân"
+      ]
+    },
+    {
+      "q": "Nơi nào cô giáo dạy các em đọc, viết, làm toán?",
+      "options": [
+        "Trường học",
+        "Bệnh viện",
+        "Cái chợ",
+        "Bến xe"
+      ]
+    },
+    {
+      "q": "Cái gì đầu có tóc, thân có áo, mà không biết đi, dựng giữa ruộng đuổi chim?",
+      "options": [
+        "Con bù nhìn",
+        "Con người",
+        "Con chó",
+        "Cái cây"
+      ]
+    },
+    {
+      "q": "Cái gì kéo nước giếng, quay bằng tay, buộc dây dài?",
+      "options": [
+        "Cái gàu",
+        "Cái chậu",
+        "Cái bình",
+        "Cái thùng gỗ nhỏ"
+      ]
+    },
+    {
+      "q": "Cái gì nướng bánh, đốt củi, nằm giữa bếp quê?",
+      "options": [
+        "Cái lò",
+        "Cái tủ",
+        "Cái bàn",
+        "Cái chõng"
+      ]
+    },
+    {
+      "q": "Cái gì rót vào nồi thành hơi, bay lên khi sôi?",
+      "options": [
+        "Hơi nước",
+        "Khói",
+        "Bụi",
+        "Tuyết"
+      ]
+    },
+    {
+      "q": "Cái gì đứng một chân, to đùng, đội nón, lá che mưa cho gà?",
+      "options": [
+        "Cây nấm",
+        "Cây tre",
+        "Cây cột",
+        "Cái bàn"
+      ]
+    },
+    {
+      "q": "Quả gì nhiều hạt nhỏ đỏ như hạt ngọc, vỏ dày, tết bày mâm ngũ quả?",
+      "options": [
+        "Quả lựu",
+        "Quả cà",
+        "Quả bí",
+        "Quả bầu"
+      ]
+    },
+    {
+      "q": "Quả gì vỏ nâu, trong trắng, có nước ngọt, rụng từ cây cao?",
+      "options": [
+        "Quả dừa",
+        "Quả bưởi",
+        "Quả mít",
+        "Quả na"
+      ]
+    },
+    {
+      "q": "Quả gì xanh, có vảy, ăn mềm, thơm, chín thì nứt?",
+      "options": [
+        "Quả na",
+        "Quả mít",
+        "Quả bưởi",
+        "Quả dưa"
+      ]
+    },
+    {
+      "q": "Quả gì vỏ vàng, ruột cam, hạt đen trong lòng, mùa hè ngọt lịm?",
+      "options": [
+        "Quả đu đủ",
+        "Quả mít",
+        "Quả na",
+        "Quả dưa chuột"
+      ]
+    }
+  ],
+  "en": [
+    {
+      "q": "What has many teeth but never bites?",
+      "options": [
+        "A comb",
+        "A crocodile",
+        "A saw",
+        "A wheel"
+      ]
+    },
+    {
+      "q": "Bronze body, wide mouth, its voice rings morning and evening. What is it?",
+      "options": [
+        "A bell",
+        "A drum",
+        "A gong",
+        "A wooden fish"
+      ]
+    },
+    {
+      "q": "What is round, made of wood, and goes tok-tok when struck in the pagoda?",
+      "options": [
+        "A wooden fish",
+        "A bell",
+        "A drum",
+        "A chime"
+      ]
+    },
+    {
+      "q": "Thin as a stick, it smells sweet when lit and sends up a wisp of smoke. What is it?",
+      "options": [
+        "An incense stick",
+        "A candle",
+        "A lamp",
+        "A lighter"
+      ]
+    },
+    {
+      "q": "Which flower grows in muddy ponds yet stays fragrant and clean?",
+      "options": [
+        "Lotus",
+        "Rose",
+        "Chrysanthemum",
+        "Jasmine"
+      ]
+    },
+    {
+      "q": "What gets wetter the more it dries?",
+      "options": [
+        "A towel",
+        "A table",
+        "A mirror",
+        "A floor"
+      ]
+    },
+    {
+      "q": "Which animal wears a red crest and crows at dawn?",
+      "options": [
+        "A rooster",
+        "A duck",
+        "A goose",
+        "A sparrow"
+      ]
+    },
+    {
+      "q": "Which creature carries its house on its back and crawls slowly?",
+      "options": [
+        "A snail",
+        "A crab",
+        "A frog",
+        "A worm"
+      ]
+    },
+    {
+      "q": "Which animal croaks by the pond and jumps into the water with a splash?",
+      "options": [
+        "A frog",
+        "A fish",
+        "A turtle",
+        "A duck"
+      ]
+    },
+    {
+      "q": "What plant grows without being planted and spreads along the field edge?",
+      "options": [
+        "Weeds",
+        "Rice",
+        "Corn",
+        "Sugarcane"
+      ]
+    },
+    {
+      "q": "What belongs to you but is used more by others?",
+      "options": [
+        "Your name",
+        "Your pen",
+        "Your book",
+        "Your shoes"
+      ]
+    },
+    {
+      "q": "What goes up but never comes down?",
+      "options": [
+        "Age",
+        "A ball",
+        "A kite",
+        "A staircase"
+      ]
+    },
+    {
+      "q": "What has hands but no feet and tells the time without speaking?",
+      "options": [
+        "A clock",
+        "A fan",
+        "A chair",
+        "A table"
+      ]
+    },
+    {
+      "q": "Which fruit has green skin, red flesh and black seeds, cooling in summer?",
+      "options": [
+        "Watermelon",
+        "Pumpkin",
+        "Guava",
+        "Apple"
+      ]
+    },
+    {
+      "q": "Which fruit has a spiky shell, a strong smell and sweet creamy yellow flesh?",
+      "options": [
+        "Durian",
+        "Jackfruit",
+        "Rambutan",
+        "Custard apple"
+      ]
+    },
+    {
+      "q": "Which fruit is red and hairy outside, with clear white sweet flesh?",
+      "options": [
+        "Rambutan",
+        "Lychee",
+        "Longan",
+        "Plum"
+      ]
+    },
+    {
+      "q": "Which tree has needle leaves, stays green in winter, and is decorated at Christmas?",
+      "options": [
+        "Pine",
+        "Bamboo",
+        "Betel palm",
+        "Coconut palm"
+      ]
+    },
+    {
+      "q": "Which plant has a hollow jointed stem, grows in clumps and builds village bridges and houses?",
+      "options": [
+        "Bamboo",
+        "Jackfruit tree",
+        "Mango tree",
+        "Banyan"
+      ]
+    },
+    {
+      "q": "Which tall straight tree has leaves that shade and fruit full of sweet water?",
+      "options": [
+        "Coconut palm",
+        "Guava tree",
+        "Lime tree",
+        "Plum tree"
+      ]
+    },
+    {
+      "q": "What grows round and thin again and again in the night sky?",
+      "options": [
+        "The moon",
+        "The sun",
+        "A star",
+        "A cloud"
+      ]
+    },
+    {
+      "q": "What rises in the east, sets in the west and warms all creatures by day?",
+      "options": [
+        "The sun",
+        "The moon",
+        "A star",
+        "A rainbow"
+      ]
+    },
+    {
+      "q": "Which bridge has seven bright colours after rain and cannot be crossed?",
+      "options": [
+        "A rainbow",
+        "A suspension bridge",
+        "A bamboo bridge",
+        "A staircase"
+      ]
+    },
+    {
+      "q": "What falls from the sky and makes plants grow fresh?",
+      "options": [
+        "Rain",
+        "Leaves",
+        "Birds",
+        "Snow"
+      ]
+    },
+    {
+      "q": "Which animal says meow and is good at catching mice?",
+      "options": [
+        "A cat",
+        "A dog",
+        "A rabbit",
+        "A fox"
+      ]
+    },
+    {
+      "q": "Which loyal animal guards the house and barks woof?",
+      "options": [
+        "A dog",
+        "A cat",
+        "A goat",
+        "A chicken"
+      ]
+    },
+    {
+      "q": "Which animal ploughs the paddy for farmers and has two curved horns?",
+      "options": [
+        "A water buffalo",
+        "A dog",
+        "A pig",
+        "A horse"
+      ]
+    },
+    {
+      "q": "Which long creature crawls without legs and sheds its skin?",
+      "options": [
+        "A snake",
+        "A caterpillar",
+        "An eel",
+        "A crab"
+      ]
+    },
+    {
+      "q": "Which huge animal has a long trunk and big ears?",
+      "options": [
+        "An elephant",
+        "A buffalo",
+        "A hippo",
+        "A rhino"
+      ]
+    },
+    {
+      "q": "Which animal has a long neck, spots and eats leaves high up?",
+      "options": [
+        "A giraffe",
+        "A zebra",
+        "A camel",
+        "A deer"
+      ]
+    },
+    {
+      "q": "Which animal has humps and crosses the desert?",
+      "options": [
+        "A camel",
+        "An elephant",
+        "A horse",
+        "A cow"
+      ]
+    },
+    {
+      "q": "Which black-and-white striped animal looks like a horse?",
+      "options": [
+        "A zebra",
+        "A panda",
+        "A tiger",
+        "A donkey"
+      ]
+    },
+    {
+      "q": "Which black-and-white animal loves bamboo shoots?",
+      "options": [
+        "A panda",
+        "A wolf",
+        "A monkey",
+        "A seal"
+      ]
+    },
+    {
+      "q": "Which bird cannot fly but swims and waddles on ice?",
+      "options": [
+        "A penguin",
+        "A duck",
+        "A goose",
+        "A seagull"
+      ]
+    },
+    {
+      "q": "Which creature spins a cocoon whose thread becomes soft silk?",
+      "options": [
+        "A silkworm",
+        "A spider",
+        "A caterpillar",
+        "A bee"
+      ]
+    },
+    {
+      "q": "Which hardworking insect makes honey and visits every flower?",
+      "options": [
+        "A bee",
+        "A butterfly",
+        "An ant",
+        "A fly"
+      ]
+    },
+    {
+      "q": "Which tiny creatures march in lines carrying food to their nest?",
+      "options": [
+        "Ants",
+        "Flies",
+        "Mosquitoes",
+        "Cockroaches"
+      ]
+    },
+    {
+      "q": "Which creature spins a web in the garden?",
+      "options": [
+        "A spider",
+        "A silkworm",
+        "A bee",
+        "A caterpillar"
+      ]
+    },
+    {
+      "q": "Which colourful creature comes from a caterpillar and rests on flowers?",
+      "options": [
+        "A butterfly",
+        "A bee",
+        "A dragonfly",
+        "A cicada"
+      ]
+    },
+    {
+      "q": "Which insect flickers with a tiny light on summer nights?",
+      "options": [
+        "A firefly",
+        "A mosquito",
+        "A cricket",
+        "A ladybug"
+      ]
+    },
+    {
+      "q": "Which animal sleeps by day, flies by night and hangs upside down?",
+      "options": [
+        "A bat",
+        "A bird",
+        "An owl",
+        "A bee"
+      ]
+    },
+    {
+      "q": "Which round-eyed bird sleeps by day and hoots at night?",
+      "options": [
+        "An owl",
+        "A chicken",
+        "A duck",
+        "A crow"
+      ]
+    },
+    {
+      "q": "Which long-lived animal carries a hard shell and moves slowly?",
+      "options": [
+        "A turtle",
+        "A snail",
+        "A crab",
+        "A beetle"
+      ]
+    },
+    {
+      "q": "Which creature has eight legs, two claws and walks sideways?",
+      "options": [
+        "A crab",
+        "A shrimp",
+        "A spider",
+        "A snail"
+      ]
+    },
+    {
+      "q": "Which creature has long whiskers, a curved body and swims backward?",
+      "options": [
+        "A shrimp",
+        "A crab",
+        "A fish",
+        "A snail"
+      ]
+    },
+    {
+      "q": "What swims with no feet and has fins instead of hands?",
+      "options": [
+        "A fish",
+        "A snake",
+        "A frog",
+        "A turtle"
+      ]
+    },
+    {
+      "q": "Which sea creature has eight arms and squirts black ink?",
+      "options": [
+        "An octopus",
+        "A crab",
+        "A starfish",
+        "A dolphin"
+      ]
+    },
+    {
+      "q": "Which clever sea animal leaps over waves and chirps?",
+      "options": [
+        "A dolphin",
+        "A shark",
+        "A whale",
+        "A crocodile"
+      ]
+    },
+    {
+      "q": "Which is the biggest animal in the ocean and spouts water into the air?",
+      "options": [
+        "A whale",
+        "A shark",
+        "A dolphin",
+        "A squid"
+      ]
+    },
+    {
+      "q": "What has a head but no arms, and goes through cloth carrying thread?",
+      "options": [
+        "A needle",
+        "A pot",
+        "A hammer",
+        "A pen"
+      ]
+    },
+    {
+      "q": "What is tiny and sharp at one end and pulls thread through cloth?",
+      "options": [
+        "A needle",
+        "A knife",
+        "A scissors",
+        "A chopstick"
+      ]
+    },
+    {
+      "q": "Two sisters, born together, share one bowl and always go as a pair. What are they?",
+      "options": [
+        "Chopsticks",
+        "Sandals",
+        "Eyes",
+        "Shoes"
+      ]
+    },
+    {
+      "q": "What is used to eat rice, comes as two sticks and is held in one hand?",
+      "options": [
+        "Chopsticks",
+        "A spoon",
+        "A fork",
+        "A knife"
+      ]
+    },
+    {
+      "q": "What is deep, holds soup and rice, and sits on a glowing fire?",
+      "options": [
+        "A pot",
+        "A plate",
+        "A chopping board",
+        "A spoon"
+      ]
+    },
+    {
+      "q": "What is flat, used for chopping vegetables, and goes thump under the knife?",
+      "options": [
+        "A chopping board",
+        "A plate",
+        "A tray",
+        "A pot"
+      ]
+    },
+    {
+      "q": "What is hard and sharp and used to chop, slice and peel?",
+      "options": [
+        "A knife",
+        "A spoon",
+        "A bowl",
+        "A basket"
+      ]
+    },
+    {
+      "q": "What is round and hollow, holds rice and soup, and is turned over to dry?",
+      "options": [
+        "A bowl",
+        "A pot",
+        "A chopstick",
+        "A cutting board"
+      ]
+    },
+    {
+      "q": "What is woven from bamboo, holds vegetables, and lets water drain?",
+      "options": [
+        "A colander basket",
+        "A cooking pot",
+        "A basin",
+        "A bucket"
+      ]
+    },
+    {
+      "q": "What covers your head at home, shields from rain and sun, but cannot be worn?",
+      "options": [
+        "A roof",
+        "A conical hat",
+        "An umbrella",
+        "A cap"
+      ]
+    },
+    {
+      "q": "What is round, worn on the head, made of palm leaves and shades farmers?",
+      "options": [
+        "A conical hat",
+        "A wool hat",
+        "A helmet",
+        "A scarf"
+      ]
+    },
+    {
+      "q": "What opens wide and folds up small, used in rain or sun?",
+      "options": [
+        "An umbrella",
+        "A fan",
+        "A hat",
+        "A tent"
+      ]
+    },
+    {
+      "q": "What has two wheels, moves when you pedal and needs no petrol?",
+      "options": [
+        "A bicycle",
+        "A motorbike",
+        "A car",
+        "A cart"
+      ]
+    },
+    {
+      "q": "What runs on rails, pulls many carriages and goes choo-choo?",
+      "options": [
+        "A train",
+        "A bus",
+        "An airplane",
+        "A boat"
+      ]
+    },
+    {
+      "q": "What is not a bird but flies high and carries people across continents?",
+      "options": [
+        "An airplane",
+        "A hot-air balloon",
+        "A kite",
+        "A bat"
+      ]
+    },
+    {
+      "q": "What has wings but is not a bird and flies on a string?",
+      "options": [
+        "A kite",
+        "An airplane",
+        "A fan",
+        "A windmill"
+      ]
+    },
+    {
+      "q": "Which vessel needs no sea nor river and carries people into the sky?",
+      "options": [
+        "A hot-air balloon",
+        "A steamer",
+        "A basket boat",
+        "A canoe"
+      ]
+    },
+    {
+      "q": "What has four legs but cannot walk and has a flat top for meals and homework?",
+      "options": [
+        "A table",
+        "A dog",
+        "A bench",
+        "A hammock"
+      ]
+    },
+    {
+      "q": "What has a back and four legs and invites guests to sit?",
+      "options": [
+        "A chair",
+        "A bed",
+        "A cupboard",
+        "A table"
+      ]
+    },
+    {
+      "q": "What lies flat and invites you to rest every night?",
+      "options": [
+        "A bed",
+        "A chair",
+        "A cupboard",
+        "A table"
+      ]
+    },
+    {
+      "q": "What shows your face clearly without speaking?",
+      "options": [
+        "A mirror",
+        "A window",
+        "A painting",
+        "A lamp"
+      ]
+    },
+    {
+      "q": "What glows at night, is off by day and chases the dark from the house?",
+      "options": [
+        "A lamp",
+        "The sun",
+        "A fan",
+        "A cupboard"
+      ]
+    },
+    {
+      "q": "What gets shorter the longer it burns and gives a gentle light?",
+      "options": [
+        "A candle",
+        "A flashlight",
+        "A light bulb",
+        "A matchstick"
+      ]
+    },
+    {
+      "q": "What is round, red, hung at festivals and lit on full-moon nights?",
+      "options": [
+        "A lantern",
+        "A ball",
+        "A tomato",
+        "An apple"
+      ]
+    },
+    {
+      "q": "What is soft and fragrant, wrapped in dong leaves at Tet, filled with beans and pork?",
+      "options": [
+        "Banh chung",
+        "Bread",
+        "Steamed bun",
+        "Rice paper"
+      ]
+    },
+    {
+      "q": "Which round, thin, white sheet is sun-dried and used to roll herbs and meat?",
+      "options": [
+        "Rice paper",
+        "Banh chung",
+        "Steamed bun",
+        "Bread"
+      ]
+    },
+    {
+      "q": "What is crisp and golden, baked hot, and filled with meat and herbs in Saigon?",
+      "options": [
+        "Banh mi",
+        "Steamed bun",
+        "Banh tet",
+        "Rice roll"
+      ]
+    },
+    {
+      "q": "What comes from rice, is white and soft, and is eaten daily with soup and fish?",
+      "options": [
+        "Cooked rice",
+        "Pho",
+        "Vermicelli",
+        "Sticky rice"
+      ]
+    },
+    {
+      "q": "Which plant yields rice grains and is planted in flooded fields?",
+      "options": [
+        "Rice plant",
+        "Corn",
+        "Sugarcane",
+        "Potato"
+      ]
+    },
+    {
+      "q": "Which sweet jointed stalk is pressed for a cooling drink?",
+      "options": [
+        "Sugarcane",
+        "Bamboo",
+        "Rice",
+        "Lemongrass"
+      ]
+    },
+    {
+      "q": "Which orange root vegetable do rabbits love and is good for eyes?",
+      "options": [
+        "Carrot",
+        "Sweet potato",
+        "Radish",
+        "Beetroot"
+      ]
+    },
+    {
+      "q": "Which underground bulb makes your eyes water when peeled in layers?",
+      "options": [
+        "Onion",
+        "Potato",
+        "Carrot",
+        "Ginger"
+      ]
+    },
+    {
+      "q": "Which spicy root is used in soups and warming tea?",
+      "options": [
+        "Ginger",
+        "Garlic",
+        "Turmeric",
+        "Galangal"
+      ]
+    },
+    {
+      "q": "Which long green fruit with white flesh and small seeds is crisp raw?",
+      "options": [
+        "Cucumber",
+        "Luffa",
+        "Bottle gourd",
+        "Bitter melon"
+      ]
+    },
+    {
+      "q": "Which bright red juicy fruit is tangy and used in soup and sauce?",
+      "options": [
+        "Tomato",
+        "Chili",
+        "Strawberry",
+        "Pomegranate"
+      ]
+    },
+    {
+      "q": "Which small red fruit burns the tongue?",
+      "options": [
+        "Chili",
+        "Tomato",
+        "Strawberry",
+        "Apple"
+      ]
+    },
+    {
+      "q": "Which yellow curved fruit is peeled and loved by monkeys?",
+      "options": [
+        "Banana",
+        "Mango",
+        "Orange",
+        "Papaya"
+      ]
+    },
+    {
+      "q": "Which golden fruit with juicy segments is squeezed for vitamin C?",
+      "options": [
+        "Orange",
+        "Pomelo",
+        "Plum",
+        "Pear"
+      ]
+    },
+    {
+      "q": "Which large round fruit with thick skin is displayed at Mid-Autumn?",
+      "options": [
+        "Pomelo",
+        "Orange",
+        "Lime",
+        "Tangerine"
+      ]
+    },
+    {
+      "q": "Which fruit has a crown of leaves, 'eyes' on the skin and golden fragrant flesh?",
+      "options": [
+        "Pineapple",
+        "Jackfruit",
+        "Mango",
+        "Papaya"
+      ]
+    },
+    {
+      "q": "Which big fruit with a bumpy skin has golden sweet segments and a smell that fills the lane?",
+      "options": [
+        "Jackfruit",
+        "Durian",
+        "Custard apple",
+        "Pineapple"
+      ]
+    },
+    {
+      "q": "Which plant has big leaves for shade, fruit in hands and a flower bud called a heart?",
+      "options": [
+        "Banana plant",
+        "Coconut",
+        "Betel palm",
+        "Papaya"
+      ]
+    },
+    {
+      "q": "Which huge village tree drops hanging roots and shades the village gate?",
+      "options": [
+        "Banyan",
+        "Bamboo",
+        "Coconut",
+        "Mango"
+      ]
+    },
+    {
+      "q": "Which yellow flower blooms at Tet in the south?",
+      "options": [
+        "Apricot blossom",
+        "Peach blossom",
+        "Lotus",
+        "Chrysanthemum"
+      ]
+    },
+    {
+      "q": "Which pink flower blooms at Tet in the north?",
+      "options": [
+        "Peach blossom",
+        "Apricot blossom",
+        "Orchid",
+        "Chrysanthemum"
+      ]
+    },
+    {
+      "q": "Which flower always turns toward the sun?",
+      "options": [
+        "Sunflower",
+        "Rose",
+        "Lotus",
+        "Jasmine"
+      ]
+    },
+    {
+      "q": "Which thorny flower, often red, is a symbol of love?",
+      "options": [
+        "Rose",
+        "Apricot blossom",
+        "Chrysanthemum",
+        "Lotus"
+      ]
+    },
+    {
+      "q": "Which small white fragrant flower is used to scent tea?",
+      "options": [
+        "Jasmine",
+        "Rose",
+        "Chrysanthemum",
+        "Apricot blossom"
+      ]
+    },
+    {
+      "q": "What is small yet travels the world, stuck on an envelope?",
+      "options": [
+        "A stamp",
+        "A seal",
+        "A needle",
+        "A button"
+      ]
+    },
+    {
+      "q": "What has many pages and words and opens a whole world?",
+      "options": [
+        "A book",
+        "A box",
+        "A newspaper",
+        "A door"
+      ]
+    },
+    {
+      "q": "What writes words and draws pictures until its ink runs out?",
+      "options": [
+        "A pen",
+        "A ruler",
+        "An eraser",
+        "A schoolbag"
+      ]
+    },
+    {
+      "q": "What can rub out a wrong pencil line?",
+      "options": [
+        "An eraser",
+        "A pen",
+        "A ruler",
+        "A sharpener"
+      ]
+    },
+    {
+      "q": "What measures length with evenly spaced marks?",
+      "options": [
+        "A ruler",
+        "A scale",
+        "A pen",
+        "A compass"
+      ]
+    },
+    {
+      "q": "What weighs things and shows a number with a needle?",
+      "options": [
+        "A scale",
+        "A ruler",
+        "A clock",
+        "A bottle"
+      ]
+    },
+    {
+      "q": "What has leaves but no tree, a spine but no body?",
+      "options": [
+        "A book",
+        "A fan",
+        "A hat",
+        "An umbrella"
+      ]
+    },
+    {
+      "q": "What are two things on your face that see the whole world?",
+      "options": [
+        "Eyes",
+        "Ears",
+        "A nose",
+        "A mouth"
+      ]
+    },
+    {
+      "q": "What lies in the middle of the face and smells fragrance?",
+      "options": [
+        "The nose",
+        "The eyes",
+        "The mouth",
+        "The ears"
+      ]
+    },
+    {
+      "q": "Five brothers, none alike, work together on one hand. What are they?",
+      "options": [
+        "Five fingers",
+        "Five pens",
+        "Five bowls",
+        "Five fish"
+      ]
+    },
+    {
+      "q": "What can you hear but not see, answering when you call in a mountain cave?",
+      "options": [
+        "An echo",
+        "The wind",
+        "A shadow",
+        "Smoke"
+      ]
+    },
+    {
+      "q": "What follows you in the sun everywhere but vanishes in the dark?",
+      "options": [
+        "Your shadow",
+        "A dog",
+        "An echo",
+        "A shoe"
+      ]
+    },
+    {
+      "q": "What flies without wings and cools you, yet no one can see it?",
+      "options": [
+        "The wind",
+        "A kite",
+        "A bird",
+        "A cloud"
+      ]
+    },
+    {
+      "q": "What is white like cotton, floats, and sometimes covers the sun?",
+      "options": [
+        "A cloud",
+        "Smoke",
+        "A butterfly",
+        "A paper"
+      ]
+    },
+    {
+      "q": "What flows without stopping and reaches the sea?",
+      "options": [
+        "A river",
+        "The wind",
+        "A road",
+        "A bridge"
+      ]
+    },
+    {
+      "q": "What links two banks and carries people back and forth without tiring?",
+      "options": [
+        "A bridge",
+        "A boat",
+        "A road",
+        "A raft"
+      ]
+    },
+    {
+      "q": "Which ridge has no rock nor tree yet stands in the middle of the face?",
+      "options": [
+        "The nose bridge",
+        "The chin",
+        "The cheeks",
+        "The forehead"
+      ]
+    },
+    {
+      "q": "What is always ahead of you but can never be seen?",
+      "options": [
+        "The future",
+        "A shadow",
+        "A mirror",
+        "A road"
+      ]
+    },
+    {
+      "q": "What grows the more you share it?",
+      "options": [
+        "Joy",
+        "A cake",
+        "Money",
+        "An apple"
+      ]
+    },
+    {
+      "q": "What can you keep after giving it away?",
+      "options": [
+        "Your word",
+        "An apple",
+        "A pen",
+        "A coat"
+      ]
+    },
+    {
+      "q": "What breaks when you say its name?",
+      "options": [
+        "Silence",
+        "A glass",
+        "An egg",
+        "A mirror"
+      ]
+    },
+    {
+      "q": "What can fill a room yet take up no space?",
+      "options": [
+        "Light",
+        "A cupboard",
+        "Water",
+        "Smoke"
+      ]
+    },
+    {
+      "q": "What has one eye but cannot see?",
+      "options": [
+        "A needle",
+        "A cat",
+        "A lamp",
+        "A camera"
+      ]
+    },
+    {
+      "q": "There are 12 months. How many have 28 days?",
+      "options": [
+        "All of them",
+        "Only February",
+        "Only April",
+        "Only October"
+      ]
+    },
+    {
+      "q": "A week has seven days. Starting Monday, which day is in the middle?",
+      "options": [
+        "Thursday",
+        "Wednesday",
+        "Tuesday",
+        "Friday"
+      ]
+    },
+    {
+      "q": "A flock has 5 chickens and 2 are sold. How many are left?",
+      "options": [
+        "3",
+        "2",
+        "5",
+        "7"
+      ]
+    },
+    {
+      "q": "Half a cake doubled gives how many cakes?",
+      "options": [
+        "One",
+        "Two",
+        "Half",
+        "Three"
+      ]
+    },
+    {
+      "q": "A rooster lays an egg on a slanted roof. Which way does it fall?",
+      "options": [
+        "Roosters don't lay eggs",
+        "It falls down",
+        "To the left",
+        "To the right"
+      ]
+    },
+    {
+      "q": "Which creature walks on four legs in the morning, two at noon and three in the evening?",
+      "options": [
+        "A human",
+        "A cat",
+        "A monkey",
+        "A horse"
+      ]
+    },
+    {
+      "q": "What can travel around the world while staying in a corner?",
+      "options": [
+        "A stamp",
+        "A ship",
+        "An airplane",
+        "A bird"
+      ]
+    },
+    {
+      "q": "What belongs to the pagoda, rings out when struck and reminds people to be mindful?",
+      "options": [
+        "The pagoda bell",
+        "The drum",
+        "The flute",
+        "The whistle"
+      ]
+    },
+    {
+      "q": "What is big, round, skin-stretched, goes boom and marks the hours of ceremony?",
+      "options": [
+        "A drum",
+        "A bell",
+        "A wooden fish",
+        "A flute"
+      ]
+    },
+    {
+      "q": "What drifts gently upward from the bronze burner on the altar?",
+      "options": [
+        "Incense smoke",
+        "Cooking smoke",
+        "Exhaust",
+        "Steam"
+      ]
+    },
+    {
+      "q": "Which star-shaped lantern do children carry at Mid-Autumn?",
+      "options": [
+        "A star lantern",
+        "A flashlight",
+        "An oil lamp",
+        "A desk lamp"
+      ]
+    },
+    {
+      "q": "Which pink-and-white flower on a pond opens at dawn and is used as a seat in temple art?",
+      "options": [
+        "Lotus",
+        "Water lily",
+        "Water hyacinth",
+        "Chrysanthemum"
+      ]
+    },
+    {
+      "q": "Which light-purple flower floats along on rivers, drifting with the current?",
+      "options": [
+        "Water hyacinth",
+        "Lotus",
+        "Water lily",
+        "Jasmine"
+      ]
+    },
+    {
+      "q": "What is made of baked clay and holds water or incense at home?",
+      "options": [
+        "A pottery vase",
+        "An aluminium pot",
+        "A plastic bottle",
+        "An iron bucket"
+      ]
+    },
+    {
+      "q": "What is woven from silk threads, soft and shiny, and often used for ao dai?",
+      "options": [
+        "Silk",
+        "Wool",
+        "Leather",
+        "Paper"
+      ]
+    },
+    {
+      "q": "Which long flowing tunic do Vietnamese women wear on festive days?",
+      "options": [
+        "Ao dai",
+        "Ao ba ba",
+        "T-shirt",
+        "Sweater"
+      ]
+    },
+    {
+      "q": "What is a horizontal lacquered board hung in temples with large characters?",
+      "options": [
+        "A horizontal board",
+        "A chair",
+        "A bed",
+        "A tray"
+      ]
+    },
+    {
+      "q": "Which animal pulled carts and worked the fields, with curved horns?",
+      "options": [
+        "Water buffalo",
+        "Elephant",
+        "Wild ox",
+        "Goat"
+      ]
+    },
+    {
+      "q": "Which animal has a flat bill, orange feet and swims on the pond?",
+      "options": [
+        "A duck",
+        "A chicken",
+        "A stork",
+        "A sparrow"
+      ]
+    },
+    {
+      "q": "Which long-legged white bird glides over rice fields?",
+      "options": [
+        "A stork",
+        "A duck",
+        "A crow",
+        "A chicken"
+      ]
+    },
+    {
+      "q": "Which black bird caws from a dry branch?",
+      "options": [
+        "A crow",
+        "A stork",
+        "A starling",
+        "A sparrow"
+      ]
+    },
+    {
+      "q": "Which colourful-feathered bird can repeat human words?",
+      "options": [
+        "A parrot",
+        "A stork",
+        "A sparrow",
+        "An eagle"
+      ]
+    },
+    {
+      "q": "Which bird spreads a fan-like tail and dances in the garden?",
+      "options": [
+        "A peacock",
+        "A chicken",
+        "A sparrow",
+        "A duck"
+      ]
+    },
+    {
+      "q": "Which high-flying keen-eyed bird with broad wings is called king of the sky?",
+      "options": [
+        "An eagle",
+        "A chicken",
+        "A sparrow",
+        "A pigeon"
+      ]
+    },
+    {
+      "q": "Which white bird carrying an olive branch is a symbol of peace?",
+      "options": [
+        "A dove",
+        "A crow",
+        "An owl",
+        "A duck"
+      ]
+    },
+    {
+      "q": "Which bird sings sweetly on a branch to greet the morning?",
+      "options": [
+        "A skylark",
+        "A crow",
+        "An owl",
+        "A rooster"
+      ]
+    },
+    {
+      "q": "Which flightless bird runs fast across the African plains and lays big eggs?",
+      "options": [
+        "An ostrich",
+        "A peacock",
+        "A parrot",
+        "A duck"
+      ]
+    },
+    {
+      "q": "Which animal hops and carries its baby in a pouch in Australia?",
+      "options": [
+        "A kangaroo",
+        "A rabbit",
+        "A monkey",
+        "A bear"
+      ]
+    },
+    {
+      "q": "Which sleepy animal in Australia eats eucalyptus leaves all day?",
+      "options": [
+        "A koala",
+        "A monkey",
+        "A sloth",
+        "A squirrel"
+      ]
+    },
+    {
+      "q": "Which animal has long ears, a short tail, hops fast and loves carrots?",
+      "options": [
+        "A rabbit",
+        "A mouse",
+        "A squirrel",
+        "A goat"
+      ]
+    },
+    {
+      "q": "Which small long-tailed animal loves cheese and fears cats?",
+      "options": [
+        "A mouse",
+        "A rabbit",
+        "A squirrel",
+        "A hedgehog"
+      ]
+    },
+    {
+      "q": "Which bushy-tailed animal climbs trees and stores nuts for winter?",
+      "options": [
+        "A squirrel",
+        "A mouse",
+        "A rabbit",
+        "A monkey"
+      ]
+    },
+    {
+      "q": "Which animal is covered in spines and curls into a ball when scared?",
+      "options": [
+        "A hedgehog",
+        "A turtle",
+        "A cat",
+        "A mouse"
+      ]
+    },
+    {
+      "q": "Which agile animal swings from branches and loves bananas?",
+      "options": [
+        "A monkey",
+        "A squirrel",
+        "A cat",
+        "A bear"
+      ]
+    },
+    {
+      "q": "Which animal with a shaggy mane roars as the king of the savanna?",
+      "options": [
+        "A lion",
+        "A tiger",
+        "A bear",
+        "A leopard"
+      ]
+    },
+    {
+      "q": "Which striped forest cat was known as lord of the Vietnamese jungle?",
+      "options": [
+        "A tiger",
+        "A lion",
+        "A leopard",
+        "A bear"
+      ]
+    },
+    {
+      "q": "Which animal hibernates through winter and loves honey?",
+      "options": [
+        "A bear",
+        "A tiger",
+        "A wolf",
+        "A fox"
+      ]
+    },
+    {
+      "q": "Which sleek animal with a long tail hunts mice in the garden?",
+      "options": [
+        "A cat",
+        "A fox",
+        "A dog",
+        "A rabbit"
+      ]
+    },
+    {
+      "q": "Which animal says meh, eats grass and has a small beard?",
+      "options": [
+        "A goat",
+        "A sheep",
+        "A cow",
+        "A horse"
+      ]
+    },
+    {
+      "q": "Which curly-coated animal gives warm wool and grazes in fields?",
+      "options": [
+        "A sheep",
+        "A goat",
+        "A pig",
+        "A cow"
+      ]
+    },
+    {
+      "q": "Which animal gives us milk and moos?",
+      "options": [
+        "A cow",
+        "A goat",
+        "A chicken",
+        "A duck"
+      ]
+    },
+    {
+      "q": "Which animal gallops with a long mane, pulls carts and races?",
+      "options": [
+        "A horse",
+        "A buffalo",
+        "A donkey",
+        "An elephant"
+      ]
+    },
+    {
+      "q": "Which round animal eats well, sleeps well and oinks?",
+      "options": [
+        "A pig",
+        "A cow",
+        "A goat",
+        "A dog"
+      ]
+    },
+    {
+      "q": "What sits in the kitchen with a red fire and cooks the meals every day?",
+      "options": [
+        "A stove",
+        "A fridge",
+        "A table",
+        "A basin"
+      ]
+    },
+    {
+      "q": "What keeps food cold and shows a light when you open its door?",
+      "options": [
+        "A refrigerator",
+        "A pot",
+        "A fan",
+        "A wardrobe"
+      ]
+    },
+    {
+      "q": "What whirls round and blows cool air on summer days?",
+      "options": [
+        "An electric fan",
+        "A stove",
+        "A table",
+        "A lamp"
+      ]
+    },
+    {
+      "q": "What has a spout and pours fragrant tea?",
+      "options": [
+        "A teapot",
+        "A bowl",
+        "A spoon",
+        "A basket"
+      ]
+    },
+    {
+      "q": "What is held in the hand, has a long handle and sweeps the courtyard of leaves?",
+      "options": [
+        "A broom",
+        "A shovel",
+        "A rake",
+        "A basket"
+      ]
+    },
+    {
+      "q": "What has a long handle and scoops soil to dig a hole for a tree?",
+      "options": [
+        "A shovel",
+        "A broom",
+        "Scissors",
+        "A hammer"
+      ]
+    },
+    {
+      "q": "What is pulled behind a buffalo to turn the soil of a field?",
+      "options": [
+        "A plough",
+        "A hoe",
+        "A sickle",
+        "A small harrow"
+      ]
+    },
+    {
+      "q": "What is curved like a crescent moon and used to cut rice?",
+      "options": [
+        "A sickle",
+        "A knife",
+        "A hoe",
+        "Scissors"
+      ]
+    },
+    {
+      "q": "What has a wooden handle and a heavy iron head and drives nails?",
+      "options": [
+        "A hammer",
+        "A saw",
+        "Pliers",
+        "A plane"
+      ]
+    },
+    {
+      "q": "What is pulled back and forth, cutting wood into planks, with a rasping sound?",
+      "options": [
+        "A saw",
+        "A hammer",
+        "A plane",
+        "A chisel"
+      ]
+    },
+    {
+      "q": "What has two blades and opens and closes to cut paper and cloth?",
+      "options": [
+        "Scissors",
+        "A knife",
+        "A saw",
+        "Pliers"
+      ]
+    },
+    {
+      "q": "What has teeth and tidies the hair?",
+      "options": [
+        "A comb",
+        "A saw",
+        "A brush",
+        "A rake"
+      ]
+    },
+    {
+      "q": "What has bristles and cleans your teeth every morning?",
+      "options": [
+        "A toothbrush",
+        "A comb",
+        "A broom",
+        "A paintbrush"
+      ]
+    },
+    {
+      "q": "What cleans hands, lathers, smells nice and is slippery?",
+      "options": [
+        "Soap",
+        "A towel",
+        "Fish sauce",
+        "A bowl"
+      ]
+    },
+    {
+      "q": "What is fastened through a loop and sewn onto a shirt?",
+      "options": [
+        "A button",
+        "A needle",
+        "A thread",
+        "Scissors"
+      ]
+    },
+    {
+      "q": "What goes on your feet and protects them as you walk?",
+      "options": [
+        "Shoes",
+        "Gloves",
+        "A hat",
+        "A shirt"
+      ]
+    },
+    {
+      "q": "What keeps your neck warm in winter and wraps round and round?",
+      "options": [
+        "A scarf",
+        "A hat",
+        "Socks",
+        "A raincoat"
+      ]
+    },
+    {
+      "q": "What has five fingers but is not a hand and is worn in winter?",
+      "options": [
+        "A glove",
+        "A shoe",
+        "A hat",
+        "A shirt"
+      ]
+    },
+    {
+      "q": "What closes like a door and, when opened, shows words?",
+      "options": [
+        "A book",
+        "A cupboard",
+        "A box",
+        "A gate"
+      ]
+    },
+    {
+      "q": "What opens to show the sky and lets in light and air?",
+      "options": [
+        "A window",
+        "A box",
+        "A cupboard",
+        "A gate"
+      ]
+    },
+    {
+      "q": "What stands guard and opens only with a key?",
+      "options": [
+        "A lock",
+        "A gate",
+        "A door",
+        "A table"
+      ]
+    },
+    {
+      "q": "What floats on a river, has oars and carries passengers across?",
+      "options": [
+        "A boat",
+        "A train",
+        "A cart",
+        "A kite"
+      ]
+    },
+    {
+      "q": "What is dropped into the water to keep a boat from drifting?",
+      "options": [
+        "An anchor",
+        "An oar",
+        "A sail",
+        "A rudder"
+      ]
+    },
+    {
+      "q": "What catches the wind, pushes a boat along, and is white or brown?",
+      "options": [
+        "A sail",
+        "An oar",
+        "An anchor",
+        "A raft"
+      ]
+    },
+    {
+      "q": "What stands high on the coast and guides ships by night?",
+      "options": [
+        "A lighthouse",
+        "A power pole",
+        "A pagoda",
+        "A bridge"
+      ]
+    },
+    {
+      "q": "Which arch of seven colours appears after rain and can never be touched?",
+      "options": [
+        "A rainbow",
+        "A road",
+        "A mountain",
+        "A cloud"
+      ]
+    },
+    {
+      "q": "What are hundreds of thousands of twinkling points you see only at night?",
+      "options": [
+        "Stars",
+        "Fireflies",
+        "Sand grains",
+        "Dewdrops"
+      ]
+    },
+    {
+      "q": "What sparkles on grass at dawn and vanishes when the sun rises?",
+      "options": [
+        "Dew",
+        "Raindrops",
+        "Sand",
+        "A marble"
+      ]
+    },
+    {
+      "q": "What rumbles across the sky after a flash of lightning?",
+      "options": [
+        "Thunder",
+        "Wind",
+        "Rain",
+        "Mist"
+      ]
+    },
+    {
+      "q": "What is cold and white, falls from the sky in cold lands and melts in warmth?",
+      "options": [
+        "Snow",
+        "Rain",
+        "Dew",
+        "Sand"
+      ]
+    },
+    {
+      "q": "What is water that does not flow, cold and hard, found in the far north?",
+      "options": [
+        "Ice",
+        "Steam",
+        "Fog",
+        "Rain"
+      ]
+    },
+    {
+      "q": "What is the biggest, deep blue, vast and has waves?",
+      "options": [
+        "The sea",
+        "A pond",
+        "A stream",
+        "A well"
+      ]
+    },
+    {
+      "q": "What is small, clear and murmurs down from the mountain?",
+      "options": [
+        "A stream",
+        "The sea",
+        "A pond",
+        "A well"
+      ]
+    },
+    {
+      "q": "What is deep and gives water by bucket in a country yard?",
+      "options": [
+        "A well",
+        "A pond",
+        "A river",
+        "A tank"
+      ]
+    },
+    {
+      "q": "What is wide, sandy, burning hot and short of water?",
+      "options": [
+        "A desert",
+        "A beach",
+        "A rice field",
+        "A forest"
+      ]
+    },
+    {
+      "q": "What is very tall, its peak wrapped in cloud, reached only by climbers?",
+      "options": [
+        "A mountain",
+        "A tree",
+        "A small tower",
+        "A low hill"
+      ]
+    },
+    {
+      "q": "What spews fire, smoke and lava from a mountain mouth?",
+      "options": [
+        "A volcano",
+        "A stove",
+        "A candle",
+        "A kiln"
+      ]
+    },
+    {
+      "q": "What is wide and green, with tall trees and many animals?",
+      "options": [
+        "A forest",
+        "A small garden",
+        "A field",
+        "A lake"
+      ]
+    },
+    {
+      "q": "Which small orange fish is kept in glass tanks as a pet?",
+      "options": [
+        "A goldfish",
+        "A black carp",
+        "A catfish",
+        "A snakehead"
+      ]
+    },
+    {
+      "q": "Which sharp-toothed fast swimmer shows a fin above the sea?",
+      "options": [
+        "A shark",
+        "A dolphin",
+        "A goldfish",
+        "A carp"
+      ]
+    },
+    {
+      "q": "Which creature with big pincers scuttles sideways on the beach?",
+      "options": [
+        "A crab",
+        "A shrimp",
+        "A snail",
+        "A clam"
+      ]
+    },
+    {
+      "q": "Which sea creature has five arms like a star?",
+      "options": [
+        "A starfish",
+        "A crab",
+        "A jellyfish",
+        "A snail"
+      ]
+    },
+    {
+      "q": "Which soft, see-through creature drifts in the sea and can sting?",
+      "options": [
+        "A jellyfish",
+        "A crab",
+        "A fish",
+        "A snail"
+      ]
+    },
+    {
+      "q": "Which creature hides a pearl inside its shell on the seabed?",
+      "options": [
+        "An oyster",
+        "A crab",
+        "A shrimp",
+        "A squid"
+      ]
+    },
+    {
+      "q": "Which small-eyed animal digs tunnels underground and eats worms?",
+      "options": [
+        "A mole",
+        "A rabbit",
+        "A bird",
+        "A squirrel"
+      ]
+    },
+    {
+      "q": "Which crawler spins a cocoon and later becomes a moth or butterfly?",
+      "options": [
+        "A caterpillar",
+        "An ant",
+        "A fly",
+        "A cricket"
+      ]
+    },
+    {
+      "q": "Which insect chirps in the grass on summer nights?",
+      "options": [
+        "A cricket",
+        "A cicada",
+        "A frog",
+        "A mosquito"
+      ]
+    },
+    {
+      "q": "Which insect sings loudly in the flame tree in summer?",
+      "options": [
+        "A cicada",
+        "A cricket",
+        "A frog",
+        "A bird"
+      ]
+    },
+    {
+      "q": "Which plant folds its leaves when touched?",
+      "options": [
+        "Sensitive plant",
+        "Banyan",
+        "Bamboo",
+        "Palm"
+      ]
+    },
+    {
+      "q": "Which tree blooms bright red in summer, the farewell flower of students?",
+      "options": [
+        "Flame tree",
+        "Bamboo",
+        "Banyan",
+        "Betel palm"
+      ]
+    },
+    {
+      "q": "Which tiny green plant floats on ponds and feeds fish and ducks?",
+      "options": [
+        "Duckweed",
+        "Water spinach",
+        "Mustard greens",
+        "Amaranth"
+      ]
+    },
+    {
+      "q": "Which hollow-stemmed water vegetable is boiled and dipped in fish sauce?",
+      "options": [
+        "Water spinach",
+        "Mustard greens",
+        "Amaranth",
+        "Katuk"
+      ]
+    },
+    {
+      "q": "Which small bean sprouts into the crunchy shoots eaten with pho?",
+      "options": [
+        "Mung bean",
+        "Corn",
+        "Rice",
+        "Sesame"
+      ]
+    },
+    {
+      "q": "What is made of soybeans, white and soft, fried golden?",
+      "options": [
+        "Tofu",
+        "Meat",
+        "Fish",
+        "Egg"
+      ]
+    },
+    {
+      "q": "Which breakfast dish of white noodles and fragrant broth is famous in Hanoi?",
+      "options": [
+        "Pho",
+        "Rice",
+        "Sticky rice",
+        "Bread"
+      ]
+    },
+    {
+      "q": "What is sweet, from the kitchen, and made from sugarcane?",
+      "options": [
+        "Sugar",
+        "Salt",
+        "Vinegar",
+        "Pepper"
+      ]
+    },
+    {
+      "q": "What is salty, white, taken from the sea and used to preserve meat and fish?",
+      "options": [
+        "Salt",
+        "Sugar",
+        "Flour",
+        "Vinegar"
+      ]
+    },
+    {
+      "q": "Which brown salty sauce made from fermented fish is used for dipping?",
+      "options": [
+        "Fish sauce",
+        "Lemonade",
+        "Tea",
+        "Coconut water"
+      ]
+    },
+    {
+      "q": "Which sweet cool drink comes inside a fruit of a tall palm in the Mekong?",
+      "options": [
+        "Coconut water",
+        "Sugarcane juice",
+        "Lemonade",
+        "Orange juice"
+      ]
+    },
+    {
+      "q": "What comes from leaves, is steeped in hot water and drunk in the morning at temples?",
+      "options": [
+        "Tea",
+        "Coffee",
+        "Milk",
+        "Soda"
+      ]
+    },
+    {
+      "q": "What is dark, aromatic, bitter, and brewed drip by drip in a small filter?",
+      "options": [
+        "Coffee",
+        "Tea",
+        "Milk",
+        "Sugarcane juice"
+      ]
+    },
+    {
+      "q": "What comes from cows, is white and good for bones?",
+      "options": [
+        "Milk",
+        "Water",
+        "Tea",
+        "Coffee"
+      ]
+    },
+    {
+      "q": "What has a white shell and golden yolk and is boiled for breakfast?",
+      "options": [
+        "An egg",
+        "A ball",
+        "A stone",
+        "A potato"
+      ]
+    },
+    {
+      "q": "What is sweet, golden and made by bees in their hive?",
+      "options": [
+        "Honey",
+        "Syrup",
+        "Milk",
+        "Cooking oil"
+      ]
+    },
+    {
+      "q": "What is soft, white and fine, sprinkled on cakes, ground from wheat?",
+      "options": [
+        "Flour",
+        "Sugar",
+        "Salt",
+        "Rice"
+      ]
+    },
+    {
+      "q": "What is round, kicked far and played by a whole team?",
+      "options": [
+        "A ball",
+        "A hoop",
+        "A bowl",
+        "An egg"
+      ]
+    },
+    {
+      "q": "What has black and white pieces, with two people sitting thinking?",
+      "options": [
+        "A board game",
+        "A study desk",
+        "A tray",
+        "A blackboard"
+      ]
+    },
+    {
+      "q": "What has six faces with dots from one to six and is tossed in games?",
+      "options": [
+        "A die",
+        "A ball",
+        "A box",
+        "A spinning top"
+      ]
+    },
+    {
+      "q": "What spins on its point when you pull the string?",
+      "options": [
+        "A spinning top",
+        "A ball",
+        "A kite",
+        "A hoop"
+      ]
+    },
+    {
+      "q": "What has six strings and is plucked by the fingers?",
+      "options": [
+        "A guitar",
+        "A drum",
+        "A flute",
+        "A trumpet"
+      ]
+    },
+    {
+      "q": "What is a bamboo tube that sounds like a bird when blown?",
+      "options": [
+        "A flute",
+        "A drum",
+        "A zither",
+        "A bell"
+      ]
+    },
+    {
+      "q": "What has black and white keys and makes music when pressed?",
+      "options": [
+        "A piano",
+        "A monochord",
+        "A drum",
+        "A flute"
+      ]
+    },
+    {
+      "q": "Which Vietnamese instrument has just one string and a voice like a lullaby?",
+      "options": [
+        "Dan bau",
+        "Dan tranh",
+        "Dan nguyet",
+        "Dan nhi"
+      ]
+    },
+    {
+      "q": "Which Mid-Autumn dance has a big head, wide mouth and moves to drums?",
+      "options": [
+        "Lion dance",
+        "Umbrella dance",
+        "Fan dance",
+        "Hat dance"
+      ]
+    },
+    {
+      "q": "What has two leaves, lets people in by day and closes at night?",
+      "options": [
+        "A gate",
+        "A table",
+        "A chair",
+        "A hat"
+      ]
+    },
+    {
+      "q": "What leads from village to town with people and vehicles passing?",
+      "options": [
+        "A road",
+        "A river",
+        "A bridge",
+        "A well"
+      ]
+    },
+    {
+      "q": "What shows green, yellow and red at crossings, telling vehicles to go or stop?",
+      "options": [
+        "A traffic light",
+        "A power pole",
+        "A signboard",
+        "A road"
+      ]
+    },
+    {
+      "q": "What measures time with sand flowing between two glass bulbs?",
+      "options": [
+        "An hourglass",
+        "A wall clock",
+        "A scale",
+        "A ruler"
+      ]
+    },
+    {
+      "q": "What points north and south with a needle that always turns one way?",
+      "options": [
+        "A compass",
+        "A clock",
+        "A ruler",
+        "A map"
+      ]
+    },
+    {
+      "q": "What shows mountains and rivers on paper and helps you find your way?",
+      "options": [
+        "A map",
+        "A storybook",
+        "A newspaper",
+        "A mirror"
+      ]
+    },
+    {
+      "q": "What is posted with a stamp into a box and travels to someone far away?",
+      "options": [
+        "A letter",
+        "A ball",
+        "A bowl",
+        "A kite"
+      ]
+    },
+    {
+      "q": "What never sleeps, counts hours and minutes and has hands that circle?",
+      "options": [
+        "A clock",
+        "A cat",
+        "A lamp",
+        "A fan"
+      ]
+    },
+    {
+      "q": "What is round and bright in the night sky on the fifteenth day of the lunar month?",
+      "options": [
+        "The full moon",
+        "The sun",
+        "A star",
+        "A lamp"
+      ]
+    },
+    {
+      "q": "What is orange inside, roasted sweet and warms the belly in winter?",
+      "options": [
+        "Roasted sweet potato",
+        "Carrot",
+        "Orange",
+        "Pumpkin"
+      ]
+    },
+    {
+      "q": "Which tiny bird beats its wings fast, sips nectar and can fly backwards?",
+      "options": [
+        "A hummingbird",
+        "A sparrow",
+        "A pigeon",
+        "A swallow"
+      ]
+    },
+    {
+      "q": "Which small wall-crawler catches mosquitoes at night and regrows its tail?",
+      "options": [
+        "A house lizard",
+        "A snake",
+        "A mouse",
+        "A spider"
+      ]
+    },
+    {
+      "q": "Which animal changes colour to match leaves and shoots out its tongue?",
+      "options": [
+        "A chameleon",
+        "A snake",
+        "A frog",
+        "A turtle"
+      ]
+    },
+    {
+      "q": "Which river animal has hard scales, a long snout and many teeth?",
+      "options": [
+        "A crocodile",
+        "A carp",
+        "A dolphin",
+        "A turtle"
+      ]
+    },
+    {
+      "q": "Which slippery mud-dweller is cooked in Vietnamese soup?",
+      "options": [
+        "An eel",
+        "A snake",
+        "A catfish",
+        "A snail"
+      ]
+    },
+    {
+      "q": "Which creature eats mulberry leaves and spins golden silk?",
+      "options": [
+        "A silkworm",
+        "A hairy caterpillar",
+        "A butterfly",
+        "A bee"
+      ]
+    },
+    {
+      "q": "Which season has falling yellow leaves, cool air and the Mid-Autumn festival?",
+      "options": [
+        "Autumn",
+        "Spring",
+        "Summer",
+        "Winter"
+      ]
+    },
+    {
+      "q": "Which season brings blooming flowers, singing birds and the New Year?",
+      "options": [
+        "Spring",
+        "Autumn",
+        "Summer",
+        "Winter"
+      ]
+    },
+    {
+      "q": "Which season is sunny and bright with cicadas and school holidays?",
+      "options": [
+        "Summer",
+        "Spring",
+        "Autumn",
+        "Winter"
+      ]
+    },
+    {
+      "q": "How many eggs are in a Vietnamese 'chuc'?",
+      "options": [
+        "Ten",
+        "Nine",
+        "Twelve",
+        "Twenty"
+      ]
+    },
+    {
+      "q": "Three chicks and three ducklings: how many beaks in total?",
+      "options": [
+        "Six",
+        "Three",
+        "Nine",
+        "Twelve"
+      ]
+    },
+    {
+      "q": "Three people share two apples equally. How much does each get?",
+      "options": [
+        "Two thirds of an apple",
+        "One apple",
+        "Half an apple",
+        "One third of an apple"
+      ]
+    },
+    {
+      "q": "A candle is 10 cm and burns 2 cm each hour. How many hours until it is gone?",
+      "options": [
+        "Five",
+        "Ten",
+        "Four",
+        "Eight"
+      ]
+    },
+    {
+      "q": "A cat has four legs. How many legs do two cats have?",
+      "options": [
+        "Eight",
+        "Six",
+        "Four",
+        "Ten"
+      ]
+    },
+    {
+      "q": "Fold a sheet of paper in half again and again. It gets...?",
+      "options": [
+        "Thicker",
+        "Thinner",
+        "Longer",
+        "Wider"
+      ]
+    },
+    {
+      "q": "What is small usually but stretches wide when you smile?",
+      "options": [
+        "The mouth",
+        "The nose",
+        "The eyes",
+        "The ear"
+      ]
+    },
+    {
+      "q": "If you have it you want to share it, but once you share it, you no longer have it. What is it?",
+      "options": [
+        "A secret",
+        "An apple",
+        "A song",
+        "A smile"
+      ]
+    },
+    {
+      "q": "What is a pond with round green leaves and white-pink flowers of pure scent?",
+      "options": [
+        "A lotus pond",
+        "A vegetable garden",
+        "A rice field",
+        "A tea hill"
+      ]
+    },
+    {
+      "q": "Which flower floats on ponds with round leaves and pointed petals?",
+      "options": [
+        "Water lily",
+        "Lotus",
+        "Water hyacinth",
+        "Chrysanthemum"
+      ]
+    },
+    {
+      "q": "What is made from a bush grown on the hills of Thai Nguyen?",
+      "options": [
+        "Green tea",
+        "Coffee",
+        "Pepper",
+        "Rubber"
+      ]
+    },
+    {
+      "q": "Which crop of the Central Highlands gives dark aromatic beans?",
+      "options": [
+        "Coffee",
+        "Paddy rice",
+        "Coconut",
+        "Sugarcane"
+      ]
+    },
+    {
+      "q": "Which tree is famous in the Mekong Delta for sweet water in its fruit?",
+      "options": [
+        "Coconut",
+        "Tea",
+        "Coffee",
+        "Pepper"
+      ]
+    },
+    {
+      "q": "Which bay has thousands of limestone islands and is a World Heritage site?",
+      "options": [
+        "Ha Long Bay",
+        "Nha Trang Bay",
+        "Cam Ranh Bay",
+        "Van Phong Bay"
+      ]
+    },
+    {
+      "q": "Which poetic river flows through Hue with dragon boats on its waters?",
+      "options": [
+        "Perfume River",
+        "Red River",
+        "Mekong",
+        "Black River"
+      ]
+    },
+    {
+      "q": "Which lake in central Hanoi has Turtle Tower on a tiny island?",
+      "options": [
+        "Hoan Kiem Lake",
+        "West Lake",
+        "Ba Be Lake",
+        "Xuan Huong Lake"
+      ]
+    },
+    {
+      "q": "At Mid-Autumn, what shape of lantern do children usually carry?",
+      "options": [
+        "A star lantern",
+        "A plain candle",
+        "A flashlight",
+        "A car light"
+      ]
+    },
+    {
+      "q": "Which round or square pastry with mung bean and salted egg filling is eaten at Mid-Autumn?",
+      "options": [
+        "Mooncake",
+        "Steamed bun",
+        "Banh gio",
+        "Rice cracker"
+      ]
+    },
+    {
+      "q": "What is red, hung up or pasted, and written with calligraphy at Tet?",
+      "options": [
+        "Red couplets",
+        "A hat",
+        "A flashlight",
+        "A table"
+      ]
+    },
+    {
+      "q": "What tall pole is raised in the yard at Tet to mark the new year?",
+      "options": [
+        "The Neu pole",
+        "Plain bamboo",
+        "Coconut tree",
+        "Banyan tree"
+      ]
+    },
+    {
+      "q": "What is set afloat on the river on full-moon night, lotus-shaped with a flame?",
+      "options": [
+        "A flower lantern",
+        "A kite",
+        "A hat",
+        "A drum"
+      ]
+    },
+    {
+      "q": "Where are vegetables, fish and fruit sold in the morning among bargaining voices?",
+      "options": [
+        "A market",
+        "A pagoda",
+        "A library",
+        "A hospital"
+      ]
+    },
+    {
+      "q": "Where can you borrow and read many books in quiet?",
+      "options": [
+        "A library",
+        "A market",
+        "An airport",
+        "A harbour"
+      ]
+    },
+    {
+      "q": "Where do doctors treat sick people?",
+      "options": [
+        "A hospital",
+        "A school",
+        "A market",
+        "A yard"
+      ]
+    },
+    {
+      "q": "Where does a teacher teach children to read, write and do maths?",
+      "options": [
+        "A school",
+        "A hospital",
+        "A market",
+        "A bus station"
+      ]
+    },
+    {
+      "q": "What has clothes and a hat, cannot walk and stands in the field to scare birds?",
+      "options": [
+        "A scarecrow",
+        "A person",
+        "A dog",
+        "A tree"
+      ]
+    },
+    {
+      "q": "What is lowered on a rope to draw water from a well?",
+      "options": [
+        "A bucket",
+        "A basin",
+        "A bottle",
+        "A small barrel"
+      ]
+    },
+    {
+      "q": "What bakes bread, burns wood and sits in a country kitchen?",
+      "options": [
+        "An oven",
+        "A cupboard",
+        "A table",
+        "A bamboo cot"
+      ]
+    },
+    {
+      "q": "What rises from a boiling pot?",
+      "options": [
+        "Steam",
+        "Smoke",
+        "Dust",
+        "Snow"
+      ]
+    },
+    {
+      "q": "What stands on one foot, wears a cap and shelters tiny insects from rain?",
+      "options": [
+        "A mushroom",
+        "Bamboo",
+        "A pillar",
+        "A table"
+      ]
+    },
+    {
+      "q": "Which fruit holds many ruby-red seeds in a thick skin?",
+      "options": [
+        "Pomegranate",
+        "Eggplant",
+        "Pumpkin",
+        "Gourd"
+      ]
+    },
+    {
+      "q": "Which brown fruit with white flesh and sweet water drops from a tall tree?",
+      "options": [
+        "Coconut",
+        "Pomelo",
+        "Jackfruit",
+        "Custard apple"
+      ]
+    },
+    {
+      "q": "Which green scaly fruit is soft, fragrant and splits when ripe?",
+      "options": [
+        "Custard apple",
+        "Jackfruit",
+        "Pomelo",
+        "Melon"
+      ]
+    },
+    {
+      "q": "Which fruit has golden skin, orange flesh and black seeds inside?",
+      "options": [
+        "Papaya",
+        "Jackfruit",
+        "Custard apple",
+        "Cucumber"
+      ]
+    },
+    {
+      "q": "What gets bigger the more you take away from it?",
+      "options": [
+        "A hole",
+        "A pile",
+        "A shadow",
+        "A river"
+      ]
+    },
+    {
+      "q": "What has a heart that does not beat?",
+      "options": [
+        "An artichoke",
+        "A clock",
+        "A drum",
+        "A stone"
+      ]
+    },
+    {
+      "q": "What can you catch but not throw?",
+      "options": [
+        "A cold",
+        "A ball",
+        "A fish",
+        "A stick"
+      ]
+    },
+    {
+      "q": "What runs but never walks?",
+      "options": [
+        "A river",
+        "A dog",
+        "A clock hand",
+        "A shadow"
+      ]
+    },
+    {
+      "q": "What has a face and two hands but no arms or legs?",
+      "options": [
+        "A clock",
+        "A doll",
+        "A scarecrow",
+        "A map"
+      ]
+    },
+    {
+      "q": "What has words but never speaks?",
+      "options": [
+        "A book",
+        "A parrot",
+        "A radio",
+        "A bell"
+      ]
+    },
+    {
+      "q": "What is full of holes but still holds water?",
+      "options": [
+        "A sponge",
+        "A bucket",
+        "A bowl",
+        "A bottle"
+      ]
+    },
+    {
+      "q": "What can travel around the world while staying in one spot?",
+      "options": [
+        "A stamp",
+        "A bird",
+        "A ship",
+        "A cloud"
+      ]
+    },
+    {
+      "q": "What comes once in a minute, twice in a moment, but never in a thousand years?",
+      "options": [
+        "The letter M",
+        "The letter A",
+        "The letter T",
+        "The letter S"
+      ]
+    },
+    {
+      "q": "What has to be broken before you can use it?",
+      "options": [
+        "An egg",
+        "A pencil",
+        "A clock",
+        "A table"
+      ]
+    },
+    {
+      "q": "What belongs to you but other people use it more than you?",
+      "options": [
+        "Your name",
+        "Your coat",
+        "Your bed",
+        "Your chair"
+      ]
+    },
+    {
+      "q": "What building has the most stories?",
+      "options": [
+        "A library",
+        "A school",
+        "A pagoda",
+        "A market"
+      ]
+    },
+    {
+      "q": "What goes up when rain comes down?",
+      "options": [
+        "An umbrella",
+        "A kite",
+        "A bird",
+        "A balloon"
+      ]
+    },
+    {
+      "q": "What has one head, one foot and four legs?",
+      "options": [
+        "A bed",
+        "A chair",
+        "A cat",
+        "A table"
+      ]
+    }
+  ]
+}

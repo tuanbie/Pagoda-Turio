@@ -99,6 +99,10 @@ export function StatusLine() {
                     ? t('hint.pond')
                     : zone === 'stupa'
                       ? t('hint.stupa')
+            : zone === 'wishTree'
+              ? t('hint.wishTree')
+              : zone === 'kitchen'
+                ? t('hint.kitchen')
             : zone === 'bell' || zone === 'drum'
               ? t('hint.bell')
               : zone === 'bodhi'

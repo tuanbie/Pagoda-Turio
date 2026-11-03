@@ -22,10 +22,11 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { World } from './World.ts';
 import { Avatar, RemotePlayer } from './Avatar.ts';
 import { NavGrid } from './nav.ts';
-import { gardenRect, hallRect } from './layout.ts';
+import { GROUNDS, RIDDLE, SPOTS, STICKS, WISH, gardenRect, groundsRect, hallRect } from './layout.ts';
+import { Npcs } from './npcs.ts';
 import { STEP_MAX, terrainHeight } from './terrain.ts';
 import { CUSHION_TOP, STONE_TOP, STOOL_TOP } from './places.ts';
-import { store, serverNow, toast, type Zone, type Visitor, type ChatLine } from '../store.ts';
+import { store, serverNow, toast, type Fun, type Zone, type Visitor, type ChatLine } from '../store.ts';
 import { audio } from '../audio/AudioEngine.ts';
 import { t, visitorName } from '../i18n/index.ts';
 import type { Net } from '../net/Net.ts';
@@ -33,7 +34,7 @@ import type { Net } from '../net/Net.ts';
 const SPEED = 3.3;
 const ACCEL = 9;
 type Activity = null | typeof Pose.Bow | typeof Pose.Dance | typeof Pose.Beads | typeof Pose.Moktak;
-type Then = 'sit' | 'censer' | 'table' | 'fish';
+type Then = 'sit' | 'censer' | 'table' | 'fish' | 'fun';
 
 const damp = (a: number, b: number, k: number, dt: number) => a + (b - a) * (1 - Math.exp(-k * dt));
 let chatKey = 0;
@@ -50,6 +51,12 @@ export class Game {
   private camera = new THREE.PerspectiveCamera(55, 1, 0.1, 1200);
   private world!: World;
   private nav!: NavGrid;
+  /** novice monks doing chores (client-only, driven by the server clock) */
+  private npcs!: Npcs;
+  private npcsLow = false;
+  /** wish-tree plaza activity to open on arrival */
+  private fun: Fun = 'wish';
+  private me = { x: 0, z: 0 };
   private self!: Avatar;
   private remotes = new Map<number, RemotePlayer>();
   private seatOwner = new Map<number, number>(); // seat -> player
@@ -142,6 +149,9 @@ export class Game {
     this.marker.visible = false;
     this.world = this.buildWorld();
     this.nav = new NavGrid(this.world.circles, this.world.boxes);
+    this.npcsLow = this.low;
+    this.npcs = new Npcs(this.nav, this.low);
+    this.npcs.attach(this.world);
 
     const h = new URLSearchParams(location.search).get('hour');
     this.hourOverride = h !== null && !Number.isNaN(+h) ? +h : null;
@@ -166,9 +176,11 @@ export class Game {
     // "auto" (the default for every new visitor) picks a tier from the device profile,
     // and may later step down if this device can't keep up
     const tier: Exclude<typeof q, 'auto'> = q !== 'auto' ? q : this.autoTier ?? (weak ? 'low' : mobile ? 'medium' : 'high');
-    if (q === 'auto') store.set({ autoTier: tier });
+    if (q === 'auto' && tier !== 'ultra') store.set({ autoTier: tier });
     const low = tier === 'low';
-    const shadows = tier === 'high';
+    // ultra is only ever chosen by hand (auto stops at high)
+    const ultra = tier === 'ultra';
+    const shadows = tier === 'high' || ultra;
     this.low = low;
     this.camera.far = low ? 420 : 1200;
     this.camera.updateProjectionMatrix();
@@ -176,16 +188,17 @@ export class Game {
     this.renderer.toneMappingExposure = low ? 1.25 : tier === 'medium' ? 1.1 : 1.05;
     this.renderer.shadowMap.enabled = shadows;
     this.renderer.shadowMap.needsUpdate = true;
-    this.maxPixelRatio = low ? 1 : tier === 'high' ? Math.min(dpr, q === 'high' ? 2 : 1.6) : Math.min(dpr, 1.25);
+    this.maxPixelRatio = low ? 1 : ultra ? Math.min(dpr, 2.5) : tier === 'high' ? Math.min(dpr, q === 'high' ? 2 : 1.6) : Math.min(dpr, 1.25);
     this.pixelRatio = this.maxPixelRatio;
     this.renderer.setPixelRatio(this.pixelRatio);
 
-    const world = new World({ low, shadows, shadowSize: q === 'high' ? 2048 : 1024, density: low ? 0.45 : tier === 'medium' ? 0.7 : 1 });
+    const world = new World({ low, shadows, shadowSize: ultra ? 4096 : q === 'high' ? 2048 : 1024, density: low ? 0.45 : tier === 'medium' ? 0.7 : ultra ? 1.5 : 1, ultra });
     // image-based lighting makes gold / bronze read as metal (one-off, tiny env map)
     if (!low) {
+      // (ultra: a touch more image-based light for richer gold and lacquer)
       const pmrem = new THREE.PMREMGenerator(this.renderer);
       world.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-      world.scene.environmentIntensity = 0.35;
+      world.scene.environmentIntensity = ultra ? 0.45 : 0.35;
       pmrem.dispose();
     }
     world.scene.add(this.self.root, this.marker);
@@ -218,6 +231,13 @@ export class Game {
     this.self.root.removeFromParent();
     this.world = this.buildWorld();
     old.dispose();
+    // the low tier keeps only the essential monks
+    if (this.low !== this.npcsLow) {
+      for (const n of this.npcs.list) n.avatar.dispose();
+      this.npcsLow = this.low;
+      this.npcs = new Npcs(this.nav, this.low);
+    }
+    this.npcs.attach(this.world);
     this.resize();
   }
 
@@ -232,6 +252,24 @@ export class Game {
   /** Re-render name tags (e.g. after a language change). */
   refreshLabels() {
     for (const r of this.remotes.values()) r.avatar.setName(this.nameOf(r.id));
+    this.npcs.refreshLabels();
+  }
+
+  // ---------------- wish tree plaza ----------------
+  /** Walk to the wish tree / stick tube / riddle table, then open its panel. */
+  openFun(kind: Fun) {
+    const sp = SPOTS[kind];
+    if (Math.hypot(this.x - sp.x, this.z - sp.z) < 1.2) {
+      this.fun = kind;
+      this.then = 'fun';
+      return this.arrive();
+    }
+    if (this.myCenser() >= 0) this.cancelIncense();
+    this.leaveSeat();
+    this.leaveTable();
+    this.activity = null;
+    this.fun = kind;
+    this.goTo(sp.x, sp.z, 'fun');
   }
 
   // ---------------- network ----------------
@@ -789,6 +827,9 @@ export class Game {
       if (kind === 'dj') return store.set({ panel: 'dj' });
       if (kind === 'table') return store.set({ panel: 'game', gameTable: hit.object.userData.table as number });
       if (kind === 'pond') return this.releaseFish();
+      if (kind === 'wishTree') return this.openFun('wish');
+      if (kind === 'sticks' || kind === 'riddle') return this.openFun(kind);
+      if (kind === 'npc') return toast(this.npcs.describe(hit.object.userData.npc as number));
       if (kind === 'bell' || kind === 'drum') return this.net.send({ t: 'ring', k: kind === 'bell' ? Instrument.Bell : Instrument.Drum });
       const idx = hit.object.userData.seatIdx as number[] | undefined;
       if (idx && hit.instanceId !== undefined) return this.requestSeat(idx[hit.instanceId]);
@@ -857,6 +898,9 @@ export class Game {
       if (d < 45 || (this.frameNo + rp.id) % 2 === 0) rp.avatar.animate(d < 45 ? dt : dt * 2, rp.pose, rp.speed, rp.pose === Pose.Sit || (lift > 0 && rp.speed < 0.2), beat);
       rp.avatar.updateOverlay(now, d);
     }
+    this.me.x = this.x;
+    this.me.z = this.z;
+    this.npcs.update(dt, sNow, this.world, cam.x, cam.z, this.me, this.frameNo);
     this.world.dj.animate(dt, Pose.Dance, 0, false, beat);
     this.world.update(dt, Date.now(), now / 1000);
     if (this.marker.visible) (this.marker.material as THREE.MeshBasicMaterial).opacity = 0.5 + Math.sin(now / 200) * 0.3;
@@ -1028,6 +1072,15 @@ export class Game {
       px += nx * push + -nz * push * 0.6;
       pz += nz * push + nx * push * 0.6;
     }
+    for (const sp of this.npcs.spots) {
+      const dx = x - sp.x;
+      const dz = z - sp.z;
+      const d2 = dx * dx + dz * dz;
+      if (d2 >= R * R) continue;
+      const d = Math.sqrt(d2) || 0.001;
+      px += (dx / d) * (R - d);
+      pz += (dz / d) * (R - d);
+    }
     for (const c of this.world.shuttle.carts()) {
       const dx = x - c.x;
       const dz = z - c.z;
@@ -1068,6 +1121,11 @@ export class Game {
       this.r = st.r;
       this.atTable = true;
       this.activity = null;
+    } else if (then === 'fun') {
+      const target = this.fun === 'wish' ? WISH : this.fun === 'sticks' ? STICKS : RIDDLE;
+      this.r = Math.atan2(target.x - this.x, target.z - this.z);
+      this.activity = null;
+      store.set({ panel: 'fun', fun: this.fun });
     } else if (then === 'fish') {
       const { pond } = WORLD;
       this.r = Math.atan2(pond.x - this.x, pond.z - this.z);
@@ -1127,6 +1185,11 @@ export class Game {
     if (near(STUPA, STUPA.lowerR + 3) || (Math.abs(x - STUPA.x) < 3 && z < STUPA.z && z > STUPA.z - STUPA.lowerR - STUPA.stairLen)) return 'stupa';
     if (near(WORLD.bodhi, 10)) return 'bodhi';
     if (near(WORLD.gate, 8)) return 'gate';
+    if (near(WISH, WISH.r + 1.5)) return 'wishTree';
+    for (const gd of GROUNDS) {
+      const r = groundsRect(gd, 2.5);
+      if (x > r.x0 && x < r.x1 && z > r.z0 && z < r.z1 + 2) return gd.id;
+    }
     const g = gardenRect();
     if (x > g.x0 && x < g.x1 && z > g.z0 && z < g.z1) return 'garden';
     if (near(WORLD.courtyard, WORLD.courtyard.r + 1)) return 'courtyard';

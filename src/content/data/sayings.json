@@ -1,0 +1,2310 @@
+{
+  "vi": [
+    {
+      "text": "Uống nước nhớ nguồn.",
+      "meaning": "Biết ơn những người đã cho mình điều tốt đẹp."
+    },
+    {
+      "text": "Ăn quả nhớ kẻ trồng cây.",
+      "meaning": "Nhớ công người đã vun trồng nên thành quả mình hưởng."
+    },
+    {
+      "text": "Một nụ cười bằng mười thang thuốc bổ.",
+      "meaning": "Nụ cười mang lại niềm vui và sức khỏe cho mình và người."
+    },
+    {
+      "text": "Lời nói chẳng mất tiền mua, lựa lời mà nói cho vừa lòng nhau.",
+      "meaning": "Nói năng nhẹ nhàng, tế nhị để người nghe thấy dễ chịu."
+    },
+    {
+      "text": "Học ăn, học nói, học gói, học mở.",
+      "meaning": "Việc gì cũng cần học, từ lời ăn tiếng nói đến cách cư xử."
+    },
+    {
+      "text": "Có công mài sắt, có ngày nên kim.",
+      "meaning": "Kiên trì làm việc đều đặn thì việc khó cũng thành."
+    },
+    {
+      "text": "Thương người như thể thương thân.",
+      "meaning": "Hãy quan tâm đến người khác như quan tâm chính mình."
+    },
+    {
+      "text": "Lá lành đùm lá rách.",
+      "meaning": "Người có điều kiện hơn nên giúp đỡ người khó khăn."
+    },
+    {
+      "text": "Nhiễu điều phủ lấy giá gương, người trong một nước phải thương nhau cùng.",
+      "meaning": "Người cùng một cộng đồng nên yêu thương, đùm bọc nhau."
+    },
+    {
+      "text": "Một cây làm chẳng nên non, ba cây chụm lại nên hòn núi cao.",
+      "meaning": "Đoàn kết, hợp sức thì làm được việc lớn."
+    },
+    {
+      "text": "Gần mực thì đen, gần đèn thì sáng.",
+      "meaning": "Môi trường và bạn bè ảnh hưởng đến con người, nên chọn bạn tốt."
+    },
+    {
+      "text": "Không thầy đố mày làm nên.",
+      "meaning": "Thầy dạy dỗ là điều rất quan trọng trên đường học tập."
+    },
+    {
+      "text": "Kính thầy yêu bạn.",
+      "meaning": "Hãy tôn trọng thầy cô và quý mến bạn bè."
+    },
+    {
+      "text": "Tôn sư trọng đạo.",
+      "meaning": "Kính trọng thầy cô và những điều thầy dạy."
+    },
+    {
+      "text": "Học thầy không tày học bạn.",
+      "meaning": "Học hỏi từ bạn bè cũng bổ ích không kém học từ thầy."
+    },
+    {
+      "text": "Đi một ngày đàng, học một sàng khôn.",
+      "meaning": "Đi nhiều, trải nghiệm nhiều thì hiểu biết thêm nhiều."
+    },
+    {
+      "text": "Tốt gỗ hơn tốt nước sơn.",
+      "meaning": "Phẩm chất bên trong quan trọng hơn vẻ bề ngoài."
+    },
+    {
+      "text": "Tốt danh hơn lành áo.",
+      "meaning": "Tiếng tốt, nhân cách đáng quý hơn quần áo đẹp."
+    },
+    {
+      "text": "Chết đứng còn hơn sống quỳ.",
+      "meaning": "Giữ phẩm giá và lòng tự trọng của mình."
+    },
+    {
+      "text": "Đói cho sạch, rách cho thơm.",
+      "meaning": "Dù khó khăn vẫn giữ lòng trong sạch và phẩm giá."
+    },
+    {
+      "text": "Giấy rách phải giữ lấy lề.",
+      "meaning": "Dù nghèo khó vẫn giữ nếp sống đạo đức."
+    },
+    {
+      "text": "Có chí thì nên.",
+      "meaning": "Có ý chí và quyết tâm thì việc gì cũng làm được."
+    },
+    {
+      "text": "Thất bại là mẹ thành công.",
+      "meaning": "Từ thất bại ta rút ra bài học để tiến bộ."
+    },
+    {
+      "text": "Cái nết đánh chết cái đẹp.",
+      "meaning": "Tính nết tốt đáng quý hơn nhan sắc."
+    },
+    {
+      "text": "Lời chào cao hơn mâm cỗ.",
+      "meaning": "Một lời chào lịch sự quý hơn cả bữa tiệc thịnh soạn."
+    },
+    {
+      "text": "Chị ngã em nâng.",
+      "meaning": "Anh chị em thương yêu, nâng đỡ nhau lúc khó khăn."
+    },
+    {
+      "text": "Anh em như thể tay chân.",
+      "meaning": "Anh em gắn bó, yêu thương như các bộ phận của một cơ thể."
+    },
+    {
+      "text": "Anh em thuận hòa là nhà có phúc.",
+      "meaning": "Anh em hòa thuận thì gia đình êm ấm."
+    },
+    {
+      "text": "Con có cha như nhà có nóc.",
+      "meaning": "Cha là chỗ dựa vững chắc che chở cho con."
+    },
+    {
+      "text": "Công cha như núi Thái Sơn, nghĩa mẹ như nước trong nguồn chảy ra.",
+      "meaning": "Công ơn cha mẹ to lớn, lâu bền, con cái nên ghi nhớ."
+    },
+    {
+      "text": "Một lòng thờ mẹ kính cha, cho tròn chữ hiếu mới là đạo con.",
+      "meaning": "Con cái nên hiếu thảo với cha mẹ."
+    },
+    {
+      "text": "Cha mẹ sinh con, trời sinh tính.",
+      "meaning": "Mỗi người có một tính cách riêng, cần hiểu và thông cảm."
+    },
+    {
+      "text": "Con hơn cha là nhà có phúc.",
+      "meaning": "Thế hệ sau tiến bộ hơn là niềm vui của gia đình."
+    },
+    {
+      "text": "Máu chảy ruột mềm.",
+      "meaning": "Người thân ruột thịt luôn thương xót nhau."
+    },
+    {
+      "text": "Bán anh em xa, mua láng giềng gần.",
+      "meaning": "Hàng xóm tốt, gần gũi có thể giúp ta lúc cần."
+    },
+    {
+      "text": "Tối lửa tắt đèn có nhau.",
+      "meaning": "Hàng xóm sống gần gũi, giúp đỡ nhau lúc khó khăn."
+    },
+    {
+      "text": "Đường đi khó, không khó vì ngăn sông cách núi, mà khó vì lòng người ngại núi e sông.",
+      "meaning": "Khó khăn lớn nhất thường là sự e ngại trong lòng mình."
+    },
+    {
+      "text": "Chậm mà chắc.",
+      "meaning": "Làm từ từ nhưng vững vàng sẽ tốt hơn vội vàng."
+    },
+    {
+      "text": "Dục tốc bất đạt.",
+      "meaning": "Quá vội vàng thì khó đạt được kết quả tốt."
+    },
+    {
+      "text": "Cẩn tắc vô ưu.",
+      "meaning": "Cẩn thận từ đầu thì đỡ phải lo lắng về sau."
+    },
+    {
+      "text": "Một điều nhịn, chín điều lành.",
+      "meaning": "Biết nhường nhịn thì tránh được nhiều rắc rối."
+    },
+    {
+      "text": "Chín bỏ làm mười.",
+      "meaning": "Biết bao dung, bỏ qua lỗi nhỏ cho nhau."
+    },
+    {
+      "text": "Dĩ hòa vi quý.",
+      "meaning": "Sống hòa thuận với nhau là điều đáng quý nhất."
+    },
+    {
+      "text": "Mềm nắn rắn buông.",
+      "meaning": "Cư xử mềm mỏng, linh hoạt tùy từng hoàn cảnh."
+    },
+    {
+      "text": "Lạt mềm buộc chặt.",
+      "meaning": "Cách nói mềm mỏng, tình cảm dễ giữ được lòng người."
+    },
+    {
+      "text": "Nước chảy đá mòn.",
+      "meaning": "Kiên trì lâu dài thì việc khó cũng thành."
+    },
+    {
+      "text": "Mưa dầm thấm lâu.",
+      "meaning": "Sự bền bỉ, đều đặn có tác dụng sâu sắc về lâu dài."
+    },
+    {
+      "text": "Kiến tha lâu cũng đầy tổ.",
+      "meaning": "Làm việc nhỏ đều đặn, tích lũy dần sẽ được nhiều."
+    },
+    {
+      "text": "Tích tiểu thành đại.",
+      "meaning": "Góp nhặt từng chút nhỏ sẽ thành điều lớn."
+    },
+    {
+      "text": "Góp gió thành bão.",
+      "meaning": "Nhiều việc nhỏ cộng lại tạo nên sức mạnh lớn."
+    },
+    {
+      "text": "Trăm hay không bằng tay quen.",
+      "meaning": "Có kiến thức nhưng cần luyện tập nhiều mới giỏi."
+    },
+    {
+      "text": "Cần cù bù thông minh.",
+      "meaning": "Chăm chỉ có thể bù đắp cho sự kém nhanh nhạy."
+    },
+    {
+      "text": "Tay làm hàm nhai, tay quai miệng trễ.",
+      "meaning": "Có làm việc mới có cái ăn; lười biếng thì thiếu thốn."
+    },
+    {
+      "text": "Làm khi lành, để dành khi đau.",
+      "meaning": "Chăm làm, biết tiết kiệm để dành cho lúc khó khăn."
+    },
+    {
+      "text": "Năng nhặt chặt bị.",
+      "meaning": "Tích góp đều đặn thì sẽ có nhiều."
+    },
+    {
+      "text": "Có làm thì mới có ăn.",
+      "meaning": "Phải lao động thì mới có thành quả."
+    },
+    {
+      "text": "Thức khuya dậy sớm.",
+      "meaning": "Chăm chỉ, cần mẫn trong công việc."
+    },
+    {
+      "text": "Một nắng hai sương.",
+      "meaning": "Nói về sự vất vả, chịu khó của người lao động."
+    },
+    {
+      "text": "Chân lấm tay bùn.",
+      "meaning": "Cuộc sống lao động vất vả của người nông dân."
+    },
+    {
+      "text": "Ai ơi bưng bát cơm đầy, dẻo thơm một hạt đắng cay muôn phần.",
+      "meaning": "Mỗi hạt cơm đều chứa nhiều vất vả của người nông dân."
+    },
+    {
+      "text": "Tấc đất tấc vàng.",
+      "meaning": "Đất đai rất quý, cần trân trọng giữ gìn."
+    },
+    {
+      "text": "Nhất nước, nhì phân, tam cần, tứ giống.",
+      "meaning": "Kinh nghiệm làm ruộng: nước, phân, siêng năng, giống đều quan trọng."
+    },
+    {
+      "text": "Người sống về gạo, cá bống về sông.",
+      "meaning": "Con người cần cơm gạo như cá cần nước."
+    },
+    {
+      "text": "Dĩ nông vi bản.",
+      "meaning": "Nông nghiệp là gốc rễ nuôi sống con người."
+    },
+    {
+      "text": "Rừng vàng biển bạc.",
+      "meaning": "Thiên nhiên giàu có, cần biết gìn giữ."
+    },
+    {
+      "text": "Chim có tổ, người có tông.",
+      "meaning": "Ai cũng có nguồn gốc, cần nhớ về gia đình và tổ tiên."
+    },
+    {
+      "text": "Lá rụng về cội.",
+      "meaning": "Dù đi xa, con người vẫn nhớ và hướng về quê hương nguồn cội."
+    },
+    {
+      "text": "Cây có cội, nước có nguồn.",
+      "meaning": "Mọi thứ đều có gốc gác, ta cần nhớ nguồn cội."
+    },
+    {
+      "text": "Chim khôn chọn cành mà đậu.",
+      "meaning": "Biết chọn nơi, chọn bạn phù hợp để sống tốt."
+    },
+    {
+      "text": "Ếch ngồi đáy giếng.",
+      "meaning": "Hiểu biết hạn hẹp mà tưởng mình biết nhiều, nên mở rộng tầm nhìn."
+    },
+    {
+      "text": "Thùng rỗng kêu to.",
+      "meaning": "Người ít hiểu biết thường hay khoe khoang ồn ào."
+    },
+    {
+      "text": "Lúa chín cúi đầu.",
+      "meaning": "Người càng hiểu biết, càng khiêm tốn."
+    },
+    {
+      "text": "Biết thì thưa thốt, không biết thì dựa cột mà nghe.",
+      "meaning": "Biết thì nói, không biết thì lắng nghe và học hỏi."
+    },
+    {
+      "text": "Nói phải củ cải cũng nghe.",
+      "meaning": "Lời đúng đắn, hợp lý thì ai cũng sẵn lòng lắng nghe."
+    },
+    {
+      "text": "Nói ít làm nhiều.",
+      "meaning": "Hãy làm nhiều hơn là nói."
+    },
+    {
+      "text": "Lời nói gió bay.",
+      "meaning": "Lời nói dễ quên, nên giữ lời hứa bằng việc làm."
+    },
+    {
+      "text": "Một lời nói dối, sám hối bảy ngày.",
+      "meaning": "Nói dối thì lòng áy náy, nên sống thật thà."
+    },
+    {
+      "text": "Thật thà là cha quỷ quái.",
+      "meaning": "Sống thật thà đôi khi bị xem là ngây thơ, nhưng vẫn đáng quý."
+    },
+    {
+      "text": "Chữ tín quý hơn vàng.",
+      "meaning": "Giữ lời hứa là điều rất đáng quý."
+    },
+    {
+      "text": "Một lần bất tín, vạn lần bất tin.",
+      "meaning": "Mất lòng tin một lần thì khó lấy lại, nên giữ chữ tín."
+    },
+    {
+      "text": "Nói có sách, mách có chứng.",
+      "meaning": "Nói điều gì cũng cần có căn cứ rõ ràng."
+    },
+    {
+      "text": "Uốn lưỡi bảy lần trước khi nói.",
+      "meaning": "Suy nghĩ kỹ trước khi nói để tránh làm tổn thương người khác."
+    },
+    {
+      "text": "Lời nói đọi máu.",
+      "meaning": "Lời nói nặng nề có thể làm người khác đau lòng."
+    },
+    {
+      "text": "Vàng thì thử lửa, thử tay, chuông kêu thử tiếng, người ngay thử lời.",
+      "meaning": "Muốn biết người thế nào thì xem lời nói và việc làm của họ."
+    },
+    {
+      "text": "Chọn bạn mà chơi.",
+      "meaning": "Nên cẩn thận chọn người bạn tốt."
+    },
+    {
+      "text": "Hoạn nạn mới biết bạn hiền.",
+      "meaning": "Lúc khó khăn mới thấy ai là bạn chân thành."
+    },
+    {
+      "text": "Ở bầu thì tròn, ở ống thì dài.",
+      "meaning": "Con người thay đổi theo môi trường sống và bạn bè."
+    },
+    {
+      "text": "Nhập gia tùy tục.",
+      "meaning": "Đến nơi nào nên tôn trọng phong tục ở nơi đó."
+    },
+    {
+      "text": "Nhập gia vấn húy.",
+      "meaning": "Đến nhà ai nên hỏi và tôn trọng quy tắc nhà đó."
+    },
+    {
+      "text": "Kính lão đắc thọ.",
+      "meaning": "Kính trọng người già là điều tốt đẹp."
+    },
+    {
+      "text": "Kính trên nhường dưới.",
+      "meaning": "Tôn trọng người lớn tuổi và nhường nhịn người nhỏ hơn."
+    },
+    {
+      "text": "Trẻ cậy cha, già cậy con.",
+      "meaning": "Gia đình nương tựa nhau qua các thế hệ."
+    },
+    {
+      "text": "Trẻ người non dạ.",
+      "meaning": "Người trẻ còn thiếu kinh nghiệm, cần được chỉ bảo ân cần."
+    },
+    {
+      "text": "Gừng càng già càng cay.",
+      "meaning": "Người càng nhiều tuổi càng có kinh nghiệm và bản lĩnh."
+    },
+    {
+      "text": "Ăn một miếng, tiếng để đời.",
+      "meaning": "Một lời, một việc làm có thể để lại tiếng lâu dài."
+    },
+    {
+      "text": "Ăn trông nồi, ngồi trông hướng.",
+      "meaning": "Biết nhìn trước nhìn sau, cư xử khéo léo, đúng mực."
+    },
+    {
+      "text": "Ăn cây nào rào cây ấy.",
+      "meaning": "Hưởng lợi từ ai thì phải biết gìn giữ, bảo vệ."
+    },
+    {
+      "text": "Ăn nên đọi, nói nên lời.",
+      "meaning": "Ăn nói phải khéo léo, đúng mực."
+    },
+    {
+      "text": "Của ít lòng nhiều.",
+      "meaning": "Quà nhỏ nhưng chứa tấm lòng lớn."
+    },
+    {
+      "text": "Một miếng khi đói bằng một gói khi no.",
+      "meaning": "Giúp người lúc họ cần thì quý hơn nhiều lúc dư dả."
+    },
+    {
+      "text": "Có qua có lại mới toại lòng nhau.",
+      "meaning": "Đối xử tử tế với nhau thì tình cảm thêm bền."
+    },
+    {
+      "text": "Dù ai nói ngả nói nghiêng, lòng ta vẫn vững như kiềng ba chân.",
+      "meaning": "Giữ vững lập trường, không dao động trước lời bàn tán."
+    },
+    {
+      "text": "Nhường cơm sẻ áo.",
+      "meaning": "Chia sẻ, giúp đỡ nhau những điều thiết yếu."
+    },
+    {
+      "text": "Chia ngọt sẻ bùi.",
+      "meaning": "Cùng chia sẻ cả vui lẫn khó khăn."
+    },
+    {
+      "text": "Đồng cam cộng khổ.",
+      "meaning": "Cùng nhau chia sẻ cả sướng lẫn khổ."
+    },
+    {
+      "text": "Trong ấm ngoài êm.",
+      "meaning": "Nhà cửa, gia đình hòa thuận, yên ổn."
+    },
+    {
+      "text": "Thuận vợ thuận chồng, tát biển Đông cũng cạn.",
+      "meaning": "Vợ chồng đồng lòng thì làm được việc lớn."
+    },
+    {
+      "text": "Chồng em áo rách em thương, chồng người áo gấm xông hương mặc người.",
+      "meaning": "Quý tình nghĩa hơn của cải bề ngoài."
+    },
+    {
+      "text": "Râu tôm nấu với ruột bầu, chồng chan vợ húp gật đầu khen ngon.",
+      "meaning": "Bữa cơm giản dị mà hạnh phúc của vợ chồng hòa thuận."
+    },
+    {
+      "text": "Bầu ơi thương lấy bí cùng, tuy rằng khác giống nhưng chung một giàn.",
+      "meaning": "Cùng một cộng đồng hãy thương yêu, đùm bọc nhau."
+    },
+    {
+      "text": "Đồng tiền liền khúc ruột.",
+      "meaning": "Tiền bạc quan trọng, cần biết tiết kiệm và dùng đúng chỗ."
+    },
+    {
+      "text": "Ăn có nhai, nói có nghĩ.",
+      "meaning": "Làm gì cũng cần cẩn thận và suy nghĩ."
+    },
+    {
+      "text": "Cái khó ló cái khôn.",
+      "meaning": "Gặp khó khăn thì con người nghĩ ra cách hay."
+    },
+    {
+      "text": "Thương cho roi cho vọt, ghét cho ngọt cho bùi.",
+      "meaning": "Thương con thì dạy dỗ nghiêm, nhưng cần dạy bằng tình thương."
+    },
+    {
+      "text": "Con hiền cháu thảo.",
+      "meaning": "Con cháu ngoan ngoãn, hiếu thảo."
+    },
+    {
+      "text": "Nuôi con mới biết lòng cha mẹ.",
+      "meaning": "Làm cha mẹ mới hiểu hết công ơn cha mẹ."
+    },
+    {
+      "text": "Cá không ăn muối cá ươn, con cãi cha mẹ trăm đường con hư.",
+      "meaning": "Nhắc con cái biết lắng nghe lời dạy của cha mẹ."
+    },
+    {
+      "text": "An phận thủ thường.",
+      "meaning": "Biết bằng lòng với hoàn cảnh của mình và sống giản dị."
+    },
+    {
+      "text": "Tham thì thâm.",
+      "meaning": "Lòng tham dễ làm mình mất đi nhiều điều."
+    },
+    {
+      "text": "Tham vàng bỏ ngãi.",
+      "meaning": "Đừng vì lợi mà quên nghĩa tình."
+    },
+    {
+      "text": "Ăn ngay nói thật, mọi tật mọi lành.",
+      "meaning": "Sống thật thà, ngay thẳng sẽ yên lòng."
+    },
+    {
+      "text": "Người ta là hoa đất.",
+      "meaning": "Con người là điều quý giá nhất trên đời."
+    },
+    {
+      "text": "Một mặt người bằng mười mặt của.",
+      "meaning": "Con người quý hơn của cải."
+    },
+    {
+      "text": "Ăn chín uống sôi.",
+      "meaning": "Ăn uống sạch sẽ để giữ gìn sức khỏe."
+    },
+    {
+      "text": "Bệnh từ miệng vào, họa từ miệng ra.",
+      "meaning": "Cẩn thận ăn uống và lời nói."
+    },
+    {
+      "text": "Nhà sạch thì mát, bát sạch ngon cơm.",
+      "meaning": "Giữ nhà cửa, bát đũa sạch sẽ thì cuộc sống dễ chịu."
+    },
+    {
+      "text": "Giận quá mất khôn.",
+      "meaning": "Nóng giận làm ta khó suy nghĩ sáng suốt."
+    },
+    {
+      "text": "Bớt giận làm lành.",
+      "meaning": "Nén giận lại và làm hòa với nhau."
+    },
+    {
+      "text": "Sông có khúc, người có lúc.",
+      "meaning": "Cuộc đời có lúc thuận lúc khó, hãy giữ lòng bình tĩnh."
+    },
+    {
+      "text": "Ăn bát cơm dẻo nhớ nẻo đường đi.",
+      "meaning": "Hưởng điều tốt đẹp rồi vẫn nhớ quãng đường vất vả đã qua."
+    },
+    {
+      "text": "Ăn chắc mặc bền.",
+      "meaning": "Sống thực tế, chọn những thứ chắc chắn, bền lâu."
+    },
+    {
+      "text": "Ăn vóc học hay.",
+      "meaning": "Ăn đủ để lớn khỏe, học để giỏi giang."
+    },
+    {
+      "text": "Ăn ở có nhân.",
+      "meaning": "Cư xử với mọi người bằng lòng nhân hậu."
+    },
+    {
+      "text": "Ăn có chỗ, ở có nơi.",
+      "meaning": "Sống nề nếp, đâu ra đấy."
+    },
+    {
+      "text": "Ăn tùy nơi, chơi tùy chốn.",
+      "meaning": "Biết cư xử cho phù hợp với hoàn cảnh."
+    },
+    {
+      "text": "Ăn không rau như đau không thuốc.",
+      "meaning": "Ăn rau xanh rất tốt cho sức khỏe."
+    },
+    {
+      "text": "Ăn bữa trước lo bữa sau.",
+      "meaning": "Biết lo xa, tính toán chu đáo cho ngày mai."
+    },
+    {
+      "text": "Áo rách khéo vá hơn lành vụng may.",
+      "meaning": "Biết giữ gìn, khéo léo quý hơn của cải mới."
+    },
+    {
+      "text": "Cây ngay không sợ chết đứng.",
+      "meaning": "Sống ngay thẳng thì lòng thanh thản."
+    },
+    {
+      "text": "Chớ thấy sóng cả mà ngã tay chèo.",
+      "meaning": "Gặp khó khăn lớn vẫn giữ vững tinh thần."
+    },
+    {
+      "text": "Chuông có đánh mới kêu, đèn có khêu mới tỏ.",
+      "meaning": "Muốn hiểu biết thì phải hỏi han, học hỏi."
+    },
+    {
+      "text": "Có cứng mới đứng đầu gió.",
+      "meaning": "Phải có bản lĩnh vững vàng mới đứng vững trước thử thách."
+    },
+    {
+      "text": "Đi hỏi già, về nhà hỏi trẻ.",
+      "meaning": "Biết học hỏi từ người lớn tuổi và cả người trẻ."
+    },
+    {
+      "text": "Đường dài mới biết ngựa hay, ở lâu mới biết lòng người.",
+      "meaning": "Thời gian giúp ta hiểu rõ phẩm chất của một người."
+    },
+    {
+      "text": "Gà cùng một mẹ chớ hoài đá nhau.",
+      "meaning": "Người cùng một nhà, một cộng đồng đừng gây gổ với nhau."
+    },
+    {
+      "text": "Khôn ngoan đối đáp người ngoài, gà cùng một mẹ chớ hoài đá nhau.",
+      "meaning": "Người một nhà nên đoàn kết thay vì tranh giành."
+    },
+    {
+      "text": "Học một biết mười.",
+      "meaning": "Người thông minh, biết suy rộng ra từ điều đã học."
+    },
+    {
+      "text": "Hữu xạ tự nhiên hương.",
+      "meaning": "Người có phẩm chất tốt tự nhiên được mọi người quý mến."
+    },
+    {
+      "text": "Khéo ăn thì no, khéo co thì ấm.",
+      "meaning": "Biết sắp xếp, tiết kiệm thì cuộc sống đủ đầy hơn."
+    },
+    {
+      "text": "Lửa thử vàng, gian nan thử sức.",
+      "meaning": "Khó khăn giúp ta biết sức mạnh và bản lĩnh của mình."
+    },
+    {
+      "text": "Một con ngựa đau cả tàu bỏ cỏ.",
+      "meaning": "Một người gặp khó khăn, cả nhà cả đội cùng thương cảm."
+    },
+    {
+      "text": "Muốn sang thì bắc cầu kiều, muốn con hay chữ thì yêu lấy thầy.",
+      "meaning": "Muốn con học giỏi, hãy biết kính trọng thầy cô."
+    },
+    {
+      "text": "Muốn biết phải hỏi, muốn giỏi phải học.",
+      "meaning": "Hiểu biết đến từ việc hỏi han và học tập."
+    },
+    {
+      "text": "Trông trời trông đất trông mây, trông mưa trông nắng trông ngày trông đêm.",
+      "meaning": "Nỗi lòng của người nông dân gắn bó với thời tiết và mùa màng."
+    },
+    {
+      "text": "Nước lã mà vã nên hồ.",
+      "meaning": "Có sức người, có kiên trì thì từ chút ít cũng làm nên việc lớn."
+    },
+    {
+      "text": "Nói một đằng làm một nẻo.",
+      "meaning": "Nhắc nhở lời nói và việc làm nên đi đôi với nhau."
+    },
+    {
+      "text": "Miệng nói tay làm.",
+      "meaning": "Có nói thì phải có làm."
+    },
+    {
+      "text": "Nói thì dễ, làm thì khó.",
+      "meaning": "Làm được việc thật sự mới là điều khó."
+    },
+    {
+      "text": "Việc hôm nay chớ để ngày mai.",
+      "meaning": "Nên làm việc đúng lúc, không chần chừ."
+    },
+    {
+      "text": "Sai một li đi một dặm.",
+      "meaning": "Một sai sót nhỏ có thể dẫn đến sai lệch lớn, nên cẩn thận."
+    },
+    {
+      "text": "Tre già măng mọc.",
+      "meaning": "Thế hệ trước nối tiếp thế hệ sau, đời đời kế tục."
+    },
+    {
+      "text": "Tre non dễ uốn.",
+      "meaning": "Dạy dỗ khi còn nhỏ thì dễ hơn."
+    },
+    {
+      "text": "Thức lâu mới biết đêm dài, ở lâu mới biết con người có nhân.",
+      "meaning": "Phải sống gần lâu mới hiểu lòng người."
+    },
+    {
+      "text": "Thua keo này bày keo khác.",
+      "meaning": "Thất bại thì rút kinh nghiệm và thử lại."
+    },
+    {
+      "text": "Nói hay không bằng hay nghe.",
+      "meaning": "Biết lắng nghe còn quý hơn nói giỏi."
+    },
+    {
+      "text": "Người khôn ăn nói nửa chừng, để cho người dại nửa mừng nửa lo.",
+      "meaning": "Người khôn ngoan nói điều độ, tế nhị."
+    },
+    {
+      "text": "Cá chuối đắm đuối vì con.",
+      "meaning": "Tình thương của người mẹ dành cho con rất sâu nặng."
+    },
+    {
+      "text": "Mẹ già như chuối ba hương, như xôi nếp một, như đường mía lau.",
+      "meaning": "Hình ảnh người mẹ già dịu ngọt, thơm thảo trong lòng con."
+    },
+    {
+      "text": "Dao có mài mới sắc, người có học mới khôn.",
+      "meaning": "Phải học tập, rèn luyện thì mới trưởng thành."
+    },
+    {
+      "text": "Khách đến nhà không gà thì vịt.",
+      "meaning": "Người Việt đón khách chu đáo, thân tình."
+    },
+    {
+      "text": "Miếng trầu là đầu câu chuyện.",
+      "meaning": "Một việc nhỏ thân tình giúp mở đầu cuộc trò chuyện."
+    },
+    {
+      "text": "Một giọt máu đào hơn ao nước lã.",
+      "meaning": "Tình ruột thịt gắn bó hơn người ngoài."
+    },
+    {
+      "text": "Lên thác xuống ghềnh.",
+      "meaning": "Chỉ cuộc sống nhiều vất vả, khó khăn đã vượt qua."
+    },
+    {
+      "text": "Chín người mười ý.",
+      "meaning": "Mỗi người có một cách nghĩ, cần biết lắng nghe nhau."
+    },
+    {
+      "text": "Đồng tâm hiệp lực.",
+      "meaning": "Cùng một lòng cùng hợp sức làm việc."
+    },
+    {
+      "text": "Chung lưng đấu cật.",
+      "meaning": "Cùng gắn bó, hợp sức vượt qua khó khăn."
+    },
+    {
+      "text": "Nước mắt chảy xuôi.",
+      "meaning": "Cha mẹ thương con nhiều, con cái nên nhớ hiếu thảo."
+    },
+    {
+      "text": "Thuốc đắng dã tật, sự thật mất lòng.",
+      "meaning": "Lời thật đôi khi khó nghe nhưng có ích."
+    },
+    {
+      "text": "Tiên học lễ, hậu học văn.",
+      "meaning": "Học cách cư xử lễ phép trước rồi học kiến thức."
+    },
+    {
+      "text": "Người không học như ngọc không mài.",
+      "meaning": "Phải học tập thì mới trở nên giá trị."
+    },
+    {
+      "text": "Văn ôn võ luyện.",
+      "meaning": "Học văn phải ôn, học võ phải luyện thường xuyên."
+    },
+    {
+      "text": "Một nghề cho chín còn hơn chín nghề.",
+      "meaning": "Làm một việc thật giỏi hơn là biết lơ mơ nhiều việc."
+    },
+    {
+      "text": "Lên non mới biết non cao, nuôi con mới biết công lao mẫu từ.",
+      "meaning": "Làm cha mẹ mới hiểu công lao cha mẹ."
+    },
+    {
+      "text": "Yêu nhau củ ấu cũng tròn, ghét nhau quả bồ hòn cũng méo.",
+      "meaning": "Có thương mến thì thấy mọi điều đều tốt đẹp."
+    },
+    {
+      "text": "Thương nhau cau sáu bổ ba, ghét nhau cau sáu bổ ra làm mười.",
+      "meaning": "Thương nhau thì biết chia sẻ, nhường nhịn."
+    },
+    {
+      "text": "Chiều chiều ra đứng ngõ sau, trông về quê mẹ ruột đau chín chiều.",
+      "meaning": "Nỗi nhớ quê mẹ của người con xa xứ."
+    },
+    {
+      "text": "Ai ơi đừng bỏ ruộng hoang, bao nhiêu tấc đất tấc vàng bấy nhiêu.",
+      "meaning": "Hãy quý trọng và chăm sóc ruộng đất."
+    },
+    {
+      "text": "Dù ai đi ngược về xuôi, nhớ ngày giỗ Tổ mùng mười tháng ba.",
+      "meaning": "Dù đi đâu cũng nhớ về cội nguồn dân tộc."
+    },
+    {
+      "text": "Mất lòng trước, được lòng sau.",
+      "meaning": "Nói thẳng thắn lúc đầu có thể mất lòng nhưng lâu dài lại được quý."
+    },
+    {
+      "text": "Chữ tâm kia mới bằng ba chữ tài.",
+      "meaning": "Tấm lòng tốt đáng quý hơn tài năng."
+    },
+    {
+      "text": "Đi đến nơi về đến chốn.",
+      "meaning": "Làm việc gì cũng nên làm cho trọn vẹn."
+    },
+    {
+      "text": "Của cho không bằng cách cho.",
+      "meaning": "Cách cho tử tế, tế nhị quý hơn món quà."
+    },
+    {
+      "text": "Hơn nhau tấm áo manh quần, thả ra mình trần ai cũng như ai.",
+      "meaning": "Mọi người đều bình đẳng, đừng coi trọng bề ngoài."
+    },
+    {
+      "text": "Đầu xuôi đuôi lọt.",
+      "meaning": "Bắt đầu tốt thì việc sau dễ dàng hơn."
+    },
+    {
+      "text": "Đi đâu mà vội mà vàng, mà vấp phải đá mà quàng phải dây.",
+      "meaning": "Đừng vội vàng, đi chậm lại để tránh vấp ngã."
+    },
+    {
+      "text": "Nhìn xa trông rộng.",
+      "meaning": "Biết nhìn xa, nghĩ rộng cho việc lâu dài."
+    },
+    {
+      "text": "Trăm nghe không bằng một thấy.",
+      "meaning": "Tự mình thấy, tự mình trải nghiệm đáng tin hơn nghe kể."
+    },
+    {
+      "text": "Đi cho biết đó biết đây, ở nhà với mẹ biết ngày nào khôn.",
+      "meaning": "Đi nhiều nơi để mở mang hiểu biết."
+    },
+    {
+      "text": "Của một đồng, công một nén.",
+      "meaning": "Công sức bỏ ra quý hơn giá trị vật chất."
+    },
+    {
+      "text": "Chọn mặt gửi vàng.",
+      "meaning": "Cần cẩn thận chọn người đáng tin cậy."
+    },
+    {
+      "text": "Cái sảy nảy cái ung.",
+      "meaning": "Việc nhỏ không xử lý kịp thời có thể thành lớn."
+    },
+    {
+      "text": "Mất bò mới lo làm chuồng.",
+      "meaning": "Nên chuẩn bị trước, đừng đợi có chuyện mới lo."
+    },
+    {
+      "text": "Liệu cơm gắp mắm.",
+      "meaning": "Tính toán chi tiêu cho phù hợp với khả năng của mình."
+    },
+    {
+      "text": "Cười người chớ vội cười lâu, cười người hôm trước hôm sau người cười.",
+      "meaning": "Đừng vội chê cười người khác."
+    },
+    {
+      "text": "Một chữ là thầy, nửa chữ cũng là thầy.",
+      "meaning": "Dù người dạy ta ít đến đâu cũng đáng được tôn kính."
+    },
+    {
+      "text": "Muốn qua sông thì phải lụy đò.",
+      "meaning": "Cần sự giúp đỡ của người khác thì phải biết ơn, nhún nhường."
+    },
+    {
+      "text": "Cây nhà lá vườn.",
+      "meaning": "Những thứ giản dị, tự làm ra, đáng trân trọng."
+    },
+    {
+      "text": "Tình làng nghĩa xóm.",
+      "meaning": "Tình cảm gắn bó, giúp đỡ nhau giữa những người cùng xóm làng."
+    },
+    {
+      "text": "Đèn nhà ai nấy rạng.",
+      "meaning": "Mỗi nhà nên lo việc nhà mình trước."
+    },
+    {
+      "text": "Một bồ cái lí không bằng một tí cái tình.",
+      "meaning": "Cư xử có tình cảm quan trọng hơn chỉ nói lí lẽ."
+    },
+    {
+      "text": "Chịu thương chịu khó.",
+      "meaning": "Chịu khó làm việc, chịu đựng vất vả."
+    },
+    {
+      "text": "Trăm năm bia đá thì mòn, nghìn năm bia miệng vẫn còn trơ trơ.",
+      "meaning": "Tiếng tốt hay xấu đều được người đời nhớ mãi."
+    },
+    {
+      "text": "Người thanh tiếng nói cũng thanh, chuông kêu khẽ đánh bên thành cũng kêu.",
+      "meaning": "Người có giáo dục thì lời nói cũng nhã nhặn."
+    },
+    {
+      "text": "Chim khôn kêu tiếng rảnh rang, người khôn nói tiếng dịu dàng dễ nghe.",
+      "meaning": "Người khôn ngoan nói năng dịu dàng, dễ nghe."
+    },
+    {
+      "text": "Ai ơi giữ chí cho bền, dù ai xoay hướng đổi nền mặc ai.",
+      "meaning": "Giữ vững ý chí của mình, không lung lay."
+    },
+    {
+      "text": "Buôn có bạn, bán có phường.",
+      "meaning": "Làm việc gì cũng nên có bạn đồng hành."
+    },
+    {
+      "text": "Hổ chết để da, người chết để tiếng.",
+      "meaning": "Sống sao để lại tiếng thơm."
+    },
+    {
+      "text": "Có bột mới gột nên hồ.",
+      "meaning": "Phải có điều kiện cần thiết mới làm nên việc."
+    },
+    {
+      "text": "Đẽo cày giữa đường.",
+      "meaning": "Làm việc nên có chính kiến, đừng nghe theo mọi lời."
+    },
+    {
+      "text": "Dây mơ rễ má.",
+      "meaning": "Chỉ mối quan hệ họ hàng chằng chịt, gần gũi."
+    },
+    {
+      "text": "Dốt hay nói chữ.",
+      "meaning": "Người ít hiểu biết thường hay khoe chữ."
+    },
+    {
+      "text": "Đứng núi này trông núi nọ.",
+      "meaning": "Không biết bằng lòng với những gì mình đang có."
+    },
+    {
+      "text": "Già néo đứt dây.",
+      "meaning": "Quá căng thẳng, cố ép thì hỏng việc."
+    },
+    {
+      "text": "Nước đến chân mới nhảy.",
+      "meaning": "Đừng đợi sát giờ mới bắt đầu làm."
+    },
+    {
+      "text": "Thắt lưng buộc bụng.",
+      "meaning": "Tiết kiệm, chắt chiu để lo cho gia đình."
+    },
+    {
+      "text": "Vạn sự khởi đầu nan.",
+      "meaning": "Mọi việc lúc mới bắt đầu thường khó khăn."
+    },
+    {
+      "text": "Xa mặt cách lòng.",
+      "meaning": "Lâu không gặp thì tình cảm dễ phai, nên giữ liên lạc."
+    },
+    {
+      "text": "Đầu tắt mặt tối.",
+      "meaning": "Chỉ sự làm việc vất vả suốt ngày."
+    },
+    {
+      "text": "Trông mặt mà bắt hình dong, con lợn có béo cỗ lòng mới ngon.",
+      "meaning": "Không nên chỉ nhìn bề ngoài để đánh giá."
+    },
+    {
+      "text": "Cày đồng đang buổi ban trưa, mồ hôi thánh thót như mưa ruộng cày.",
+      "meaning": "Hình ảnh người nông dân vất vả giữa trưa nắng."
+    },
+    {
+      "text": "Ở sao cho vừa lòng người, ở rộng người cười, ở hẹp người chê.",
+      "meaning": "Cư xử sao cho vừa phải, ai cũng khó vừa lòng nên hãy giữ lòng ngay thẳng."
+    },
+    {
+      "text": "Thuyền về có nhớ bến chăng, bến thì một dạ khăng khăng đợi thuyền.",
+      "meaning": "Lòng chung thủy, nhớ nhau dù xa cách."
+    },
+    {
+      "text": "Qua đình ngả nón trông đình, đình bao nhiêu ngói thương mình bấy nhiêu.",
+      "meaning": "Tình cảm sâu đậm với quê hương và người thân."
+    },
+    {
+      "text": "Con người có tổ có tông, như cây có cội như sông có nguồn.",
+      "meaning": "Con người nhớ cội nguồn như cây có gốc, sông có nguồn."
+    },
+    {
+      "text": "Anh em nào phải người xa, cùng chung bác mẹ một nhà cùng thân.",
+      "meaning": "Anh em cùng cha mẹ nên thương yêu nhau."
+    },
+    {
+      "text": "Cơm cha áo mẹ chữ thầy, nghĩ sao cho bõ những ngày ước ao.",
+      "meaning": "Nhớ công ơn cha mẹ và thầy cô đã nuôi dạy mình."
+    },
+    {
+      "text": "Muối ba năm muối đang còn mặn, gừng chín tháng gừng hãy còn cay.",
+      "meaning": "Tình nghĩa bền chặt như muối mặn, gừng cay."
+    },
+    {
+      "text": "Tay nâng chén muối đĩa gừng, gừng cay muối mặn xin đừng quên nhau.",
+      "meaning": "Lời nhắn giữ trọn tình nghĩa, đừng quên nhau."
+    },
+    {
+      "text": "Ngó lên nuộc lạt mái nhà, bao nhiêu nuộc lạt nhớ ông bà bấy nhiêu.",
+      "meaning": "Nhìn mái nhà mà nhớ ông bà đã tạo dựng cho mình."
+    },
+    {
+      "text": "Con trâu là đầu cơ nghiệp.",
+      "meaning": "Con trâu quan trọng với nhà nông, là bạn của người nông dân."
+    },
+    {
+      "text": "Trâu ơi ta bảo trâu này, trâu ăn no cỏ trâu cày với ta.",
+      "meaning": "Người nông dân thương yêu, gắn bó với con trâu."
+    },
+    {
+      "text": "Người sống hơn đống vàng.",
+      "meaning": "Mạng sống con người quý hơn của cải."
+    },
+    {
+      "text": "Thắng không kiêu, bại không nản.",
+      "meaning": "Thành công thì khiêm tốn, thất bại thì không nản lòng."
+    },
+    {
+      "text": "Tiên trách kỷ, hậu trách nhân.",
+      "meaning": "Nên xem lại lỗi của mình trước khi trách người khác."
+    },
+    {
+      "text": "Đừng lấy râu ông nọ cắm cằm bà kia.",
+      "meaning": "Đừng lẫn lộn, gán điều của người này cho người khác."
+    },
+    {
+      "text": "Nhất ngôn ký xuất, tứ mã nan truy.",
+      "meaning": "Lời đã nói ra thì phải giữ, khó mà rút lại."
+    },
+    {
+      "text": "Nói lời phải giữ lấy lời, đừng như con bướm đậu rồi lại bay.",
+      "meaning": "Đã hứa thì phải giữ lời."
+    },
+    {
+      "text": "Tương thân tương ái.",
+      "meaning": "Thương yêu, giúp đỡ lẫn nhau."
+    },
+    {
+      "text": "Ôn cố tri tân.",
+      "meaning": "Ôn lại điều cũ để hiểu điều mới."
+    },
+    {
+      "text": "Tương kính như tân.",
+      "meaning": "Vợ chồng tôn trọng nhau như khách quý."
+    },
+    {
+      "text": "Cây đa, bến nước, sân đình.",
+      "meaning": "Hình ảnh quen thuộc, thân thương của làng quê Việt Nam."
+    },
+    {
+      "text": "Có đầu có đuôi.",
+      "meaning": "Làm việc gì nên làm trọn từ đầu đến cuối."
+    },
+    {
+      "text": "Có trước có sau.",
+      "meaning": "Sống có thủy có chung, trọn tình trọn nghĩa."
+    },
+    {
+      "text": "Có tình có nghĩa.",
+      "meaning": "Sống chân thành, biết ơn và thủy chung."
+    },
+    {
+      "text": "Ơn sâu nghĩa nặng.",
+      "meaning": "Ơn tình rất lớn lao, cần ghi nhớ."
+    },
+    {
+      "text": "Cẩn thận từng li từng tí.",
+      "meaning": "Làm việc rất kỹ lưỡng, chu đáo."
+    },
+    {
+      "text": "Gạn đục khơi trong.",
+      "meaning": "Biết lọc điều xấu, giữ điều tốt."
+    },
+    {
+      "text": "Trọng nghĩa khinh tài.",
+      "meaning": "Coi trọng tình nghĩa hơn tiền của."
+    },
+    {
+      "text": "Nặng tình nặng nghĩa.",
+      "meaning": "Sống giàu tình cảm, trọng nghĩa."
+    },
+    {
+      "text": "Dùi mài kinh sử.",
+      "meaning": "Chăm chỉ học hành, nghiên cứu sách vở."
+    },
+    {
+      "text": "Một vừa hai phải.",
+      "meaning": "Nên điều độ, vừa phải, không quá đà."
+    },
+    {
+      "text": "Lòng vả cũng như lòng sung.",
+      "meaning": "Đối xử công bằng, không phân biệt người này người kia."
+    },
+    {
+      "text": "Nói ngọt lọt đến xương.",
+      "meaning": "Lời ngọt ngào có sức cảm hóa lòng người."
+    },
+    {
+      "text": "Thuận mua vừa bán.",
+      "meaning": "Mua bán công bằng, hai bên đều bằng lòng."
+    },
+    {
+      "text": "Tiền trao cháo múc.",
+      "meaning": "Trao đổi rõ ràng, minh bạch, không nợ nần."
+    },
+    {
+      "text": "Đất có lề, quê có thói.",
+      "meaning": "Mỗi nơi có phong tục riêng cần tôn trọng."
+    },
+    {
+      "text": "Cha nào con nấy.",
+      "meaning": "Cha mẹ nên làm gương tốt cho con."
+    },
+    {
+      "text": "Khéo tay hay làm.",
+      "meaning": "Người khéo tay, chịu khó làm thì làm được nhiều việc."
+    },
+    {
+      "text": "Tâm đầu ý hợp.",
+      "meaning": "Hai người hợp nhau, hiểu nhau."
+    },
+    {
+      "text": "Mười ngón tay có ngón ngắn ngón dài.",
+      "meaning": "Mỗi người một khác, cần biết thông cảm."
+    },
+    {
+      "text": "Vui như mở hội.",
+      "meaning": "Không khí rộn ràng, vui vẻ bên nhau."
+    },
+    {
+      "text": "Cây cao bóng cả.",
+      "meaning": "Người có đức, có tài che chở được nhiều người."
+    },
+    {
+      "text": "Núi cao còn có núi cao hơn.",
+      "meaning": "Dù giỏi đến đâu cũng còn người giỏi hơn, nên khiêm tốn."
+    },
+    {
+      "text": "Tam sao thất bản.",
+      "meaning": "Chuyện kể lại nhiều lần dễ sai lệch, nên kiểm chứng."
+    },
+    {
+      "text": "Ăn cháo đá bát.",
+      "meaning": "Nhắc ta đừng quên ơn người đã giúp mình."
+    },
+    {
+      "text": "Được voi đòi tiên.",
+      "meaning": "Biết đủ, đừng đòi hỏi mãi không thôi."
+    },
+    {
+      "text": "Mèo khen mèo dài đuôi.",
+      "meaning": "Tự khen mình thì không đáng quý, nên khiêm tốn."
+    },
+    {
+      "text": "Tốt khoe xấu che.",
+      "meaning": "Ai cũng thích khoe điều hay, giấu điều dở; hãy trung thực với mình."
+    },
+    {
+      "text": "Cha mẹ nuôi con biển hồ lai láng, con nuôi cha mẹ tính tháng tính ngày.",
+      "meaning": "Cha mẹ thương con vô bờ, con cái đừng tính toán khi chăm sóc cha mẹ."
+    },
+    {
+      "text": "Mồng một Tết cha, mồng hai Tết mẹ, mồng ba Tết thầy.",
+      "meaning": "Ngày Tết nhớ ơn cha, mẹ và thầy cô."
+    },
+    {
+      "text": "Thương nhau mấy núi cũng trèo, mấy sông cũng lội, mấy đèo cũng qua.",
+      "meaning": "Có tình thương thì mọi khó khăn đều có thể vượt qua."
+    },
+    {
+      "text": "Ăn mặn nói ngay còn hơn ăn chay nói dối.",
+      "meaning": "Thật thà, ngay thẳng đáng quý hơn dối trá."
+    },
+    {
+      "text": "Chớ thấy người sang bắt quàng làm họ.",
+      "meaning": "Đừng vì lợi mà nhận họ hàng, hãy sống chân thật."
+    },
+    {
+      "text": "Kiếm củi ba năm thiêu một giờ.",
+      "meaning": "Công sức tích góp lâu dài có thể mất nhanh, nên trân trọng giữ gìn."
+    },
+    {
+      "text": "Chồng giận thì vợ bớt lời, cơm sôi nhỏ lửa một đời không khê.",
+      "meaning": "Trong gia đình, người này nóng thì người kia nhún nhường để êm ấm."
+    },
+    {
+      "text": "Con ơi nhớ lấy câu này, sông sâu chớ lội, đò đầy chớ sang.",
+      "meaning": "Lời dặn cha mẹ về sự cẩn trọng, an toàn."
+    },
+    {
+      "text": "Trước lạ sau quen.",
+      "meaning": "Điều lạ lúc đầu rồi sẽ thân quen khi tiếp xúc nhiều."
+    },
+    {
+      "text": "Nghĩa tử là nghĩa tận.",
+      "meaning": "Người đã khuất thì nên bỏ qua hiềm khích, giữ lòng kính trọng."
+    }
+  ],
+  "en": [
+    {
+      "text": "When you drink water, remember its source.",
+      "meaning": "Be grateful to those who gave you something good."
+    },
+    {
+      "text": "When you eat the fruit, remember who planted the tree.",
+      "meaning": "Remember the effort of those who made your good things possible."
+    },
+    {
+      "text": "One smile is worth ten tonics.",
+      "meaning": "A smile brings joy and health to oneself and others."
+    },
+    {
+      "text": "Words cost nothing to buy, so choose them to please one another.",
+      "meaning": "Speak gently and kindly so that others feel at ease."
+    },
+    {
+      "text": "Learn to eat, learn to speak, learn to wrap, learn to open.",
+      "meaning": "Everything in life, even daily manners, is something to be learned."
+    },
+    {
+      "text": "With effort, an iron bar can be ground into a needle.",
+      "meaning": "Patient, steady work can accomplish even hard things."
+    },
+    {
+      "text": "Love others as you love yourself.",
+      "meaning": "Care for others as much as you care for yourself."
+    },
+    {
+      "text": "Whole leaves wrap torn leaves.",
+      "meaning": "Those who have more should help those in need."
+    },
+    {
+      "text": "Red silk covers the mirror stand; people of one land must love one another.",
+      "meaning": "People of one community should cherish and support each other."
+    },
+    {
+      "text": "One tree makes no mountain, but three together make a high peak.",
+      "meaning": "Working together achieves what one alone cannot."
+    },
+    {
+      "text": "Near ink you turn black, near a lamp you grow bright.",
+      "meaning": "Our surroundings and friends shape us, so choose them well."
+    },
+    {
+      "text": "Without a teacher, you can hardly get far.",
+      "meaning": "A teacher's guidance matters greatly in learning."
+    },
+    {
+      "text": "Respect your teachers and cherish your friends.",
+      "meaning": "Honor your teachers and love your friends."
+    },
+    {
+      "text": "Honor the teacher and value what is taught.",
+      "meaning": "Respect teachers and the lessons they give."
+    },
+    {
+      "text": "Learning from a teacher is no better than learning from friends.",
+      "meaning": "Friends can teach us just as much as teachers do."
+    },
+    {
+      "text": "A day's journey brings a basketful of wisdom.",
+      "meaning": "Travel and experience widen our understanding."
+    },
+    {
+      "text": "Good wood is better than good paint.",
+      "meaning": "Inner quality matters more than outward looks."
+    },
+    {
+      "text": "A good name is better than fine clothes.",
+      "meaning": "A good reputation is worth more than fine clothing."
+    },
+    {
+      "text": "Better to die standing than live kneeling.",
+      "meaning": "Keep your dignity and self-respect."
+    },
+    {
+      "text": "Be hungry but clean, be ragged but fragrant.",
+      "meaning": "Keep your integrity even in hard times."
+    },
+    {
+      "text": "Even torn paper keeps its margin.",
+      "meaning": "Hold on to your principles even in hardship."
+    },
+    {
+      "text": "Where there is will, there is a way.",
+      "meaning": "Determination helps us achieve our goals."
+    },
+    {
+      "text": "Failure is the mother of success.",
+      "meaning": "We learn from setbacks and grow stronger."
+    },
+    {
+      "text": "Good character outweighs good looks.",
+      "meaning": "Kind character is worth more than beauty."
+    },
+    {
+      "text": "A greeting is worth more than a feast.",
+      "meaning": "A polite greeting is worth more than a lavish meal."
+    },
+    {
+      "text": "When the elder sister falls, the younger lifts her up.",
+      "meaning": "Siblings support each other in hard times."
+    },
+    {
+      "text": "Brothers and sisters are like hands and feet.",
+      "meaning": "Siblings are as closely bound as parts of one body."
+    },
+    {
+      "text": "Where siblings live in harmony, the home is blessed.",
+      "meaning": "Harmony between siblings makes a warm home."
+    },
+    {
+      "text": "A child with a father is like a house with a roof.",
+      "meaning": "A father is a steady shelter for his children."
+    },
+    {
+      "text": "A father's love is like Mount Thai; a mother's like water flowing from the spring.",
+      "meaning": "Parents' love is vast and lasting; children should remember it."
+    },
+    {
+      "text": "With one heart honor your mother and father; filial piety is a child's way.",
+      "meaning": "Children should be devoted to their parents."
+    },
+    {
+      "text": "Parents bear the child, and nature gives the temperament.",
+      "meaning": "Everyone has their own nature; we should understand it."
+    },
+    {
+      "text": "When the child surpasses the father, the family is blessed.",
+      "meaning": "It is a joy when the next generation does better."
+    },
+    {
+      "text": "When blood flows, the heart softens.",
+      "meaning": "Kin always feel for one another."
+    },
+    {
+      "text": "Sell distant relatives, buy near neighbors.",
+      "meaning": "Good neighbors close by can help us in need."
+    },
+    {
+      "text": "When fires die and lamps go out, we have each other.",
+      "meaning": "Neighbors stand by each other in difficult moments."
+    },
+    {
+      "text": "The way is hard not for rivers and mountains but for fear of them.",
+      "meaning": "The greatest difficulty is often the hesitation in our hearts."
+    },
+    {
+      "text": "Slow but steady.",
+      "meaning": "Going slowly and surely is better than rushing."
+    },
+    {
+      "text": "Haste does not reach the goal.",
+      "meaning": "Rushing rarely brings good results."
+    },
+    {
+      "text": "With care, there is no worry.",
+      "meaning": "Being careful at the start spares us trouble later."
+    },
+    {
+      "text": "One act of forbearance brings nine good things.",
+      "meaning": "Yielding a little avoids a lot of trouble."
+    },
+    {
+      "text": "Let nine faults go and make it ten.",
+      "meaning": "Be forgiving and overlook small mistakes."
+    },
+    {
+      "text": "Harmony is the most precious thing.",
+      "meaning": "Living in peace with others is most valuable."
+    },
+    {
+      "text": "Press where it is soft, release where it is hard.",
+      "meaning": "Be gentle and flexible according to the situation."
+    },
+    {
+      "text": "A soft rope ties tight.",
+      "meaning": "Gentle ways win hearts more firmly than force."
+    },
+    {
+      "text": "Flowing water wears away stone.",
+      "meaning": "Persistence over time overcomes hard obstacles."
+    },
+    {
+      "text": "Steady drizzle soaks deep.",
+      "meaning": "Gentle persistence has a deep effect over time."
+    },
+    {
+      "text": "Ants carrying bit by bit will fill the nest in time.",
+      "meaning": "Small efforts add up if we keep going."
+    },
+    {
+      "text": "Small things gathered become great things.",
+      "meaning": "Little by little, small things add up to something big."
+    },
+    {
+      "text": "Gather winds and make a storm.",
+      "meaning": "Many small efforts together create great strength."
+    },
+    {
+      "text": "A hundred ideas are not worth a practiced hand.",
+      "meaning": "Practice matters more than knowing about something."
+    },
+    {
+      "text": "Diligence makes up for lack of cleverness.",
+      "meaning": "Hard work can make up for what we lack in talent."
+    },
+    {
+      "text": "Hands that work feed the mouth.",
+      "meaning": "We eat by our own effort."
+    },
+    {
+      "text": "Work while well, and save for when you are sick.",
+      "meaning": "Work hard and save for harder days."
+    },
+    {
+      "text": "Gather often and the bag fills up.",
+      "meaning": "Steady gathering fills the bag."
+    },
+    {
+      "text": "Only by working do we have food to eat.",
+      "meaning": "We must work to enjoy the fruits."
+    },
+    {
+      "text": "Stay up late and rise early.",
+      "meaning": "Be hardworking and diligent."
+    },
+    {
+      "text": "One sun and two frosts.",
+      "meaning": "It speaks of the hard toil of working people."
+    },
+    {
+      "text": "Muddy feet and muddy hands.",
+      "meaning": "The hard-working life of farmers."
+    },
+    {
+      "text": "Whoever holds a full bowl of rice, each fragrant grain holds much toil.",
+      "meaning": "Every grain of rice carries a farmer's hard work."
+    },
+    {
+      "text": "An inch of land is an inch of gold.",
+      "meaning": "Land is precious and should be cared for."
+    },
+    {
+      "text": "First water, second fertilizer, third diligence, fourth seed.",
+      "meaning": "Farming wisdom: water, fertilizer, effort and seed all matter."
+    },
+    {
+      "text": "People live by rice as fish live by the river.",
+      "meaning": "Rice is as essential to people as water is to fish."
+    },
+    {
+      "text": "Farming is the foundation.",
+      "meaning": "Agriculture is the root that feeds people."
+    },
+    {
+      "text": "Golden forests and silver seas.",
+      "meaning": "Nature is rich and deserves our care."
+    },
+    {
+      "text": "Birds have nests, people have ancestors.",
+      "meaning": "Everyone has roots and should remember their origins."
+    },
+    {
+      "text": "Fallen leaves return to their roots.",
+      "meaning": "No matter how far we go, we long for our roots."
+    },
+    {
+      "text": "Trees have roots, water has a source.",
+      "meaning": "Everything has an origin worth remembering."
+    },
+    {
+      "text": "A wise bird picks its branch to perch on.",
+      "meaning": "Choose your place and company wisely."
+    },
+    {
+      "text": "A frog sitting at the bottom of a well.",
+      "meaning": "A narrow view of the world; we should widen our horizons."
+    },
+    {
+      "text": "Empty barrels make the loudest noise.",
+      "meaning": "Those who know little are often the loudest."
+    },
+    {
+      "text": "Ripe rice bows its head.",
+      "meaning": "The more one knows, the more humble one becomes."
+    },
+    {
+      "text": "If you know, speak up; if you don't, lean on the pillar and listen.",
+      "meaning": "Speak when you know; listen and learn when you don't."
+    },
+    {
+      "text": "Speak rightly and even a radish will listen.",
+      "meaning": "Reasonable words are worth hearing from anyone."
+    },
+    {
+      "text": "Speak little, do much.",
+      "meaning": "Let your actions speak more than your words."
+    },
+    {
+      "text": "Words are carried off by the wind.",
+      "meaning": "Words fade, so let actions keep your promises."
+    },
+    {
+      "text": "One lie, seven days of regret.",
+      "meaning": "A lie weighs on the heart, so be honest."
+    },
+    {
+      "text": "Honesty is the father of cunning folk.",
+      "meaning": "Honesty may look naive, but it remains valuable."
+    },
+    {
+      "text": "Trust is worth more than gold.",
+      "meaning": "Keeping one's word is very valuable."
+    },
+    {
+      "text": "Break trust once, and it is lost many times over.",
+      "meaning": "Trust is hard to regain, so keep your word."
+    },
+    {
+      "text": "Speak with books, tell with proof.",
+      "meaning": "Say only what you can support with evidence."
+    },
+    {
+      "text": "Bend your tongue seven times before speaking.",
+      "meaning": "Think carefully before speaking so you do not hurt others."
+    },
+    {
+      "text": "Words can draw blood.",
+      "meaning": "Harsh words can hurt deeply."
+    },
+    {
+      "text": "Gold is tested by fire, a bell by its sound, a person by their words.",
+      "meaning": "We know people by what they say and do."
+    },
+    {
+      "text": "Choose your friends carefully.",
+      "meaning": "Be careful in choosing good friends."
+    },
+    {
+      "text": "In hardship we know a true friend.",
+      "meaning": "Hard times reveal who our true friends are."
+    },
+    {
+      "text": "In a gourd, it grows round; in a bamboo tube, long.",
+      "meaning": "People take shape from their surroundings."
+    },
+    {
+      "text": "When you enter a home, follow its customs.",
+      "meaning": "Respect the customs of the place you visit."
+    },
+    {
+      "text": "On entering a home, ask about its customs.",
+      "meaning": "Ask about and respect the rules of the household."
+    },
+    {
+      "text": "Respect for elders is a virtue.",
+      "meaning": "Honor the elderly."
+    },
+    {
+      "text": "Respect those above, be gentle with those below.",
+      "meaning": "Respect elders and be considerate toward the young."
+    },
+    {
+      "text": "The young rely on their father, the old on their children.",
+      "meaning": "Generations of a family depend on each other."
+    },
+    {
+      "text": "Young in person, tender in heart.",
+      "meaning": "The young lack experience and need gentle guidance."
+    },
+    {
+      "text": "The older the ginger, the spicier it is.",
+      "meaning": "Age brings experience and strength."
+    },
+    {
+      "text": "One bite, a reputation for life.",
+      "meaning": "What we do can be remembered for a long time."
+    },
+    {
+      "text": "Eat watching the pot, sit watching the direction.",
+      "meaning": "Be considerate and observant in how you behave."
+    },
+    {
+      "text": "Fence the tree whose fruit you eat.",
+      "meaning": "Protect what provides for you."
+    },
+    {
+      "text": "Eat tidily, speak properly.",
+      "meaning": "Behave and speak with good manners."
+    },
+    {
+      "text": "A small gift with a big heart.",
+      "meaning": "The gift is small but the heart behind it is large."
+    },
+    {
+      "text": "A bite when hungry is worth a bundle when full.",
+      "meaning": "Help given when needed is worth far more."
+    },
+    {
+      "text": "Give and take brings mutual satisfaction.",
+      "meaning": "Kindness exchanged strengthens bonds."
+    },
+    {
+      "text": "Whatever they say, my heart stays firm like a three-legged stand.",
+      "meaning": "Stay steady and not swayed by gossip."
+    },
+    {
+      "text": "Giving up rice and sharing clothes.",
+      "meaning": "Sharing even the essentials with others."
+    },
+    {
+      "text": "Sharing the sweet and the savory.",
+      "meaning": "Sharing both joys and hardships together."
+    },
+    {
+      "text": "Sharing both sweetness and bitterness.",
+      "meaning": "Going through joy and hardship together."
+    },
+    {
+      "text": "Warm inside, calm outside.",
+      "meaning": "A family at peace within and without."
+    },
+    {
+      "text": "When husband and wife agree, they can bail out the East Sea.",
+      "meaning": "A couple in harmony can achieve great things."
+    },
+    {
+      "text": "My husband's clothes are torn, yet I love him.",
+      "meaning": "Affection matters more than outward wealth."
+    },
+    {
+      "text": "Shrimp whiskers cooked with gourd, shared and praised with a nod.",
+      "meaning": "A simple meal enjoyed in a loving household."
+    },
+    {
+      "text": "Gourd, love the squash, for though different, they share one trellis.",
+      "meaning": "People of one community should cherish each other."
+    },
+    {
+      "text": "Money is tied to the intestines.",
+      "meaning": "Money matters, so save and spend wisely."
+    },
+    {
+      "text": "Chew when you eat, think when you speak.",
+      "meaning": "Do everything with care and thought."
+    },
+    {
+      "text": "Difficulty brings out wisdom.",
+      "meaning": "Hardship pushes us to find clever solutions."
+    },
+    {
+      "text": "Love gives the rod; dislike gives the sweets.",
+      "meaning": "Real care means guiding children with love."
+    },
+    {
+      "text": "Kind children, devoted grandchildren.",
+      "meaning": "Well-mannered, caring younger generations."
+    },
+    {
+      "text": "Only in raising a child do we know a parent's heart.",
+      "meaning": "Becoming a parent helps us understand our parents."
+    },
+    {
+      "text": "Fish without salt spoil; a child who defies parents goes astray.",
+      "meaning": "A reminder to listen to parents' guidance."
+    },
+    {
+      "text": "Be content with your lot.",
+      "meaning": "Live simply and be satisfied with what you have."
+    },
+    {
+      "text": "Greed leads to loss.",
+      "meaning": "Greed can cost us more than we gain."
+    },
+    {
+      "text": "Chasing gold, abandoning loyalty.",
+      "meaning": "Do not forget kindness for the sake of profit."
+    },
+    {
+      "text": "Eat honestly, speak truthfully.",
+      "meaning": "Live honestly and your heart stays at ease."
+    },
+    {
+      "text": "People are the flowers of the earth.",
+      "meaning": "People are the most precious part of the world."
+    },
+    {
+      "text": "One person is worth ten pieces of treasure.",
+      "meaning": "People matter more than possessions."
+    },
+    {
+      "text": "Eat cooked food, drink boiled water.",
+      "meaning": "Eat and drink cleanly to stay healthy."
+    },
+    {
+      "text": "Illness enters by the mouth, trouble leaves by it.",
+      "meaning": "Be careful about what you eat and what you say."
+    },
+    {
+      "text": "A clean house is cool, clean bowls make rice tasty.",
+      "meaning": "Cleanliness makes everyday life pleasant."
+    },
+    {
+      "text": "Anger makes us lose our wisdom.",
+      "meaning": "Anger clouds good judgment."
+    },
+    {
+      "text": "Calm your anger and make peace.",
+      "meaning": "Let go of anger and reconcile."
+    },
+    {
+      "text": "A river has its bends, a person has their moments.",
+      "meaning": "Life has ups and downs; stay calm through them."
+    },
+    {
+      "text": "Eating soft rice, remember the road you travelled.",
+      "meaning": "Even in comfort, remember the hard road behind you."
+    },
+    {
+      "text": "Eat what fills you, wear what lasts.",
+      "meaning": "Choose what is solid and lasting."
+    },
+    {
+      "text": "Eating builds the body, learning builds skill.",
+      "meaning": "Nourish the body and the mind."
+    },
+    {
+      "text": "Live with kindness.",
+      "meaning": "Treat everyone with a kind heart."
+    },
+    {
+      "text": "Eat in the right place, live in the right place.",
+      "meaning": "Live in an orderly, settled way."
+    },
+    {
+      "text": "Eat as the place suits, play as the place suits.",
+      "meaning": "Behave in a way that fits the setting."
+    },
+    {
+      "text": "A meal without vegetables is like an illness without medicine.",
+      "meaning": "Vegetables are good for our health."
+    },
+    {
+      "text": "While eating this meal, plan for the next.",
+      "meaning": "Think ahead and prepare for tomorrow."
+    },
+    {
+      "text": "A neatly mended rag beats a clumsily sewn new cloth.",
+      "meaning": "Careful skill is worth more than something new."
+    },
+    {
+      "text": "An upright tree does not fear standing dead.",
+      "meaning": "Living uprightly gives peace of mind."
+    },
+    {
+      "text": "Do not drop the oar at the sight of big waves.",
+      "meaning": "Stay steady even when difficulties seem great."
+    },
+    {
+      "text": "A bell rings only when struck, a lamp shines only when trimmed.",
+      "meaning": "To understand, we must ask and learn."
+    },
+    {
+      "text": "Only the firm can stand in the wind.",
+      "meaning": "It takes strength of character to stand firm."
+    },
+    {
+      "text": "Ask the old when out, ask the young at home.",
+      "meaning": "Learn from the old and the young alike."
+    },
+    {
+      "text": "A long road shows a good horse; time shows a person's heart.",
+      "meaning": "Time reveals a person's true character."
+    },
+    {
+      "text": "Chicks of one mother should not peck each other.",
+      "meaning": "Those of one family should not quarrel."
+    },
+    {
+      "text": "Be wise to outsiders; chicks of one mother should not fight.",
+      "meaning": "Family should stay united instead of quarreling."
+    },
+    {
+      "text": "Learn one thing, know ten.",
+      "meaning": "A thoughtful learner draws wide lessons from little."
+    },
+    {
+      "text": "True fragrance spreads by itself.",
+      "meaning": "Good people are naturally admired."
+    },
+    {
+      "text": "Eat wisely and you are full; curl up well and you are warm.",
+      "meaning": "Being thrifty and wise makes life comfortable."
+    },
+    {
+      "text": "Fire tests gold, hardship tests strength.",
+      "meaning": "Difficulties show our strength and character."
+    },
+    {
+      "text": "When one horse is sick, the whole stable stops eating.",
+      "meaning": "When one suffers, the whole group shares the concern."
+    },
+    {
+      "text": "To cross, build a bridge; to have a learned child, honor the teacher.",
+      "meaning": "Respecting teachers helps children learn well."
+    },
+    {
+      "text": "To know, ask; to be skilled, learn.",
+      "meaning": "Knowledge comes from asking and learning."
+    },
+    {
+      "text": "Watching sky, earth and cloud, rain and sun, day and night.",
+      "meaning": "The farmer's heart is tied to weather and harvest."
+    },
+    {
+      "text": "With plain water, one can still make paste.",
+      "meaning": "Skill and effort can turn little into something."
+    },
+    {
+      "text": "Saying one thing and doing another.",
+      "meaning": "Let words and deeds go together."
+    },
+    {
+      "text": "The mouth speaks, the hand acts.",
+      "meaning": "Whatever we say, we should also do."
+    },
+    {
+      "text": "Easy to say, hard to do.",
+      "meaning": "Real action is harder than talk."
+    },
+    {
+      "text": "Do not leave today's work for tomorrow.",
+      "meaning": "Do what needs doing without delay."
+    },
+    {
+      "text": "A hair's error leads a mile astray.",
+      "meaning": "A small mistake can grow, so be careful."
+    },
+    {
+      "text": "When old bamboo ages, young shoots grow.",
+      "meaning": "Each generation is followed by the next."
+    },
+    {
+      "text": "Young bamboo bends easily.",
+      "meaning": "It is easier to guide the young."
+    },
+    {
+      "text": "Staying up late you learn the night is long; staying long you know a kind person.",
+      "meaning": "We know a person's kindness only over time."
+    },
+    {
+      "text": "Lose this round, try another.",
+      "meaning": "After a setback, learn and try again."
+    },
+    {
+      "text": "Speaking well is less than listening well.",
+      "meaning": "Listening is worth more than speaking well."
+    },
+    {
+      "text": "The wise speak halfway, leaving fools half glad and half worried.",
+      "meaning": "The wise speak with measure and tact."
+    },
+    {
+      "text": "The snakehead fish is utterly devoted to its young.",
+      "meaning": "A mother's love for her children is deep."
+    },
+    {
+      "text": "An aged mother is like a fragrant banana, like sticky rice, like cane sugar.",
+      "meaning": "An elderly mother is sweet and dear to her children."
+    },
+    {
+      "text": "A knife is sharp only when sharpened; a person is wise only when taught.",
+      "meaning": "We grow through learning and training."
+    },
+    {
+      "text": "A guest at home is met with chicken or duck.",
+      "meaning": "Hospitality is warm and generous."
+    },
+    {
+      "text": "A betel quid starts the conversation.",
+      "meaning": "A small friendly gesture opens a conversation."
+    },
+    {
+      "text": "A drop of blood is worth more than a pond of water.",
+      "meaning": "The bond of family runs deep."
+    },
+    {
+      "text": "Up the rapids and down the falls.",
+      "meaning": "A life of hardships that were overcome."
+    },
+    {
+      "text": "Nine people, ten opinions.",
+      "meaning": "Everyone thinks differently, so we should listen."
+    },
+    {
+      "text": "With one heart and united strength.",
+      "meaning": "Work together with one heart."
+    },
+    {
+      "text": "Backs together, shoulders to the task.",
+      "meaning": "Stand side by side to face hardship."
+    },
+    {
+      "text": "Tears flow downward.",
+      "meaning": "Parents' love flows to their children; children should be dutiful."
+    },
+    {
+      "text": "Bitter medicine cures; truth can hurt.",
+      "meaning": "Honest words may be hard to hear but they help."
+    },
+    {
+      "text": "First learn manners, then learn letters.",
+      "meaning": "Learn courtesy first, then knowledge."
+    },
+    {
+      "text": "A person who does not learn is like unpolished jade.",
+      "meaning": "Learning polishes a person."
+    },
+    {
+      "text": "Review for letters, drill for martial arts.",
+      "meaning": "Study by reviewing; skill by practicing."
+    },
+    {
+      "text": "Master one trade rather than nine halfway.",
+      "meaning": "Doing one thing well beats doing many poorly."
+    },
+    {
+      "text": "Climb the mountain to know its height; raise a child to know a mother's labor.",
+      "meaning": "Raising children teaches us what our parents gave."
+    },
+    {
+      "text": "When we love, even a water chestnut seems round.",
+      "meaning": "Affection makes us see the good in others."
+    },
+    {
+      "text": "Those who love share their areca nut.",
+      "meaning": "Love brings sharing and generosity."
+    },
+    {
+      "text": "Evenings I stand by the back gate, looking toward my mother's home.",
+      "meaning": "The longing of a child far from home."
+    },
+    {
+      "text": "Do not leave your field fallow; every inch of land is gold.",
+      "meaning": "Cherish and tend the land."
+    },
+    {
+      "text": "Wherever you wander, remember the Ancestors' Day.",
+      "meaning": "Wherever you go, remember your roots."
+    },
+    {
+      "text": "Displeasing at first, pleasing in the end.",
+      "meaning": "Honesty may upset at first but earns respect later."
+    },
+    {
+      "text": "A kind heart is worth three times talent.",
+      "meaning": "A good heart is more valuable than talent."
+    },
+    {
+      "text": "Go to the place and return to the proper spot.",
+      "meaning": "Do whatever you do thoroughly."
+    },
+    {
+      "text": "How you give matters more than what you give.",
+      "meaning": "A thoughtful way of giving is worth more than the gift."
+    },
+    {
+      "text": "Differing only by clothes, stripped bare everyone is the same.",
+      "meaning": "Everyone is equal beneath outward appearances."
+    },
+    {
+      "text": "If the head goes through, the tail follows.",
+      "meaning": "A good start makes the rest easier."
+    },
+    {
+      "text": "Why the rush and hurry, tripping over stones and tangled in vines?",
+      "meaning": "Don't hurry, so you won't stumble."
+    },
+    {
+      "text": "Look far and see wide.",
+      "meaning": "Think broadly and for the long term."
+    },
+    {
+      "text": "A hundred hearings are not worth one seeing.",
+      "meaning": "Seeing for yourself is better than hearsay."
+    },
+    {
+      "text": "Go out to see here and there; staying home with Mother, when will you grow wise?",
+      "meaning": "Travel widens your understanding."
+    },
+    {
+      "text": "An item worth a coin, labor worth a bar.",
+      "meaning": "Effort is more precious than the object."
+    },
+    {
+      "text": "Choose the face to whom you entrust your gold.",
+      "meaning": "Choose carefully whom you trust."
+    },
+    {
+      "text": "A small blemish grows into a boil.",
+      "meaning": "A small problem ignored can grow big."
+    },
+    {
+      "text": "Only after the ox is lost does one build the pen.",
+      "meaning": "Prepare ahead instead of waiting for trouble."
+    },
+    {
+      "text": "Measure the rice, then take the fish sauce.",
+      "meaning": "Plan according to your means."
+    },
+    {
+      "text": "Do not be quick to laugh at others for long.",
+      "meaning": "Do not be quick to ridicule others."
+    },
+    {
+      "text": "One word makes a teacher, even half a word.",
+      "meaning": "Whoever teaches us, even a little, deserves respect."
+    },
+    {
+      "text": "To cross the river, you must rely on the ferry.",
+      "meaning": "When we need help, we should be humble and grateful."
+    },
+    {
+      "text": "Homegrown trees and garden leaves.",
+      "meaning": "Simple things made by ourselves are worth cherishing."
+    },
+    {
+      "text": "The affection of village and neighbors.",
+      "meaning": "The bond and mutual help among neighbors."
+    },
+    {
+      "text": "Each household's lamp shines for its own.",
+      "meaning": "Each of us should tend our own home first."
+    },
+    {
+      "text": "A sack of reason is not worth a little affection.",
+      "meaning": "Kindness matters more than argument."
+    },
+    {
+      "text": "Willing to bear hardship and toil.",
+      "meaning": "Patient and hardworking."
+    },
+    {
+      "text": "Stone steles wear away in a century, but spoken memory lasts a thousand years.",
+      "meaning": "How we are remembered lasts longer than stone."
+    },
+    {
+      "text": "A refined person speaks refinedly; a bell tapped softly still rings.",
+      "meaning": "A cultured person speaks gracefully."
+    },
+    {
+      "text": "A wise bird sings clearly; a wise person speaks softly and sweetly.",
+      "meaning": "Wise people speak gently and pleasantly."
+    },
+    {
+      "text": "Keep your resolve firm, whatever others change.",
+      "meaning": "Hold your purpose steady."
+    },
+    {
+      "text": "Traders have partners, sellers have guilds.",
+      "meaning": "In any endeavor, it helps to have companions."
+    },
+    {
+      "text": "A tiger leaves its skin, a person leaves a name.",
+      "meaning": "Live so as to leave a good name."
+    },
+    {
+      "text": "You need flour to make paste.",
+      "meaning": "You need the proper means to accomplish something."
+    },
+    {
+      "text": "Carving a plow by the roadside.",
+      "meaning": "Have your own judgment instead of following every opinion."
+    },
+    {
+      "text": "Vines of the mơ plant and roots of the má plant.",
+      "meaning": "Close, tangled family connections."
+    },
+    {
+      "text": "The ignorant love to show off words.",
+      "meaning": "Those who know little like to show off."
+    },
+    {
+      "text": "Standing on one mountain, eyeing another.",
+      "meaning": "Not being content with what one has."
+    },
+    {
+      "text": "Twist too tight and the rope snaps.",
+      "meaning": "Pushing too hard can ruin things."
+    },
+    {
+      "text": "Jumping only when the water reaches the feet.",
+      "meaning": "Do not wait until the last moment."
+    },
+    {
+      "text": "Tighten the belt and bind the belly.",
+      "meaning": "Be frugal for the sake of the family."
+    },
+    {
+      "text": "Every beginning is hard.",
+      "meaning": "Things are usually hardest at the start."
+    },
+    {
+      "text": "Far from the face, distant in the heart.",
+      "meaning": "Friendships fade without contact, so keep in touch."
+    },
+    {
+      "text": "Head down and face dark from toil.",
+      "meaning": "Working hard all day long."
+    },
+    {
+      "text": "Do not judge by looks alone.",
+      "meaning": "Do not judge people by appearance only."
+    },
+    {
+      "text": "Plowing at midday, sweat falls like rain on the field.",
+      "meaning": "The farmer's hard labor under the noon sun."
+    },
+    {
+      "text": "How to live to please everyone? Wide, they laugh; narrow, they criticize.",
+      "meaning": "Not everyone can be pleased, so keep an upright heart."
+    },
+    {
+      "text": "Does the boat remember its harbor? The harbor waits faithfully.",
+      "meaning": "Faithfulness holds even across distance."
+    },
+    {
+      "text": "Passing the temple, I tip my hat; as many tiles as it has, so much I cherish you.",
+      "meaning": "Deep affection for home and loved ones."
+    },
+    {
+      "text": "People have ancestors as trees have roots and rivers have sources.",
+      "meaning": "We remember our roots as trees and rivers do."
+    },
+    {
+      "text": "Siblings are not strangers; they share one home and one parent.",
+      "meaning": "Siblings of one family should love one another."
+    },
+    {
+      "text": "Father's rice, mother's clothes, teacher's letters; how can we repay them?",
+      "meaning": "Remember what parents and teachers have given us."
+    },
+    {
+      "text": "Salt stays salty after three years, ginger stays sharp after nine months.",
+      "meaning": "Deep bonds, like salt and ginger, last."
+    },
+    {
+      "text": "Holding a bowl of salt and a plate of ginger, please do not forget each other.",
+      "meaning": "A plea to keep faith with each other."
+    },
+    {
+      "text": "Looking at the thatch ties of the roof, I remember my grandparents for each one.",
+      "meaning": "Looking at the home, we remember our grandparents."
+    },
+    {
+      "text": "The buffalo is the start of a livelihood.",
+      "meaning": "The buffalo is a farmer's essential companion."
+    },
+    {
+      "text": "Buffalo, I tell you, eat your fill of grass and plow with me.",
+      "meaning": "The farmer's affection for his buffalo."
+    },
+    {
+      "text": "A living person is worth more than a heap of gold.",
+      "meaning": "Life is worth more than wealth."
+    },
+    {
+      "text": "Do not boast in winning, do not despair in losing.",
+      "meaning": "Stay humble in success and hopeful in setbacks."
+    },
+    {
+      "text": "First blame yourself, then blame others.",
+      "meaning": "Look at your own faults before blaming others."
+    },
+    {
+      "text": "Do not stick one man's beard on another's chin.",
+      "meaning": "Do not mix up or misattribute things."
+    },
+    {
+      "text": "A word spoken cannot be caught by four horses.",
+      "meaning": "A spoken word is hard to take back."
+    },
+    {
+      "text": "Keep the word you speak, don't be like a butterfly that lands then flies off.",
+      "meaning": "If you promise, keep your word."
+    },
+    {
+      "text": "Mutual care and love.",
+      "meaning": "Caring for and helping one another."
+    },
+    {
+      "text": "Review the old to understand the new.",
+      "meaning": "Reviewing the past helps us grasp the new."
+    },
+    {
+      "text": "Respect each other as honored guests.",
+      "meaning": "Spouses should respect each other."
+    },
+    {
+      "text": "The banyan, the water landing, the communal yard.",
+      "meaning": "Familiar, beloved images of the Vietnamese village."
+    },
+    {
+      "text": "With a head and a tail.",
+      "meaning": "Finish what you start."
+    },
+    {
+      "text": "With a first and a last.",
+      "meaning": "Be faithful from beginning to end."
+    },
+    {
+      "text": "With affection and loyalty.",
+      "meaning": "Live sincerely, gratefully and faithfully."
+    },
+    {
+      "text": "Deep gratitude and heavy obligation.",
+      "meaning": "A great kindness that should be remembered."
+    },
+    {
+      "text": "Careful in every tiny detail.",
+      "meaning": "Work with great care."
+    },
+    {
+      "text": "Strain the muddy, draw out the clear.",
+      "meaning": "Filter out the bad and keep the good."
+    },
+    {
+      "text": "Value loyalty above wealth.",
+      "meaning": "Prize kindness above money."
+    },
+    {
+      "text": "Heavy in affection, heavy in loyalty.",
+      "meaning": "A deeply caring and loyal heart."
+    },
+    {
+      "text": "Studying the classics diligently.",
+      "meaning": "Studying with great diligence."
+    },
+    {
+      "text": "One is moderate, two is fair.",
+      "meaning": "Be moderate and not excessive."
+    },
+    {
+      "text": "The fig's inside is like the sycamore fig's inside.",
+      "meaning": "Treat everyone equally."
+    },
+    {
+      "text": "Sweet words reach down to the bone.",
+      "meaning": "Gentle words can touch the heart."
+    },
+    {
+      "text": "Buying and selling by mutual agreement.",
+      "meaning": "A fair exchange where both are satisfied."
+    },
+    {
+      "text": "Money is paid and porridge ladled.",
+      "meaning": "Clear, fair exchange with no debts."
+    },
+    {
+      "text": "Every land has its rules, every village its customs.",
+      "meaning": "Every place has customs worth respecting."
+    },
+    {
+      "text": "Like father, like child.",
+      "meaning": "Parents should set a good example."
+    },
+    {
+      "text": "Skilled hands, willing to work.",
+      "meaning": "Skillful and diligent hands get a lot done."
+    },
+    {
+      "text": "Hearts and minds in harmony.",
+      "meaning": "Two people who understand each other well."
+    },
+    {
+      "text": "Of ten fingers, some are long and some short.",
+      "meaning": "People differ, so be understanding."
+    },
+    {
+      "text": "As merry as a festival.",
+      "meaning": "A cheerful gathering."
+    },
+    {
+      "text": "A tall tree casts wide shade.",
+      "meaning": "A virtuous person shelters many."
+    },
+    {
+      "text": "Above a high mountain, there is a higher one.",
+      "meaning": "No matter how skilled, there is always someone more skilled."
+    },
+    {
+      "text": "Copied three times, the original is lost.",
+      "meaning": "Stories distort when retold, so verify them."
+    },
+    {
+      "text": "Eat the porridge, then kick the bowl.",
+      "meaning": "A reminder not to forget those who helped us."
+    },
+    {
+      "text": "Given an elephant, you ask for a fairy.",
+      "meaning": "Be content and do not keep asking for more."
+    },
+    {
+      "text": "The cat praises itself for its long tail.",
+      "meaning": "Boasting is unbecoming, so be modest."
+    },
+    {
+      "text": "Show the good, hide the bad.",
+      "meaning": "We like to show our strengths; be honest with yourself."
+    },
+    {
+      "text": "Parents raise children with a vast lake of love; children count days when caring for them.",
+      "meaning": "Parents' love is boundless; children should care for them generously."
+    },
+    {
+      "text": "The first day of Tết for father, second for mother, third for teacher.",
+      "meaning": "At Tết we honor our father, mother and teacher."
+    },
+    {
+      "text": "For those we love, we climb any mountain, cross any river, pass any pass.",
+      "meaning": "Love gives us strength to overcome difficulties."
+    },
+    {
+      "text": "Better to eat salty and speak true than eat plain and lie.",
+      "meaning": "Honesty is worth more than pretense."
+    },
+    {
+      "text": "Do not claim kinship with the grand just because they are grand.",
+      "meaning": "Be sincere and do not flatter for gain."
+    },
+    {
+      "text": "Three years of gathering firewood burned in one hour.",
+      "meaning": "Long effort can be lost quickly, so guard what you build."
+    },
+    {
+      "text": "When one is angry, the other speaks less; lower the flame when rice boils.",
+      "meaning": "In a family, one yields when the other is upset."
+    },
+    {
+      "text": "Child, remember: do not wade a deep river or board an overfull ferry.",
+      "meaning": "A parent's advice to be careful and safe."
+    },
+    {
+      "text": "Strange at first, familiar later.",
+      "meaning": "What is unfamiliar becomes familiar with time."
+    },
+    {
+      "text": "Duty to the departed is the last duty.",
+      "meaning": "Let go of grudges and show respect to those who have passed."
+    }
+  ]
+}
